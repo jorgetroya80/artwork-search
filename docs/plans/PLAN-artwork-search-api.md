@@ -129,7 +129,7 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
     `SEARCH_URL`, `ENTITY_URL_PREFIX` and `API_PAGE_SIZE` from `constants.ts` instead of copying
     them.
 
-- [ ] **T4: `RijksApiError` and `fetchJson`**
+- [x] **T4: `RijksApiError` and `fetchJson`**
   - `errors.ts`: the class with `kind`, `status`, `url`, `retryable`, `cause`.
   - `http.ts`: `fetchJson(url, { signal, timeoutMs, accept })`, with the ID allowlist check, the
     error table from the spec, `detail` in the `http` message, and caller abort rethrown as is (not
@@ -140,11 +140,16 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
   - Verify: `pnpm test http`, `pnpm build`.
   - Files: `errors.ts`, `http.ts`, `http.test.ts`.
   - Size: S.
+  - Done: the allowlist accepts the entity prefix and `SEARCH_URL?`. It rejects other hosts,
+    look-alike hosts (`id.rijksmuseum.nl.evil.com`) and `http://`. `fetchJson` reads the body as
+    text inside the same `try` as `fetch`. Because of this, an abort or timeout while the body
+    downloads is reported as `timeout` / cancellation, not as `parse`. Coverage of `http.ts` and
+    `errors.ts` is 100% lines.
 
 ### Checkpoint 1: Foundation
 
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass.
-- [ ] jsdom + `AbortSignal.any` + MSW work together (T1 smoke test). If not, decide the fallback
+- [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
+- [x] jsdom + `AbortSignal.any` + MSW work together (T1 smoke test). If not, decide the fallback
       before T5 (see Risks).
 - [ ] Review with the user.
 
