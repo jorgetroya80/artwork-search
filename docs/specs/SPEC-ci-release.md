@@ -186,19 +186,22 @@ README.md                        → add "Contributing and releases" section
 
 ## Tech Stack
 
-GitHub Actions. Actions used, each pinned to a full commit SHA with the version tag in a
-trailing comment:
+GitHub Actions. Pinning depends on who maintains the action:
 
-| Action                                | Version (at implementation time) |
-| ------------------------------------- | -------------------------------- |
-| `actions/checkout`                    | latest major                     |
-| `pnpm/action-setup`                   | latest major                     |
-| `actions/setup-node`                  | latest major                     |
-| `amannn/action-semantic-pull-request` | latest major                     |
-| `googleapis/release-please-action`    | latest major                     |
+| Action                                | Owner       | Reference                                      |
+| ------------------------------------- | ----------- | ---------------------------------------------- |
+| `actions/checkout`                    | GitHub      | major tag (`@v7`)                              |
+| `actions/setup-node`                  | GitHub      | major tag (`@v7`)                              |
+| `pnpm/action-setup`                   | third party | full commit SHA + version comment (`# v6.1.0`) |
+| `amannn/action-semantic-pull-request` | third party | full commit SHA + version comment (`# v6.1.1`) |
+| `googleapis/release-please-action`    | third party | full commit SHA + version comment (`# v5.0.0`) |
 
-The implementer checks each action's release page and pins the latest release of the latest
-major. No new npm dependencies.
+- **GitHub-owned (`actions/*`): major tag.** Low supply-chain risk, and the action gets patch and
+  minor fixes without edits. No version comment: it would go stale when the tag moves.
+- **Third party: full commit SHA.** A tag can be moved to other code; a SHA cannot. The trailing
+  comment names the release the SHA belongs to.
+
+The implementer uses the latest major of each action. No new npm dependencies.
 
 ## Commands
 
@@ -245,9 +248,9 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@<sha> # vX.Y.Z
+      - uses: actions/checkout@vN
       - uses: pnpm/action-setup@<sha> # vX.Y.Z
-      - uses: actions/setup-node@<sha> # vX.Y.Z
+      - uses: actions/setup-node@vN
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -295,8 +298,8 @@ The app test suite and `vite.config.ts` stay as they are. CI does not run covera
 
 ## Boundaries
 
-- **Always:** least-privilege `permissions` on every workflow. Pin every action to a full commit
-  SHA. Use `--frozen-lockfile`. Keep CI steps identical to the local commands.
+- **Always:** least-privilege `permissions` on every workflow. Pin third-party actions to a full commit
+  SHA and GitHub-owned `actions/*` to a major tag. Use `--frozen-lockfile`. Keep CI steps identical to the local commands.
 - **Ask first:** adding secrets, a PAT or a GitHub App. New actions beyond the table above. A
   deploy job. Dependabot or Renovate. Matrix builds (several Node versions or OSes). Caching
   beyond `setup-node`'s pnpm cache. Adding coverage to CI. Any change to `src/`.
@@ -307,7 +310,8 @@ The app test suite and `vite.config.ts` stay as they are. CI does not run covera
 ## Success Criteria
 
 - [ ] `.github/workflows/ci.yml` and `.github/workflows/release.yml` exist and pass `actionlint`.
-- [ ] Every `uses:` is pinned to a 40-character SHA with a version comment.
+- [ ] Every third-party `uses:` is pinned to a 40-character SHA with a version comment. Every
+      `actions/*` `uses:` uses a major tag (`@vN`).
 - [ ] `ci.yml` has top-level `permissions: contents: read`. `release.yml` grants only
       `contents: write`, `issues: write` and `pull-requests: write`, at job level.
 - [ ] A PR to `main` runs `lint`, `test`, `build` and `pr-title` as parallel jobs (no `needs`).
@@ -335,7 +339,10 @@ The app test suite and `vite.config.ts` stay as they are. CI does not run covera
 - No deploy in this phase. Production will deploy only on release creation.
 - CI jobs `lint`, `test`, `build` run in parallel, each with its own install.
 - CI runs unit tests only, without coverage.
-- No Dependabot or Renovate in this phase. SHA pins are updated by hand.
+- No Dependabot or Renovate in this phase. SHA pins of third-party actions are updated by
+  hand.
+- Pinning: major tag for GitHub-owned `actions/*`, full commit SHA for third-party actions
+  (changed after T7, 2026-10-01, at the user's request).
 - Local commit messages are not checked (no commitlint). Only the PR title reaches `main`.
 
 ## Next phases (out of scope here)
@@ -346,7 +353,7 @@ deploys only when release-please creates a release. With GitHub Pages, this is a
 With Vercel or Netlify, their Git integration needs "deploy on tag" or a deploy hook called from
 `release.yml`. That spec also decides PR preview deploys.
 
-**Dependency updates.** Dependabot (or Renovate) for `github-actions`, to keep SHA pins current,
+**Dependency updates.** Dependabot (or Renovate) for `github-actions`, to keep third-party SHA pins current,
 and maybe for `npm`. Not in this phase.
 
 **Token upgrade.** If close/reopen becomes annoying, a GitHub App token lets CI run on the

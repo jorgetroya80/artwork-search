@@ -165,6 +165,8 @@ Can run in parallel: T2/T3 with T4.
       the user's OK).
 - [x] `grep -nE 'uses: [^@]+@[0-9a-f]{40} # v' .github/workflows/*.yml` matches every `uses:`
       line.
+      Changed after T7: `actions/checkout` and `actions/setup-node` now use major tags (`@v7`),
+      so this grep matches every third-party `uses:` line only. See "Pinning change" below.
 - [x] `pnpm lint`, `pnpm test` and `pnpm build` pass (unchanged app).
 - [x] Review with the user, then push `ci-release-workflows` and open the PR titled
       `ci: add CI and release workflows`.
@@ -239,6 +241,13 @@ Can run in parallel: T2/T3 with T4.
 - [ ] All spec success criteria are checked.
 - [ ] Tag `v0.1.0` and its GitHub Release exist.
 
+## Pinning change (after T7)
+
+The user replaced the SHAs in `ci.yml` with version tags. Every tag resolved to the same commit as
+the old SHA. Agreed rule, recorded in the spec: GitHub-owned `actions/*` use a major tag (`@v7`)
+with no comment; third-party actions (`pnpm/action-setup`, `amannn/action-semantic-pull-request`,
+`googleapis/release-please-action`) keep a full SHA with a version comment. `actionlint` passes.
+
 ## Risks and mitigations
 
 | Risk                                                                        | Impact                              | Mitigation                                                                                                                                |
@@ -249,4 +258,4 @@ Can run in parallel: T2/T3 with T4.
 | Release PR checks stay pending (`GITHUB_TOKEN` starts no workflows)         | Low: merge blocked                  | Close and reopen before merge (spec, README)                                                                                              |
 | `pnpm/action-setup` cannot read `packageManager` (`pnpm@12.8.1`)            | Medium: every CI job fails at setup | Checked in T1. Fallback: set `version: 12.8.1` in the action input                                                                        |
 | `edited` events re-run `lint`, `test`, `build` on every title or body edit  | Low: extra runner minutes           | Accepted in the spec. `cancel-in-progress` stops the older run                                                                            |
-| Pinned SHAs get old (no Dependabot)                                         | Low                                 | Accepted in the spec. Update by hand with the T1 commands                                                                                 |
+| Third-party SHA pins get old (no Dependabot)                                | Low                                 | Accepted in the spec. Update by hand with the T1 commands                                                                                 |
