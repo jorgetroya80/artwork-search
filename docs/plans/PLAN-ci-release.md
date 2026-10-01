@@ -1,7 +1,7 @@
 # Plan: CI and release automation
 
 - Created: 2026-10-01
-- Status: **not started**
+- Status: **in progress**
 - Spec: [SPEC-ci-release.md](../specs/SPEC-ci-release.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -69,7 +69,7 @@ Can run in parallel: T2/T3 with T4.
 
 ### Phase 1: Files (local)
 
-- [ ] **T1: Resolve action versions and SHAs**
+- [x] **T1: Resolve action versions and SHAs**
   - Use the two `gh` calls from "Architecture decisions" for `actions/checkout`,
     `pnpm/action-setup`, `actions/setup-node`, `amannn/action-semantic-pull-request` and
     `googleapis/release-please-action`.
@@ -81,6 +81,21 @@ Can run in parallel: T2/T3 with T4.
   - Verify: each SHA is 40 hex characters and `gh api repos/<repo>/commits/<sha>` returns it.
   - Files: none (this plan only).
   - Size: XS.
+  - Done: SHAs resolved on 2026-10-01 and confirmed by `gh api repos/<repo>/commits/<sha>`:
+    - `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1`
+    - `pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0`
+    - `actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0`
+    - `amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1`
+    - `googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0`
+
+    Findings: `pnpm/action-setup` v6 reads `packageManager` when `version` is not set and
+    supports pnpm v12. Its README also mentions `pnpm/setup`, which can replace
+    `actions/setup-node`, but the spec keeps `pnpm/action-setup` + `actions/setup-node`.
+    `actions/setup-node` v7 caches pnpm only with `cache: pnpm`, and pnpm must be installed
+    first. `amannn/action-semantic-pull-request` documents `pull-requests: read` at job level.
+    release-please-action v5 keeps `config-file`, `manifest-file` and the root outputs
+    `release_created`, `tag_name`, `version`. Its README grants `issues: write` as well as
+    `contents: write` and `pull-requests: write`; the spec grants only the last two (see T4).
 
 - [ ] **T2: `ci.yml` with `lint`, `test`, `build`**
   - Triggers, concurrency and `permissions: contents: read` as in the spec.
