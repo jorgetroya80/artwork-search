@@ -3,6 +3,7 @@ import {
   ENTITY_URL_PREFIX,
   SEARCH_URL,
 } from '../../api/rijksmuseum/constants';
+import nightWatch from '../fixtures/object-200107928.json';
 
 const FIRST_GENERATED_OBJECT_ID = 900_000_000;
 
@@ -33,5 +34,17 @@ export function makeSearchPage({ total, pageIndex }: SearchPageOptions) {
     partOf: { type: 'OrderedCollection', totalItems: total },
     orderedItems: indexes.map(makeObjectRef),
     ...(end < total && { next: makeNextLink(pageIndex + 1) }),
+  };
+}
+
+/** The Night Watch without artist `notation`, so the artist must be fetched. */
+export function nightWatchWithoutNotation() {
+  const [artist] = nightWatch.produced_by.part[0].carried_out_by;
+  return {
+    ...structuredClone(nightWatch),
+    produced_by: {
+      ...nightWatch.produced_by,
+      part: [{ carried_out_by: [{ id: artist.id, type: artist.type }] }],
+    },
   };
 }

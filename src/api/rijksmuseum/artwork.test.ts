@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import nightWatch from '../../test/fixtures/object-200107928.json';
+import { nightWatchWithoutNotation } from '../../test/msw/factories';
 import { server } from '../../test/msw/server';
 import { fetchArtwork } from './artwork';
 import { RijksApiError } from './errors';
@@ -14,15 +15,6 @@ const DIGITAL_OBJECT_ID = 'https://id.rijksmuseum.nl/500711199912110510799100';
 const requestedUrls: string[] = [];
 const recordRequest = ({ request }: { request: Request }) => {
   requestedUrls.push(request.url);
-};
-
-const nightWatchWithoutNotation = () => {
-  const object = structuredClone(nightWatch) as Record<string, unknown>;
-  object.produced_by = {
-    ...nightWatch.produced_by,
-    part: [{ carried_out_by: [{ id: REMBRANDT_ID, type: 'Person' }] }],
-  };
-  return object;
 };
 
 const serveEntity = (url: string, response: () => Response) =>

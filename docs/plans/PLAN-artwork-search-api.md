@@ -240,7 +240,7 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     page is missing (100 of 110), `needsNextApiPage` is false once page 2 is loaded, and false
     before the first page arrives (`[]`).
 
-- [ ] **T9: `QueryClient`, query keys, `useArtwork`**
+- [x] **T9: `QueryClient`, query keys, `useArtwork`**
   - `queryClient.ts`: `createQueryClient()` with the retry policy (`error.retryable && count < 2`)
     and default stale times.
   - `queries.ts`: query key factory, entity fetcher on `fetchQuery`, `useArtwork`.
@@ -252,6 +252,16 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     errors.
   - Files: `queryClient.ts`, `queries.ts`, `queries.test.tsx`, `src/test/render.tsx`, `src/main.tsx`.
   - Size: M.
+  - Done: `Register.defaultError` is set to `RijksApiError`, so hook errors are typed. The retry
+    function also checks `instanceof RijksApiError`: any other error (for example a cancellation)
+    is never retried. Default `staleTime` is 5 min (search). Artworks and entities use
+    `Infinity`. Entity requests run through `queryClient.fetchQuery` with their own signal, not
+    the artwork signal, because an entity can be shared: one artwork cancelling must not cancel
+    a request another artwork waits for. `nightWatchWithoutNotation()` moved to
+    `src/test/msw/factories.ts`, because `artwork.test.ts` and `queries.test.tsx` both use it.
+    `pnpm start` check: the dev server serves `index.html`, `main.tsx` and `queryClient.ts` with
+    `200` and logs no errors. The browser console was not checked, because no browser is
+    available in this session.
 
 - [ ] **T10: `useArtworkSearch`, first batch**
   - Idle state for `null` input. `useInfiniteQuery` for the search. `useQueries` for the visible
