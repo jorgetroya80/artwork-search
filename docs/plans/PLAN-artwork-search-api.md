@@ -217,9 +217,13 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
 
 ### Checkpoint 2: Fetchers
 
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass.
-- [ ] Manual check: call `searchCollection` and `fetchArtwork` against the real API once (dev
+- [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
+- [x] Manual check: call `searchCollection` and `fetchArtwork` against the real API once (dev
       console or a temporary script, not committed) and compare with the fixtures.
+      Done 2026-10-01 with a temporary Vitest file outside the repo. Night Watch matches the
+      fixture result. `creator=Vermeer`: 12 results, no next token. The Milkmaid, Woman Reading a
+      Letter and Landscape with a Farm resolve with English titles, artists from `notation` and
+      IIIF URLs. The 400 px thumbnail URL returns `200 image/jpeg`.
 - [ ] Review with the user.
 
 ### Phase 3: Hooks
