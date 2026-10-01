@@ -97,7 +97,7 @@ Can run in parallel: T2/T3 with T4.
     `release_created`, `tag_name`, `version`. Its README grants `issues: write` as well as
     `contents: write` and `pull-requests: write`; the spec grants only the last two (see T4).
 
-- [ ] **T2: `ci.yml` with `lint`, `test`, `build`**
+- [x] **T2: `ci.yml` with `lint`, `test`, `build`**
   - Triggers, concurrency and `permissions: contents: read` as in the spec.
   - Three jobs without `needs`, each with checkout → `pnpm/action-setup` → `actions/setup-node`
     (`node-version-file: .nvmrc`, `cache: pnpm`) → `pnpm install --frozen-lockfile` → its
@@ -108,6 +108,10 @@ Can run in parallel: T2/T3 with T4.
     `pnpm exec prettier --check .github/workflows/ci.yml`.
   - Files: `.github/workflows/ci.yml`.
   - Size: S.
+  - Done: each job also has `timeout-minutes: 10` (not in the spec; stops a stuck run early).
+    `actionlint` not run yet (not installed). Checked instead with a YAML structure script in the
+    session scratchpad (job ids, no `needs`, SHA pins, setup order, commands, no coverage) and
+    Prettier.
 
 - [ ] **T3: `pr-title` job**
   - Add job `pr-title` to `ci.yml`, with `if: github.event_name == 'pull_request'`.
