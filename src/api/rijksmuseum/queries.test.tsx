@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { delay, http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -24,6 +24,13 @@ const recordRequest = ({ request }: { request: Request }) => {
 };
 const countRequests = (url: string) =>
   requestedUrls.filter((requested) => requested === url).length;
+
+const isSearchRequest = (url: string) => url.startsWith(SEARCH_URL);
+const searchRequestCount = () => requestedUrls.filter(isSearchRequest).length;
+const countByStatus = (
+  search: ReturnType<typeof useArtworkSearch>,
+  status: ArtworkResult['status']
+) => search.artworks.filter((item) => item.status === status).length;
 
 beforeEach(() => {
   requestedUrls.length = 0;
@@ -95,13 +102,6 @@ describe('useArtwork', () => {
 });
 
 describe('useArtworkSearch, first batch', () => {
-  const isSearchRequest = (url: string) => url.startsWith(SEARCH_URL);
-  const searchRequestCount = () => requestedUrls.filter(isSearchRequest).length;
-  const countByStatus = (
-    search: ReturnType<typeof useArtworkSearch>,
-    status: ArtworkResult['status']
-  ) => search.artworks.filter((item) => item.status === status).length;
-
   it('stays idle and sends nothing for a blank input', async () => {
     const { result } = renderHookWithClient(() =>
       useArtworkSearch({ creator: '  ', title: null })
@@ -230,5 +230,150 @@ describe('useArtworkSearch, first batch', () => {
 
     await waitFor(() => expect(result.current.isEmpty).toBe(true));
     expect(abortedSearches).toEqual(['slow']);
+  });
+});
+
+describe('useArtworkSearch, load more', () => {
+  type SearchHook = { current: ReturnType<typeof useArtworkSearch> };
+
+  const renderSearch = async (total: number) => {
+    server.use(...generatedSearchHandlers(total));
+    const rendered = renderHookWithClient(
+      ({ input }: { input: SearchInput }) => useArtworkSearch(input),
+      { initialProps: { input: { creator: 'Rembrandt' } } }
+    );
+    await waitFor(() => expect(rendered.result.current.total).toBe(total));
+    return rendered;
+  };
+
+  const loadMore = async (result: SearchHook, times = 1) => {
+    for (let call = 0; call < times; call++) {
+      const expected = Math.min(
+        result.current.artworks.length + 10,
+        result.current.total ?? 0
+      );
+      act(() => result.current.loadMore());
+      await waitFor(() =>
+        expect(result.current.artworks).toHaveLength(expected)
+      );
+    }
+  };
+
+  it('fetches the next API page only on the 10th call', async () => {
+    const { result } = await renderSearch(1423);
+
+    await loadMore(result, 9);
+    expect(result.current.artworks).toHaveLength(100);
+    expect(searchRequestCount()).toBe(1);
+
+    await loadMore(result);
+    expect(result.current.artworks).toHaveLength(110);
+    expect(searchRequestCount()).toBe(2);
+  });
+
+  it('keeps the artworks already loaded', async () => {
+    const { result } = await renderSearch(1423);
+    await waitFor(() =>
+      expect(countByStatus(result.current, 'success')).toBe(10)
+    );
+
+    await loadMore(result);
+
+    expect(
+      result.current.artworks.slice(0, 10).map((item) => item.status)
+    ).toEqual(Array(10).fill('success'));
+    expect(result.current.artworks[10].id).toBe(generatedObjectId(10));
+  });
+
+  it('adds one batch for a double call during a page fetch', async () => {
+    const { result } = await renderSearch(1423);
+    await loadMore(result, 9);
+
+    act(() => {
+      result.current.loadMore();
+      result.current.loadMore();
+    });
+
+    await waitFor(() => expect(result.current.artworks).toHaveLength(110));
+    await delay(50);
+    expect(result.current.artworks).toHaveLength(110);
+    expect(searchRequestCount()).toBe(2);
+  });
+
+  it('reaches the end of 1423 results with a last batch of 3', async () => {
+    const { result } = await renderSearch(1423);
+
+    await loadMore(result, 142);
+
+    expect(result.current.artworks).toHaveLength(1423);
+    expect(result.current.artworks.at(-1)?.id).toBe(generatedObjectId(1422));
+    expect(result.current.hasMore).toBe(false);
+    expect(searchRequestCount()).toBe(15);
+
+    act(() => result.current.loadMore());
+    await delay(20);
+    expect(result.current.artworks).toHaveLength(1423);
+  }, 30_000);
+
+  it('keeps the list on a failed next page and retries on the next call', async () => {
+    const { result } = await renderSearch(1423);
+    await loadMore(result, 9);
+    server.use(
+      http.get(SEARCH_URL, () => new HttpResponse(null, { status: 503 }))
+    );
+
+    act(() => result.current.loadMore());
+
+    await waitFor(() =>
+      expect(result.current.loadMoreError).toMatchObject({ status: 503 })
+    );
+    expect(result.current).toMatchObject({
+      status: 'success',
+      error: null,
+      hasMore: true,
+      isLoadingMore: false,
+    });
+    expect(result.current.artworks).toHaveLength(100);
+
+    server.use(...generatedSearchHandlers(1423));
+    await loadMore(result);
+    expect(result.current.loadMoreError).toBeNull();
+  });
+
+  it('reports isLoadingMore while the next page loads', async () => {
+    const { result } = await renderSearch(1423);
+    await loadMore(result, 9);
+    server.use(
+      http.get(SEARCH_URL, async () => {
+        await delay(50);
+        return undefined;
+      })
+    );
+
+    act(() => result.current.loadMore());
+
+    await waitFor(() => expect(result.current.isLoadingMore).toBe(true));
+    await waitFor(() => expect(result.current.isLoadingMore).toBe(false));
+    expect(result.current.artworks).toHaveLength(110);
+  });
+
+  it('starts again from 10 when the input changes', async () => {
+    const { result, rerender } = await renderSearch(1423);
+    await loadMore(result, 2);
+
+    rerender({ input: { creator: 'Vermeer' } });
+
+    await waitFor(() => expect(result.current.artworks).toHaveLength(10));
+  });
+
+  it('has nothing more for idle and empty searches', async () => {
+    const idle = renderHookWithClient(() => useArtworkSearch({}));
+    const empty = renderHookWithClient(() =>
+      useArtworkSearch({ title: 'zzqqxx' })
+    );
+
+    await waitFor(() => expect(empty.result.current.isEmpty).toBe(true));
+    expect(idle.result.current.hasMore).toBe(false);
+    expect(empty.result.current.hasMore).toBe(false);
   });
 });

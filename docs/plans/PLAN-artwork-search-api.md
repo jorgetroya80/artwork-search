@@ -282,7 +282,7 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     Lesson learned: `server.resetHandlers(...handlers)` replaces the initial handlers for the
     rest of the file. Tests must use `server.use` instead.
 
-- [ ] **T11: `loadMore`**
+- [x] **T11: `loadMore`**
   - `{ key, count }` state, `loadMore`, `hasMore`, `isLoadingMore`, `loadMoreError`.
   - Acceptance: `loadMore` 1–9 times sends no new search request. The 10th sends exactly one. Loaded
     artworks stay in the list. A double `loadMore` during a fetch adds one batch. With 1423 results,
@@ -292,6 +292,14 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
   - Verify: `pnpm test queries`, `pnpm build`.
   - Files: `queries.ts`, `queries.test.tsx`.
   - Size: S.
+  - Done: state is `{ searchKey, count }`, where `searchKey` is the serialized normalized input.
+    It resets during render when the key changes, with no effect. `loadMore` grows the count only
+    after a needed next page succeeds, so a failure keeps the list and the count. It calls
+    `fetchNextPage({ cancelRefetch: false })`, so a second call during a fetch does not start a
+    new request. Both calls set the same count, so a double click adds one batch. TanStack v5
+    marks a failed next page as `status: 'error'` and `isFetchNextPageError`. The hook maps that
+    to `status: 'success'` plus `loadMoreError`, as the spec says. 8 tests. The 1423-result
+    test walks all 142 calls (15 search requests). The whole suite runs in about 4 s.
 
 - [ ] **T12: Public index and coverage gate**
   - `index.ts` exports only the spec interface. Nothing else imports internal files from outside

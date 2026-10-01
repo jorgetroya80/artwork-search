@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   infiniteQueryOptions,
   queryOptions,
@@ -13,7 +14,7 @@ import {
 import { fetchArtwork, fetchLinkedArt, type FetchEntity } from './artwork';
 import { PAGE_SIZE } from './constants';
 import { normalizeSearchInput } from './normalize';
-import { getVisibleIds } from './pagination';
+import { getVisibleIds, needsNextApiPage } from './pagination';
 import { searchCollection } from './search';
 import type {
   Artwork,
@@ -87,17 +88,43 @@ function toArtworkResult(
   return { id, status: 'pending' };
 }
 
+// The batch belongs to one search. A new search starts from the first batch again.
+type VisibleBatch = { searchKey: string; count: number };
+
 export function useArtworkSearch(input: SearchInput) {
   const params = normalizeSearchInput(input);
+  const searchKey = JSON.stringify(params);
   const queryClient = useQueryClient();
   const search = useInfiniteQuery(searchQueryOptions(params));
+  const [batch, setBatch] = useState<VisibleBatch>({
+    searchKey,
+    count: PAGE_SIZE,
+  });
+
+  const visibleCount = batch.searchKey === searchKey ? batch.count : PAGE_SIZE;
   const pages = search.data?.pages ?? [];
-  const visibleIds = getVisibleIds(pages, PAGE_SIZE);
+  const visibleIds = getVisibleIds(pages, visibleCount);
   const artworkQueries = useQueries({
     queries: visibleIds.map((id) => artworkQueryOptions(queryClient, id)),
   });
   const total = pages[0]?.total ?? null;
-  const status: SearchStatus = params ? search.status : 'idle';
+  const hasMore = total !== null && visibleCount < total;
+  const isLoadMoreFailure = search.isFetchNextPageError;
+  const status: SearchStatus = !params
+    ? 'idle'
+    : isLoadMoreFailure
+      ? 'success'
+      : search.status;
+
+  async function loadMore() {
+    if (!hasMore || search.isFetching) return;
+    const nextCount = visibleCount + PAGE_SIZE;
+    if (needsNextApiPage(pages, nextCount)) {
+      const result = await search.fetchNextPage({ cancelRefetch: false });
+      if (result.isError) return;
+    }
+    setBatch({ searchKey, count: nextCount });
+  }
 
   return {
     status,
@@ -108,5 +135,9 @@ export function useArtworkSearch(input: SearchInput) {
     isEmpty: status === 'success' && total === 0,
     error: status === 'error' ? search.error : null,
     retry: () => void search.refetch(),
+    hasMore,
+    loadMore: () => void loadMore(),
+    isLoadingMore: search.isFetchingNextPage,
+    loadMoreError: isLoadMoreFailure ? search.error : null,
   };
 }
