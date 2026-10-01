@@ -204,11 +204,17 @@ describe('SearchPage results grid', () => {
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(9)
     );
 
+    const failedItem = screen
+      .getByText('This artwork could not be loaded.')
+      .closest('li');
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
 
+    // The Retry button leaves the card during the retry, so focus stays on the card's item.
+    expect(document.activeElement).toBe(failedItem);
     await waitFor(() =>
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(10)
     );
+    expect(document.activeElement).toBe(failedItem);
     expect(screen.queryByText('This artwork could not be loaded.')).toBeNull();
   });
 });
@@ -243,6 +249,10 @@ describe('SearchPage empty and error states', () => {
       server.resetHandlers(...generatedSearchHandlers(23));
       fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
 
+      // The button leaves the page during the retry, so focus moves to a stable region.
+      expect(document.activeElement).toBe(
+        screen.getByRole('region', { name: 'Search results' })
+      );
       expect(await screen.findByText('Showing 10 of 23 results')).toBeDefined();
       expect(screen.queryByRole('alert')).toBeNull();
     }

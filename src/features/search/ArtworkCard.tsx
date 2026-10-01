@@ -8,14 +8,23 @@ const CARD_CLASSES =
 
 type ArtworkCardProps = {
   result: ArtworkResult;
+  /** Runs after Retry starts the item retry, while the Retry button leaves the page. */
+  onRetryStart?: () => void;
 };
 
-export function ArtworkCard({ result }: ArtworkCardProps) {
+export function ArtworkCard({ result, onRetryStart }: ArtworkCardProps) {
   switch (result.status) {
     case 'pending':
       return <ArtworkCardSkeleton />;
     case 'error':
-      return <ArtworkCardError onRetry={result.retry} />;
+      return (
+        <ArtworkCardError
+          onRetry={() => {
+            result.retry();
+            onRetryStart?.();
+          }}
+        />
+      );
     case 'success':
       return <ArtworkCardContent artwork={result.artwork} />;
   }

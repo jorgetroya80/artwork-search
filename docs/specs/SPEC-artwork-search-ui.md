@@ -281,6 +281,10 @@ so the grid does not jump.
 - Text contrast WCAG AA (4.5:1). `fg` and `fg-muted` on `bg` pass with the default token values;
   any later token change must keep this.
 - Focus stays on the Search button / input after submit. It is not moved to the results.
+- A retry button leaves the page while it retries, so focus moves to an element that stays (WCAG
+  2.4.3): "Try again" focuses the results region (`<section aria-label="Search results"
+tabIndex={-1}>`), and a card's "Retry" focuses that card's `<li tabIndex={-1}>`. Both show the
+  `accent` focus outline.
 
 ## Interface (new code)
 

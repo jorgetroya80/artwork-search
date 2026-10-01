@@ -1,4 +1,10 @@
-import { PAGE_SIZE, type ArtworkSearch } from '../../api/rijksmuseum';
+import { useRef } from 'react';
+
+import {
+  PAGE_SIZE,
+  type ArtworkResult,
+  type ArtworkSearch,
+} from '../../api/rijksmuseum';
 import { Button } from '../../components/ui';
 import { ArtworkCard, ArtworkCardSkeleton } from './ArtworkCard';
 import { ErrorMessage } from './ErrorMessage';
@@ -10,6 +16,10 @@ type SearchResultsProps = {
 
 const GRID_CLASSES =
   'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+
+// Retry buttons leave the page while they retry, so focus moves to an element that stays.
+const FOCUS_TARGET_CLASSES =
+  'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent';
 
 const SKELETON_KEYS = Array.from(
   { length: PAGE_SIZE },
@@ -39,13 +49,24 @@ function SkeletonGrid() {
   );
 }
 
+function ResultItem({ result }: { result: ArtworkResult }) {
+  const itemRef = useRef<HTMLLIElement>(null);
+
+  return (
+    <li ref={itemRef} tabIndex={-1} className={FOCUS_TARGET_CLASSES}>
+      <ArtworkCard
+        result={result}
+        onRetryStart={() => itemRef.current?.focus()}
+      />
+    </li>
+  );
+}
+
 function ResultGrid({ artworks }: Pick<ArtworkSearch, 'artworks'>) {
   return (
     <ul className={GRID_CLASSES}>
       {artworks.map((result) => (
-        <li key={result.id}>
-          <ArtworkCard result={result} />
-        </li>
+        <ResultItem key={result.id} result={result} />
       ))}
     </ul>
   );
@@ -71,14 +92,26 @@ function LoadMore({
 }
 
 export function SearchResults({ search }: SearchResultsProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  function retrySearch() {
+    search.retry();
+    sectionRef.current?.focus();
+  }
+
   return (
-    <section className="flex flex-col gap-4">
+    <section
+      ref={sectionRef}
+      aria-label="Search results"
+      tabIndex={-1}
+      className={`flex flex-col gap-4 ${FOCUS_TARGET_CLASSES}`}
+    >
       <p role="status" className="text-sm text-fg-muted">
         {getStatusText(search)}
       </p>
       {search.status === 'pending' && <SkeletonGrid />}
       {search.error && (
-        <ErrorMessage error={search.error} onRetry={search.retry} />
+        <ErrorMessage error={search.error} onRetry={retrySearch} />
       )}
       {search.status === 'success' && !search.isEmpty && (
         <ResultGrid artworks={search.artworks} />
