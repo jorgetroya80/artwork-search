@@ -12,7 +12,8 @@ export default {
   singleQuote: true,
   trailingComma: 'es5',
 
-  // tailwind classname sorting
+  // tailwind classname sorting; the stylesheet makes the theme tokens known classes
+  tailwindStylesheet: './src/index.css',
   tailwindFunctions: ['classNames', 'cn'],
 
   // import sorting options

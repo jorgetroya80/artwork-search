@@ -103,7 +103,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Size: S.
   - Done: `pending` maps to Base UI `disabled` + `focusableWhenDisabled`: the button keeps focus, has `aria-disabled="true"`, and blocks both `onClick` and form submit. `src/test/setup.ts` now calls Testing Library `cleanup()` after each test, because Vitest globals are off and the first `render` tests left DOM behind. jsdom lets `.focus()` reach a natively disabled button, so the disabled test checks the `disabled` property instead.
 
-- [ ] **T3: `TextField` wrapper**
+- [x] **T3: `TextField` wrapper**
   - `src/components/ui/TextField.tsx`: app-owned `TextFieldProps` from the spec. Wraps
     `Field.Root`, `Field.Label`, `Field.Description` and `Input`. Token classes, focus outline.
   - Add `TextField` and `TextFieldProps` to the barrel.
@@ -114,6 +114,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Files: `src/components/ui/TextField.tsx`, `src/components/ui/TextField.test.tsx`,
     `src/components/ui/index.ts`.
   - Size: S.
+  - Done: Base UI `Field` links label and description in jsdom, no `useId` fallback needed. `prettier.config.js` now sets `tailwindStylesheet: ./src/index.css`: without it the Prettier Tailwind plugin did not know the token classes and sorted them before the built-in ones. (Outside the spec file list, but tooling only.)
 
 - [ ] **T4: Pure helpers**
   - `getErrorMessage(error)`: `429` text, generic text for everything else.
