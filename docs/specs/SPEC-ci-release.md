@@ -1,7 +1,7 @@
 # Spec: CI and release automation
 
 - Created: 2026-10-01
-- Status: **approved** (2026-10-01)
+- Status: **implemented** (2026-10-01), PR #4, release v0.1.0
 - Plan: [PLAN-ci-release.md](../plans/PLAN-ci-release.md)
 
 ## Objective
@@ -309,22 +309,25 @@ The app test suite and `vite.config.ts` stay as they are. CI does not run covera
 
 ## Success Criteria
 
-- [ ] `.github/workflows/ci.yml` and `.github/workflows/release.yml` exist and pass `actionlint`.
-- [ ] Every third-party `uses:` is pinned to a 40-character SHA with a version comment. Every
+- [x] `.github/workflows/ci.yml` and `.github/workflows/release.yml` exist and pass `actionlint`.
+- [x] Every third-party `uses:` is pinned to a 40-character SHA with a version comment. Every
       `actions/*` `uses:` uses a major tag (`@vN`).
-- [ ] `ci.yml` has top-level `permissions: contents: read`. `release.yml` grants only
+- [x] `ci.yml` has top-level `permissions: contents: read`. `release.yml` grants only
       `contents: write`, `issues: write` and `pull-requests: write`, at job level.
-- [ ] A PR to `main` runs `lint`, `test`, `build` and `pr-title` as parallel jobs (no `needs`).
-- [ ] `test` runs `pnpm test` without coverage.
-- [ ] A lint error fails `lint`. A failing test fails `test`. A type error fails `build`. An
+- [x] A PR to `main` runs `lint`, `test`, `build` and `pr-title` as parallel jobs (no `needs`).
+- [x] `test` runs `pnpm test` without coverage.
+- [x] A lint error fails `lint`. A failing test fails `test`. A type error fails `build`. An
       outdated lockfile fails all three at install.
-- [ ] A PR title that is not a Conventional Commit makes `pr-title` fail.
-- [ ] Repository settings 1–3 are applied. A PR with a failing required check cannot be merged.
-- [ ] After merging the workflows PR, a release PR for `0.1.0` opens with a `CHANGELOG.md` that
-      lists features and fixes only.
-- [ ] Merging the release PR creates tag `v0.1.0` and a GitHub Release with the same notes.
-- [ ] A `docs:`-only merge creates no release.
-- [ ] README has a "Contributing and releases" section: PR title format, squash merge, how the
+- [x] A PR title that is not a Conventional Commit makes `pr-title` fail.
+- [x] Repository settings 1–3 are applied. A PR with a failing required check cannot be merged.
+- [x] After merging the workflows PR, a release PR for `0.1.0` opens with a `CHANGELOG.md` that
+      lists features and fixes only. (Old history had
+      mistyped `feat` commits and merge-commit bodies; their 5 entries were removed by hand once,
+      at the user's request. See the plan, T8.)
+- [x] Merging the release PR creates tag `v0.1.0` and a GitHub Release with the same notes. (The
+      release dropped the last changelog entry; the notes were fixed with `gh release edit`.)
+- [x] A `docs:`-only merge creates no release.
+- [x] README has a "Contributing and releases" section: PR title format, squash merge, how the
       release PR works, the close/reopen step.
 
 ## Decisions
