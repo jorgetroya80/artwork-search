@@ -161,12 +161,12 @@ Can run in parallel: T2/T3 with T4.
 
 ### Checkpoint 1: Local checks pass, open PR
 
-- [ ] `actionlint` passes on both workflows. `actionlint` is not installed now:
-      `brew install actionlint` needs the user's OK first.
-- [ ] `grep -nE 'uses: [^@]+@[0-9a-f]{40} # v' .github/workflows/*.yml` matches every `uses:`
+- [x] `actionlint` passes on both workflows (actionlint 1.7.12, installed with Homebrew after
+      the user's OK).
+- [x] `grep -nE 'uses: [^@]+@[0-9a-f]{40} # v' .github/workflows/*.yml` matches every `uses:`
       line.
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass (unchanged app).
-- [ ] Review with the user, then push `ci-release-workflows` and open the PR titled
+- [x] `pnpm lint`, `pnpm test` and `pnpm build` pass (unchanged app).
+- [x] Review with the user, then push `ci-release-workflows` and open the PR titled
       `ci: add CI and release workflows`.
 
 ### Phase 2: Verify on GitHub
