@@ -11,5 +11,5 @@ export const AAT = {
     en: 'http://vocab.getty.edu/aat/300388277',
     nl: 'http://vocab.getty.edu/aat/300388256',
   },
-  shortTitle: 'http://vocab.getty.edu/aat/300404670',
+  preferredTerm: 'http://vocab.getty.edu/aat/300404670',
 } as const;

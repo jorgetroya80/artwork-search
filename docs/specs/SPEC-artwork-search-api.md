@@ -51,16 +51,16 @@ GET https://data.rijksmuseum.nl/search/collection?creator=<name>&title=<title>&i
 Resolving one result costs several more requests to `https://id.rijksmuseum.nl/{id}` (JSON-LD,
 ~100 KB, ~250 ms each). An unknown ID returns `400`.
 
-| Data                  | Path in object JSON-LD                                                                                   |
-| --------------------- | -------------------------------------------------------------------------------------------------------- |
-| Object number         | `identified_by[]` where `type == "Identifier"`, `.content` (e.g. `SK-C-5`)                               |
-| Titles                | `identified_by[]` where `type == "Name"`, `.content`                                                     |
-| Title language        | `language[].id`: AAT `300388256` = Dutch, AAT `300388277` = English                                      |
-| Short / display title | Name whose `classified_as[].id` includes AAT `300404670` (e.g. "De Nachtwacht")                          |
-| Date                  | `produced_by.timespan.begin_of_the_begin` / `end_of_the_end` (ISO strings)                               |
-| Artist IDs            | `produced_by.part[].carried_out_by[].id` (may also sit at `produced_by.carried_out_by[]`)                |
-| Artist name           | fetch artist ID, `identified_by[]` `type == "Name"`; prefer the "First Last" form ("Rembrandt van Rijn") |
-| Image                 | `shows[].id` → VisualItem `digitally_shown_by[].id` → DigitalObject `access_point[].id` = IIIF URL       |
+| Data            | Path in object JSON-LD                                                                               |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Object number   | `identified_by[]` where `type == "Identifier"`, `.content` (e.g. `SK-C-5`)                           |
+| Titles          | `identified_by[]` where `type == "Name"`, `.content`                                                 |
+| Title language  | `language[].id`: AAT `300388256` = Dutch, AAT `300388277` = English                                  |
+| Preferred title | Name whose `classified_as[].id` includes AAT `300404670` (preferred term, e.g. "De Nachtwacht")      |
+| Date            | `produced_by.timespan.begin_of_the_begin` / `end_of_the_end` (ISO strings)                           |
+| Artist IDs      | `produced_by.part[].carried_out_by[].id` (may also sit at `produced_by.carried_out_by[]`)            |
+| Artist name     | fetch artist ID, `identified_by[]` `type == "Name"`; same preferred-term rule ("Rembrandt van Rijn") |
+| Image           | `shows[].id` → VisualItem `digitally_shown_by[].id` → DigitalObject `access_point[].id` = IIIF URL   |
 
 IIIF image URL example: `https://iiif.micr.io/PJEZO/full/max/0/default.jpg`. Replace `max` with
 `400,` to get a 400 px wide thumbnail.
@@ -296,10 +296,12 @@ Artist and image sub-requests use the same retry policy before they fall back to
   blindly.
 - Sends `Accept: application/ld+json`.
 - Language defaults to `en`.
-- Title: the short title (AAT `300404670`) in the requested language, then any title in that
-  language, then the short title in any language, then the first Name.
-- Artists: resolves every artist ID in parallel. Picks the first name that does not contain a comma
-  ("Rembrandt van Rijn" over "Rijn, Rembrandt van"), otherwise the first name. Removes duplicates.
+- Title and artist name use the same rule (`pickPreferredName`): the preferred term (AAT
+  `300404670`) in the requested language, then any name in that language, then the preferred term
+  in any language, then the first Name.
+- Artists: resolves every artist ID in parallel and removes duplicates. The rule above gives
+  "Rembrandt van Rijn". The person record also has inverted names ("Rijn, Rembrandt van", AAT
+  `300404672`) and alternative names ("Rembrandt Harmensz. van Rijn", AAT `300404671`).
 - **Partial failure does not fail the artwork.** If the image chain or an artist request fails, the
   matching field is `null` / skipped. Only a failed object request fails the artwork.
   `imageAvailable=true` makes a missing image rare, but the code still handles it. The UI shows its
@@ -396,7 +398,7 @@ import type { LinkedArtName, LinkedArtObject } from './types';
 const hasClass = (name: LinkedArtName, aat: string): boolean =>
   name.classified_as?.some((c) => c.id === aat) ?? false;
 
-export function pickTitle(
+export function pickPreferredName(
   object: LinkedArtObject,
   language: Language
 ): string | null {
@@ -406,9 +408,9 @@ export function pickTitle(
   );
 
   return (
-    inLanguage.find((n) => hasClass(n, AAT.shortTitle))?.content ??
+    inLanguage.find((n) => hasClass(n, AAT.preferredTerm))?.content ??
     inLanguage[0]?.content ??
-    names.find((n) => hasClass(n, AAT.shortTitle))?.content ??
+    names.find((n) => hasClass(n, AAT.preferredTerm))?.content ??
     names[0]?.content ??
     null
   );

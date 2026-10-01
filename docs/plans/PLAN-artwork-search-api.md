@@ -172,7 +172,7 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
     `Rembrandt%20van%20Rijn` both return 1423). The token is read with `URL.parse`, so a broken
     `next.id` gives `nextPageToken: null` instead of an exception.
 
-- [ ] **T6: JSON-LD parsing (pure)**
+- [x] **T6: JSON-LD parsing (pure)**
   - `parse.ts`: `pickTitle`, `pickObjectNumber`, `pickDateRange`, `pickArtistIds`,
     `pickArtistName`, `pickVisualItemIds`, `pickDigitalObjectIds`, `pickImageUrl`, `toThumbnailUrl`.
   - Acceptance: with the Night Watch fixture, the English short title, `SK-C-5`, 1642 dates, artist
@@ -181,6 +181,17 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
   - Verify: `pnpm test parse`, `pnpm build`.
   - Files: `parse.ts`, `parse.test.ts`.
   - Size: S.
+  - Done: the comma-free rule was wrong. The first comma-free name of Rembrandt is "Rembrandt
+    Harmensz. van Rijn", which breaks the spec criterion "Rembrandt van Rijn". AAT `300404670` is
+    the Getty "preferred term" (it was called "short title" before), and person names carry it
+    too. So `pickTitle` and `pickArtistName` became one function, `pickPreferredName`, used for
+    both. The spec is updated, and `AAT.shortTitle` is renamed to `AAT.preferredTerm`. The
+    functions take `unknown` and read every field with type guards, so a malformed field never
+    throws. The raw Linked Art types were not needed.
+  - Found: the object record already has the artist name in
+    `produced_by.part[].carried_out_by[].notation` (`[{ "@language": "en", "@value": "Rembrandt
+van Rijn" }]`). Using it could avoid one request per artist. Not used: the spec says to
+    fetch the artist. Decide with the user before T7.
 
 - [ ] **T7: `fetchArtwork`**
   - Fetches the object, then resolves artists and the image chain in parallel with
