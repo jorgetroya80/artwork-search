@@ -64,6 +64,9 @@ This spec covers **search and results only**. The artwork detail page is a later
 - Content max width `max-w-6xl`, centered, with side padding (`px-4`).
 - No horizontal scroll at 320 px width.
 - Touch targets at least 44 × 44 px.
+- The form is a grid: `grid-cols-1`, and `sm:grid-cols-[1fr_auto]` from `sm`. `TextField` lays out
+  label, input and description as a subgrid (`grid-rows-subgrid`), so the Search button sits in the
+  input row whatever the label height. No pixel offsets.
 
 ## Styling
 

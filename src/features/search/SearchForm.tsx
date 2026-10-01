@@ -8,6 +8,8 @@ type SearchFormProps = {
   value: string;
   onChange: (value: string) => void;
   onSubmit: () => void;
+  /** False while the value is blank, so Search stays disabled. */
+  canSubmit: boolean;
   isSearching: boolean;
 };
 
@@ -15,6 +17,7 @@ export function SearchForm({
   value,
   onChange,
   onSubmit,
+  canSubmit,
   isSearching,
 }: SearchFormProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -26,7 +29,7 @@ export function SearchForm({
     <form
       role="search"
       onSubmit={handleSubmit}
-      className="flex flex-col gap-3 sm:flex-row sm:items-start"
+      className="grid grid-cols-1 gap-x-3 gap-y-1 sm:grid-cols-[1fr_auto]"
     >
       <TextField
         label="Artist name"
@@ -37,12 +40,12 @@ export function SearchForm({
         value={value}
         onValueChange={onChange}
       />
-      {/* Offset by the label height so the button lines up with the input. */}
-      <div className="flex flex-col sm:mt-7">
+      {/* Row 2 is the TextField input row (subgrid), so the button lines up with the input. */}
+      <div className="mt-2 flex flex-col sm:col-start-2 sm:row-start-2 sm:mt-0">
         <Button
           type="submit"
           variant="primary"
-          disabled={!value.trim()}
+          disabled={!canSubmit}
           pending={isSearching}
         >
           {isSearching ? 'Searching…' : 'Search'}

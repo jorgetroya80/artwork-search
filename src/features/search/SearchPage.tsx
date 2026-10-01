@@ -9,9 +9,9 @@ export function SearchPage() {
   const [submittedTerm, setSubmittedTerm] = useState('');
   const search = useArtworkSearch({ creator: submittedTerm });
   const isSearching = search.status === 'pending';
+  const term = normalizeSearchInput({ creator: draft })?.creator;
 
   function handleSubmit() {
-    const term = normalizeSearchInput({ creator: draft })?.creator;
     if (!term || isSearching) return;
     // Same input means the hook does not change, so a failed search must be retried by hand.
     if (term === submittedTerm && search.status === 'error') {
@@ -28,6 +28,7 @@ export function SearchPage() {
         value={draft}
         onChange={setDraft}
         onSubmit={handleSubmit}
+        canSubmit={Boolean(term)}
         isSearching={isSearching}
       />
       <SearchResults search={search} />
