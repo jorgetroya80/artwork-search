@@ -128,7 +128,7 @@ export type SearchPage = {
 export type Artwork = {
   id: string; // full object URL
   objectNumber: string | null; // "SK-C-5"
-  title: string; // English preferred title, falls back to any language
+  title: string; // English preferred title, then any language, then 'Untitled'
   artists: string[]; // display names, [] when unknown
   date: { start: string | null; end: string | null }; // ISO dates
   imageUrl: string | null; // IIIF full size
@@ -303,7 +303,8 @@ Artist and image sub-requests use the same retry policy before they fall back to
   matching field is `null` / skipped. Only a failed object request fails the artwork.
   `imageAvailable=true` makes a missing image rare, but the code still handles it. The UI shows its
   "Image not available" placeholder for a `null` image.
-- Missing fields map to `null` / `[]`, never throw.
+- Missing fields map to `null` / `[]`, never throw. An object with no name at all gets the title
+  `'Untitled'`, because `title` is a `string`.
 
 ### Hook (`useArtworkSearch`)
 

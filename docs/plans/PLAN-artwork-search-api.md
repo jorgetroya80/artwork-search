@@ -196,7 +196,7 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     `pickArtistIds` became `pickArtists`, which returns `{ id, name }` with the English
     `notation` as `name`, or `null` when it is missing. The spec is updated.
 
-- [ ] **T7: `fetchArtwork`**
+- [x] **T7: `fetchArtwork`**
   - Fetches the object, then resolves the image chain and the artists without an English
     `notation` in parallel with `Promise.allSettled`. Takes the internal `fetchEntity` option.
   - Acceptance: the Night Watch result matches the spec success criterion with no artist request
@@ -207,6 +207,13 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
   - Verify: `pnpm test artwork`, `pnpm build`.
   - Files: `artwork.ts`, `artwork.test.ts`.
   - Size: S.
+  - Done: the Night Watch makes 3 requests (object, visual item, digital object) and no artist
+    request. The object itself is always loaded with `fetchLinkedArt`. Only linked entities go
+    through `fetchEntity`, so T9 can cache artists and image entities without caching the object
+    twice. Image chain errors give `null`. Artist errors leave the artist out. Both are swallowed,
+    so `signal.throwIfAborted()` runs after them: a cancellation is not turned into a partial
+    artwork. An object without names gets the title `'Untitled'` (spec updated). The
+    cross-artwork "shared artist fetched once" check moves to T9, where the cache lives.
 
 ### Checkpoint 2: Fetchers
 
