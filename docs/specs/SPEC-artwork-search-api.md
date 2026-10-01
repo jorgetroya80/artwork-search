@@ -215,8 +215,11 @@ image. The API layer does not check that an image loads. That check happens in t
 
 ### 1. One error type
 
-Every failure in the API layer becomes a `RijksApiError`. `http.ts` (`fetchJson`) is the only place
-that creates it. No raw `TypeError`, `SyntaxError` or `Response` reaches the hooks or the UI.
+Every failure in the API layer becomes a `RijksApiError`. `http.ts` (`fetchJson`) creates every
+transport error (`http`, `network`, `timeout`, invalid JSON, `invalid-id`). A fetcher creates a
+`parse` error only when valid JSON has the wrong shape, because only the fetcher knows the expected
+shape (e.g. `searchCollection`). No raw `TypeError`, `SyntaxError` or `Response` reaches the hooks
+or the UI.
 
 | `kind`       | When                                                                                                       | `status`    | `retryable`                     |
 | ------------ | ---------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------- |

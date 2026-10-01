@@ -151,11 +151,11 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
 - [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
 - [x] jsdom + `AbortSignal.any` + MSW work together (T1 smoke test). If not, decide the fallback
       before T5 (see Risks).
-- [ ] Review with the user.
+- [x] Review with the user.
 
 ### Phase 2: Fetchers
 
-- [ ] **T5: `searchCollection`**
+- [x] **T5: `searchCollection`**
   - Builds the URL with `URLSearchParams`, always adds `imageAvailable=true`, and adds `pageToken`
     when given. Maps the response to `SearchPage`. Reads `nextPageToken` from `next.id`. Checks the
     response shape (`parse` error).
@@ -166,6 +166,11 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
   - Verify: `pnpm test search`, `pnpm build`.
   - Files: `search.ts`, `search.test.ts`.
   - Size: S.
+  - Done: the shape check (`parse` error) lives in `search.ts`, because only the fetcher knows the
+    expected shape. The spec "Error handling" section now says so. Checked against the real API:
+    `URLSearchParams` encodes spaces as `+`, and the API accepts it (`Rembrandt+van+Rijn` and
+    `Rembrandt%20van%20Rijn` both return 1423). The token is read with `URL.parse`, so a broken
+    `next.id` gives `nextPageToken: null` instead of an exception.
 
 - [ ] **T6: JSON-LD parsing (pure)**
   - `parse.ts`: `pickTitle`, `pickObjectNumber`, `pickDateRange`, `pickArtistIds`,
