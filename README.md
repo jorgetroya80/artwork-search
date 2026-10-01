@@ -17,11 +17,8 @@ This project requires to run:
 
 - NodeJS version `24.18.0` (see `.nvmrc`)
 - pnpm version `12.8.1` (pinned in the `packageManager` field of `package.json`)
-- API Key from Rijksmuseum.
-  - To run the search create an account in
-    [Rijks Data](https://data.rijksmuseum.nl/object-metadata/api/).
-  - Copy `.env.local.example` to `.env.local` and add the key in the field
-    `VITE_API_KEY`.
+
+The Rijksmuseum search API is public and does not need an API key.
 
 ## Setup
 
