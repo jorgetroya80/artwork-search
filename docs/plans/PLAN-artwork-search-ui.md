@@ -157,7 +157,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Done: `handleSubmit` normalizes the draft with `normalizeSearchInput` (not only `trim`), so "Rembrandt van Rijn" and "Rembrandt van Rijn" count as the same term for the retry-after-error rule. The live region is a `<p role="status">` (implicit `aria-live="polite"`). The Search button sits in a `flex-col` div: full width below `sm`, offset by the label height (`sm:mt-7`) from `sm`, so the `Button` wrapper needs no layout prop. Enter is tested with `fireEvent.submit`, because jsdom has no implicit submission on key events. `renderHookWithClient` and `renderWithClient` share one test client factory.
 
 - [x] **T6: Artwork cards**
-  - `ArtworkImage`: `thumbnailUrl` in an `aspect-[4/3]` box, `object-cover`, `loading="lazy"`,
+  - `ArtworkImage`: `thumbnailUrl` in an `aspect-4/3` box, `object-cover`, `loading="lazy"`,
     `alt` = title. Placeholder "Image not available" for `null` or `onError`.
   - `ArtworkCard`: `<article>` per status. Pending skeleton (`bg-bg-subtle`,
     `motion-safe:animate-pulse`, `aria-busy`), error card with "Retry" (item `retry()`), success

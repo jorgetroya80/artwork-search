@@ -138,6 +138,27 @@ describe('SearchPage form', () => {
   });
 });
 
+describe('SearchPage new search', () => {
+  it('replaces the results and starts again from 10 for a new term', async () => {
+    renderPage(23);
+    typeTerm('Rembrandt');
+    pressEnter();
+    await screen.findByText('Showing 10 of 23 results');
+    fireEvent.click(screen.getByRole('button', { name: 'Load more' }));
+    await screen.findByText('Showing 20 of 23 results');
+
+    typeTerm('Vermeer');
+    pressEnter();
+
+    expect(
+      screen.getAllByRole('article', { name: 'Loading artwork', busy: true })
+    ).toHaveLength(PAGE_SIZE);
+    expect(screen.getByRole('status').textContent).toBe('');
+    expect(await screen.findByText('Showing 10 of 23 results')).toBeDefined();
+    expect(searchUrls.at(-1)?.searchParams.get('creator')).toBe('Vermeer');
+  });
+});
+
 describe('SearchPage status line', () => {
   it('uses the singular for one result', async () => {
     renderPage(1);

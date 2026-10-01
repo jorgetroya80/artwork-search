@@ -5,7 +5,7 @@ type ArtworkImageProps = {
   alt: string;
 };
 
-const FRAME_CLASSES = 'aspect-[4/3] w-full bg-bg-subtle';
+const FRAME_CLASSES = 'aspect-4/3 w-full bg-bg-subtle';
 
 export function ArtworkImage({ src, alt }: ArtworkImageProps) {
   const [hasFailed, setHasFailed] = useState(false);

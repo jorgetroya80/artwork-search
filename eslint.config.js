@@ -169,7 +169,16 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-restricted-imports': [
         'error',
-        { paths: restrictedImportPaths },
+        {
+          paths: [
+            ...restrictedImportPaths,
+            {
+              name: '@base-ui/react',
+              message:
+                'Import Base UI by subpath (e.g. @base-ui/react/button), so only used parts are bundled.',
+            },
+          ],
+        },
       ],
     },
   },

@@ -244,13 +244,13 @@ Semantic `<article>` inside a `<li>` of a `<ul>`. Not interactive in this phase:
 
 By `ArtworkResult.status`:
 
-- `pending`: skeleton card: `bg-bg-subtle` image box (same `aspect-[4/3]`) and 2 text bars,
+- `pending`: skeleton card: `bg-bg-subtle` image box (same `aspect-4/3`) and 2 text bars,
   `motion-safe:animate-pulse`, `aria-busy="true"`. Same size as the resolved card, so the grid does
   not jump.
 - `error`: card with text **"This artwork could not be loaded."** and a **"Retry"** button that
   calls the item `retry()`. Other cards are not affected.
 - `success`:
-  - Image: `thumbnailUrl`, fixed aspect ratio box (`aspect-[4/3]`), `object-cover`,
+  - Image: `thumbnailUrl`, fixed aspect ratio box (`aspect-4/3`), `object-cover`,
     `loading="lazy"`, `alt` = artwork title.
   - Title (`<h2>`), at most 2 lines (`line-clamp-2`), full title in `title` attribute.
   - Artists joined with `", "`. Hidden when `artists` is `[]`.
