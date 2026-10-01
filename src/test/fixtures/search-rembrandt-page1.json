@@ -1,0 +1,424 @@
+{
+  "@context": "https://linked.art/ns/v1/search.json",
+  "id": "https://data.rijksmuseum.nl/search/collection?creator=Rembrandt&imageAvailable=true",
+  "type": "OrderedCollectionPage",
+  "partOf": {
+    "id": "https://data.rijksmuseum.nl/search/collection?creator=Rembrandt&imageAvailable=true",
+    "type": "OrderedCollection",
+    "totalItems": 1447,
+    "first": {
+      "id": "https://data.rijksmuseum.nl/search/collection?creator=Rembrandt&imageAvailable=true",
+      "type": "OrderedCollectionPage"
+    },
+    "last": {
+      "id": "https://data.rijksmuseum.nl/search/collection?creator=Rembrandt&imageAvailable=true&pageToken=eyJ0b2tlbiI6ICJodHRwczovL2lkLnJpamtzbXVzZXVtLm5sLzIwMDQ1MDk2MyJ9",
+      "type": "OrderedCollectionPage"
+    }
+  },
+  "next": {
+    "id": "https://data.rijksmuseum.nl/search/collection?creator=Rembrandt&imageAvailable=true&pageToken=eyJ0b2tlbiI6ICJodHRwczovL2lkLnJpamtzbXVzZXVtLm5sLzIwMDEyNDYzNiJ9",
+    "type": "OrderedCollectionPage"
+  },
+  "orderedItems": [
+    {
+      "id": "https://id.rijksmuseum.nl/200106038",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107928",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107929",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107930",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107931",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107933",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107934",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107935",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107936",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107937",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107941",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107942",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107944",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107945",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107946",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107947",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200107952",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200109435",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117701",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117702",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117703",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117704",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117705",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117706",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117707",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117708",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117709",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117710",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117711",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117712",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117713",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117714",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117715",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117716",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117718",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117719",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117720",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117721",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117722",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117723",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117724",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117725",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117726",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117728",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117729",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117972",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117973",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117974",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117975",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117976",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117977",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117978",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117980",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117981",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117982",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117983",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117984",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117985",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117986",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117987",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117988",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117989",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117990",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117991",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117992",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117993",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117996",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117997",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117998",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200117999",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118000",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118001",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118002",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118004",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118005",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118006",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118007",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118008",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118009",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200118010",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124613",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124614",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124615",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124616",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124617",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124618",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124623",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124624",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124625",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124626",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124627",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124628",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124629",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124630",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124631",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124632",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124633",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124634",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124635",
+      "type": "HumanMadeObject"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/200124636",
+      "type": "HumanMadeObject"
+    }
+  ]
+}

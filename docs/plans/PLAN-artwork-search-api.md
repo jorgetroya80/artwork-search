@@ -89,7 +89,7 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
     script is denied (`allowBuilds: { msw: false }` in `pnpm-workspace.yaml`). It only copies the
     browser service worker, and tests use `msw/node`.
 
-- [ ] **T2: Fixtures**
+- [x] **T2: Fixtures**
   - Save real responses in `src/test/fixtures/`, captured with `curl` (exact commands in
     `src/test/fixtures/README.md`):
     - `search-rembrandt-nachtwacht.json`: `creator=Rembrandt&title=Nachtwacht&imageAvailable=true` (1 result).
@@ -106,6 +106,11 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
   - Files: `src/test/fixtures/*`, `src/test/msw/handlers.ts`, `src/test/msw/factories.ts`,
     `src/test/msw/factories.test.ts`, maybe `tsconfig.app.json`.
   - Size: S.
+  - Done: `tsconfig.app.json` did not need `resolveJsonModule`, because JSON imports already pass
+    `pnpm build`. Added `handlers.test.ts`. The default handlers are registered in
+    `server.ts`. A search with no fixture answers `404` and an unknown ID answers `400`, like the
+    real API. The search handler for generated pages (`pageToken`) is left for T10, when the hook
+    tests need it.
 
 - [ ] **T3: Constants, types, input normalization**
   - `constants.ts`: base URLs, ID allowlist prefix, AAT IDs, `PAGE_SIZE = 10`,
