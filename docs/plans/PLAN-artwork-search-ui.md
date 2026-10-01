@@ -116,7 +116,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Size: S.
   - Done: Base UI `Field` links label and description in jsdom, no `useId` fallback needed. `prettier.config.js` now sets `tailwindStylesheet: ./src/index.css`: without it the Prettier Tailwind plugin did not know the token classes and sorted them before the built-in ones. (Outside the spec file list, but tooling only.)
 
-- [ ] **T4: Pure helpers**
+- [x] **T4: Pure helpers**
   - `getErrorMessage(error)`: `429` text, generic text for everything else.
   - `formatDateRange(date)`: `"1642"`, `"1640–1642"`, start only, `null` when both are `null`.
   - Tests: `429`, `500`, `400`, `network`, `timeout`, `parse` for the first; same year, range,
@@ -125,6 +125,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Files: `src/features/search/getErrorMessage.ts`, `getErrorMessage.test.ts`,
     `formatDateRange.ts`, `formatDateRange.test.ts`.
   - Size: XS.
+  - Done: `formatDateRange` reads the year with a regex, so signed years before the common era (`-0500-…`) also work. End-only dates show the end year.
 
 ### Checkpoint 1: Foundation
 
