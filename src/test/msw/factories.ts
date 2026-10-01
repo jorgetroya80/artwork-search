@@ -1,6 +1,9 @@
-export const SEARCH_URL = 'https://data.rijksmuseum.nl/search/collection';
+import {
+  API_PAGE_SIZE,
+  ENTITY_URL_PREFIX,
+  SEARCH_URL,
+} from '../../api/rijksmuseum/constants';
 
-const API_PAGE_SIZE = 100;
 const FIRST_GENERATED_OBJECT_ID = 900_000_000;
 
 type SearchPageOptions = { total: number; pageIndex: number };
@@ -8,7 +11,7 @@ type SearchPageOptions = { total: number; pageIndex: number };
 export const pageTokenFor = (pageIndex: number) => `test-page-${pageIndex}`;
 
 const makeObjectRef = (index: number) => ({
-  id: `https://id.rijksmuseum.nl/${FIRST_GENERATED_OBJECT_ID + index}`,
+  id: `${ENTITY_URL_PREFIX}${FIRST_GENERATED_OBJECT_ID + index}`,
   type: 'HumanMadeObject',
 });
 

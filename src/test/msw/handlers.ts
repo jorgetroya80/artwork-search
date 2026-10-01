@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
+import { SEARCH_URL } from '../../api/rijksmuseum/constants';
 import digitalObject from '../fixtures/digital-500711199912110510799100.json';
 import nightWatch from '../fixtures/object-200107928.json';
 import rembrandt from '../fixtures/person-2103429.json';
@@ -7,7 +8,6 @@ import searchEmpty from '../fixtures/search-empty.json';
 import searchNachtwacht from '../fixtures/search-rembrandt-nachtwacht.json';
 import searchRembrandtPage1 from '../fixtures/search-rembrandt-page1.json';
 import visualItem from '../fixtures/visual-202107928.json';
-import { SEARCH_URL } from './factories';
 
 const searchFixtures: Record<string, object> = {
   'creator=Rembrandt&title=Nachtwacht': searchNachtwacht,

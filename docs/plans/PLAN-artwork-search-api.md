@@ -112,7 +112,7 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
     real API. The search handler for generated pages (`pageToken`) is left for T10, when the hook
     tests need it.
 
-- [ ] **T3: Constants, types, input normalization**
+- [x] **T3: Constants, types, input normalization**
   - `constants.ts`: base URLs, ID allowlist prefix, AAT IDs, `PAGE_SIZE = 10`,
     `API_PAGE_SIZE = 100`, thumbnail width 400, timeout 15 000 ms.
   - `types.ts`: public types from the spec, plus partial raw Linked Art types.
@@ -123,6 +123,11 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
   - Verify: `pnpm test normalize`, `pnpm build`.
   - Files: `constants.ts`, `types.ts`, `normalize.ts`, `normalize.test.ts`.
   - Size: S.
+  - Done: `types.ts` has only the public types that need no other module. Each raw Linked Art type
+    is added by the task that uses it (search in T5, entities in T6), and `ArtworkResult` comes
+    with T10, after `RijksApiError` exists (T4). The test helpers in `src/test/msw/` now import
+    `SEARCH_URL`, `ENTITY_URL_PREFIX` and `API_PAGE_SIZE` from `constants.ts` instead of copying
+    them.
 
 - [ ] **T4: `RijksApiError` and `fetchJson`**
   - `errors.ts`: the class with `kind`, `status`, `url`, `retryable`, `cause`.

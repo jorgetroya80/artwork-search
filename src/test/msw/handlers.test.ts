@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
+import { SEARCH_URL } from '../../api/rijksmuseum/constants';
 import nightWatch from '../fixtures/object-200107928.json';
 import nachtwachtSearch from '../fixtures/search-rembrandt-nachtwacht.json';
-import { SEARCH_URL } from './factories';
 
 describe('default handlers', () => {
   it('serve the search fixture that matches the query', async () => {
