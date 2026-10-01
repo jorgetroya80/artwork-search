@@ -113,7 +113,7 @@ Can run in parallel: T2/T3 with T4.
     session scratchpad (job ids, no `needs`, SHA pins, setup order, commands, no coverage) and
     Prettier.
 
-- [ ] **T3: `pr-title` job**
+- [x] **T3: `pr-title` job**
   - Add job `pr-title` to `ci.yml`, with `if: github.event_name == 'pull_request'`.
   - Allowed types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`,
     `revert`. Scope optional. Subject must not start with an uppercase letter
@@ -125,6 +125,10 @@ Can run in parallel: T2/T3 with T4.
   - Verify: `actionlint` and Prettier, as in T2.
   - Files: `.github/workflows/ci.yml`.
   - Size: XS.
+  - Done: job-level `permissions: pull-requests: read`, as the action README shows. Job-level
+    permissions replace the top-level ones, so this job has no `contents` access; it does not
+    check out code. The structure script checks that `release 0.1.0` matches `subjectPattern`
+    and `Add workflows` does not. No `run:` step in the job.
 
 - [ ] **T4: `release.yml` and release-please config**
   - `.github/workflows/release.yml`: trigger, concurrency and job `release-please` with
