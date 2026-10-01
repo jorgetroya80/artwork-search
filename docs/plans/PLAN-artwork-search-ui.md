@@ -131,7 +131,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 - [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
 - [x] `grep -rn "@base-ui" src` lists only `src/components/ui/`.
-- [ ] Review with the user. Skipped: `/build auto` has one gate; covered by the final review.
+- [x] Review with the user.
 
 ### Phase 2: Search and results
 
@@ -178,7 +178,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 - [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
 - [x] Manual: `pnpm start`, search "Rembrandt" against the real API, 10 cards with images appear.
-- [ ] Review with the user. Skipped: `/build auto` has one gate; covered by the final review.
+- [x] Review with the user.
 
 ### Phase 3: States and Load more
 
@@ -242,7 +242,21 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 - [x] All spec success criteria are checked.
 - [x] `pnpm lint`, `pnpm test:coverage` and `pnpm build` pass.
-- [ ] Review with the user, then open the PR from `feat-initial-ui`.
+- [x] Review with the user, then open the PR from `feat-initial-ui`.
+
+- Review fixes (2026-10-01), after `/review`, all applied:
+  - Focus after a retry: "Try again" focuses the results region and a card's "Retry" focuses its
+    `<li>`, because both buttons leave the page while retrying (WCAG 2.4.3). Tests check
+    `document.activeElement`.
+  - Form layout: `TextField` is a subgrid (`grid-rows-subgrid`) inside the form grid, so Search
+    sits in the input row without the `sm:mt-7` offset. Checked in headless Chrome with a 24 px
+    label: input and button tops match.
+  - `ArtworkSearch` is now an exported type in `src/api/rijksmuseum` and the hook's declared return
+    type (API spec updated).
+  - `SearchPage` computes the normalized term once and passes `canSubmit` to `SearchForm`.
+  - New test: a new term replaces the results and starts again from 10.
+  - `aspect-4/3` everywhere, a comment on the `TextField` `onValueChange` lambda, and ESLint
+    rejects a root `@base-ui/react` import inside `src/components/ui`.
 
 ## Risks and mitigations
 
@@ -254,7 +268,3 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 | Hook retries (2 × backoff) slow error tests                                     | Medium                                  | `renderWithClient` uses `retryDelay: 0`, like the hook tests                                                                       |
 | jsdom has no layout, so tests cannot see columns or overflow                    | Low                                     | Manual responsive check in T9                                                                                                      |
 | Base UI ships a breaking change in a later version                              | Low: pinned exact                       | Only `src/components/ui/` depends on it; wrapper tests catch behavior changes on upgrade                                           |
-
-## Open questions
-
-None.
