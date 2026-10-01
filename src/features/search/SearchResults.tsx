@@ -1,10 +1,8 @@
-import { PAGE_SIZE, type useArtworkSearch } from '../../api/rijksmuseum';
+import { PAGE_SIZE, type ArtworkSearch } from '../../api/rijksmuseum';
 import { Button } from '../../components/ui';
 import { ArtworkCard, ArtworkCardSkeleton } from './ArtworkCard';
 import { ErrorMessage } from './ErrorMessage';
 import { getErrorMessage } from './getErrorMessage';
-
-type ArtworkSearch = ReturnType<typeof useArtworkSearch>;
 
 type SearchResultsProps = {
   search: ArtworkSearch;

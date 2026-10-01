@@ -20,6 +20,7 @@ import { searchCollection } from './search';
 import type {
   Artwork,
   ArtworkResult,
+  ArtworkSearch,
   SearchInput,
   SearchParams,
   SearchStatus,
@@ -119,7 +120,7 @@ function useVisibleBatch(searchKey: string) {
   return { visibleCount, nextCount, showNextBatch };
 }
 
-export function useArtworkSearch(input: SearchInput) {
+export function useArtworkSearch(input: SearchInput): ArtworkSearch {
   const params = normalizeSearchInput(input);
   const queryClient = useQueryClient();
   const search = useInfiniteQuery(searchQueryOptions(params));
