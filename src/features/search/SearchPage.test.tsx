@@ -94,6 +94,17 @@ describe('SearchPage form', () => {
     expect(searchUrls).toHaveLength(1);
   });
 
+  it('keeps focus in the input when Enter submits', async () => {
+    renderPage();
+    typeTerm('Rembrandt');
+    getInput().focus();
+
+    pressEnter();
+    await screen.findByText('Showing 10 of 23 results');
+
+    expect(document.activeElement).toBe(getInput());
+  });
+
   it('shows Searching… and keeps focus while the search runs', async () => {
     renderPage();
     typeTerm('Rembrandt');
@@ -196,8 +207,10 @@ describe('SearchPage results grid', () => {
     expect(
       screen.getAllByRole('article', { name: 'Loading artwork', busy: true })
     ).toHaveLength(PAGE_SIZE);
+    expect(screen.getByRole('list', { busy: true })).toBeDefined();
 
     await screen.findByText('Showing 10 of 23 results');
+    expect(screen.queryByRole('list', { busy: true })).toBeNull();
     await waitFor(() =>
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(10)
     );
@@ -288,6 +301,25 @@ describe('SearchPage empty and error states', () => {
     expect((await screen.findByRole('alert')).textContent).toContain(
       'The service is not available right now. Please try again later.'
     );
+  });
+
+  it('starts a new search when a different term is submitted after an error', async () => {
+    renderPage();
+    failSearch(400);
+    typeTerm('Rembrandt');
+    pressEnter();
+    await screen.findByRole('alert');
+
+    server.resetHandlers(...generatedSearchHandlers(23));
+    typeTerm('Vermeer');
+    pressEnter();
+
+    expect(await screen.findByText('Showing 10 of 23 results')).toBeDefined();
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(searchUrls.map((url) => url.searchParams.get('creator'))).toEqual([
+      'Rembrandt',
+      'Vermeer',
+    ]);
   });
 
   it('retries when the same term is submitted after an error', async () => {

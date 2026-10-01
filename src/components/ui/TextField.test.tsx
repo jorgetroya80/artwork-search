@@ -22,6 +22,14 @@ describe('TextField', () => {
     ).toBeDefined();
   });
 
+  it('has no accessible description without a description', () => {
+    render(<TextField label="Artist name" value="" onValueChange={vi.fn()} />);
+
+    expect(
+      screen.getByRole('textbox', { name: 'Artist name', description: '' })
+    ).toBeDefined();
+  });
+
   it('renders a searchbox for type search', () => {
     render(
       <TextField
