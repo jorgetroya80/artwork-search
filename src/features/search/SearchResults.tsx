@@ -1,6 +1,8 @@
 import { PAGE_SIZE, type useArtworkSearch } from '../../api/rijksmuseum';
+import { Button } from '../../components/ui';
 import { ArtworkCard, ArtworkCardSkeleton } from './ArtworkCard';
 import { ErrorMessage } from './ErrorMessage';
+import { getErrorMessage } from './getErrorMessage';
 
 type ArtworkSearch = ReturnType<typeof useArtworkSearch>;
 
@@ -51,6 +53,25 @@ function ResultGrid({ artworks }: Pick<ArtworkSearch, 'artworks'>) {
   );
 }
 
+function LoadMore({
+  loadMore,
+  isLoadingMore,
+  loadMoreError,
+}: Pick<ArtworkSearch, 'loadMore' | 'isLoadingMore' | 'loadMoreError'>) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      {loadMoreError && (
+        <p role="alert" className="text-sm text-fg-muted">
+          {getErrorMessage(loadMoreError)}
+        </p>
+      )}
+      <Button pending={isLoadingMore} onClick={loadMore}>
+        {isLoadingMore ? 'Loading…' : 'Load more'}
+      </Button>
+    </div>
+  );
+}
+
 export function SearchResults({ search }: SearchResultsProps) {
   return (
     <section className="flex flex-col gap-4">
@@ -63,6 +84,13 @@ export function SearchResults({ search }: SearchResultsProps) {
       )}
       {search.status === 'success' && !search.isEmpty && (
         <ResultGrid artworks={search.artworks} />
+      )}
+      {search.hasMore && (
+        <LoadMore
+          loadMore={search.loadMore}
+          isLoadingMore={search.isLoadingMore}
+          loadMoreError={search.loadMoreError}
+        />
       )}
     </section>
   );

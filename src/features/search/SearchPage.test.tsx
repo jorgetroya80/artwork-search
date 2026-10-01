@@ -281,3 +281,90 @@ describe('SearchPage empty and error states', () => {
     expect(await screen.findByText('Showing 10 of 23 results')).toBeDefined();
   });
 });
+
+describe('SearchPage load more', () => {
+  const headingCount = () =>
+    screen.queryAllByRole('heading', { level: 2 }).length;
+  const getLoadMore = () =>
+    screen.getByRole('button', { name: /^(Load more|Loading…)$/ });
+
+  async function searchAndWait(total: number) {
+    renderPage(total);
+    typeTerm('Rembrandt');
+    pressEnter();
+    await waitFor(() =>
+      expect(headingCount()).toBe(Math.min(total, PAGE_SIZE))
+    );
+  }
+
+  async function loadMoreUntil(count: number) {
+    while (headingCount() < count) {
+      const expected = headingCount() + PAGE_SIZE;
+      fireEvent.click(getLoadMore());
+      await waitFor(() => expect(headingCount()).toBe(expected));
+    }
+  }
+
+  it('adds 10 artworks per click and hides the button after the last batch', async () => {
+    await searchAndWait(23);
+    const firstTitle = screen.getAllByRole('heading', { level: 2 })[0]
+      .textContent;
+
+    fireEvent.click(getLoadMore());
+    await waitFor(() => expect(headingCount()).toBe(20));
+    expect(screen.getAllByRole('heading', { level: 2 })[0].textContent).toBe(
+      firstTitle
+    );
+    expect(screen.getByText('Showing 20 of 23 results')).toBeDefined();
+
+    fireEvent.click(getLoadMore());
+    await waitFor(() => expect(headingCount()).toBe(23));
+    expect(
+      screen.queryByRole('button', { name: /^(Load more|Loading…)$/ })
+    ).toBeNull();
+  });
+
+  it('has no Load more button when every result is shown', async () => {
+    await searchAndWait(7);
+
+    expect(
+      screen.queryByRole('button', { name: /^(Load more|Loading…)$/ })
+    ).toBeNull();
+  });
+
+  it('keeps the list on a failed next page and recovers on the next click', async () => {
+    await searchAndWait(150);
+    await loadMoreUntil(100);
+
+    let releaseSearch = () => {};
+    const searchGate = new Promise<void>((resolve) => {
+      releaseSearch = resolve;
+    });
+    server.use(
+      http.get(SEARCH_URL, async () => {
+        await searchGate;
+        return new HttpResponse(null, { status: 500 });
+      })
+    );
+    getLoadMore().focus();
+    fireEvent.click(getLoadMore());
+
+    expect(
+      await screen.findByRole('button', { name: 'Loading…' })
+    ).toBeDefined();
+    expect(document.activeElement).toBe(getLoadMore());
+
+    releaseSearch();
+    expect((await screen.findByRole('alert')).textContent).toBe(
+      'Something went wrong. Please try again.'
+    );
+    expect(headingCount()).toBe(100);
+    expect(getLoadMore().textContent).toBe('Load more');
+
+    server.resetHandlers(...generatedSearchHandlers(150));
+    fireEvent.click(getLoadMore());
+
+    await waitFor(() => expect(headingCount()).toBe(110));
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+});

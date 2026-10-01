@@ -194,7 +194,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Size: S.
   - Done: the empty text reuses the always-rendered status region. The retry test holds the search response behind a promise: TanStack notifies observers on the next tick, and per-item skeletons look like the pending grid, so without the gate the "Searching…" window cannot be observed reliably.
 
-- [ ] **T8: Load more**
+- [x] **T8: Load more**
   - `SearchResults`: `Button` "Load more" while `hasMore`; `pending` + "Loading…" while
     `isLoadingMore`; inline `role="alert"` message from `getErrorMessage` on `loadMoreError`,
     button stays enabled and retries.
@@ -205,6 +205,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Verify: `pnpm test SearchPage && pnpm lint && pnpm build`.
   - Files: `SearchResults.tsx`, `SearchPage.test.tsx` (or `LoadMore.test.tsx`).
   - Size: S.
+  - Done: tests stay in `SearchPage.test.tsx`. The failure test loads 100 artworks first (150 total), because `loadMoreError` only appears when a next API page is fetched (the 110th artwork). The page-2 response is gated to check "Loading…" and focus, then answers `500`. The error text sits above the button inside the same block. `LoadMore` renders only while `hasMore` is true.
 
 ### Checkpoint 3: All states
 
