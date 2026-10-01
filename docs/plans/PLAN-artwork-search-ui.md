@@ -182,7 +182,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 ### Phase 3: States and Load more
 
-- [ ] **T7: Empty and error states**
+- [x] **T7: Empty and error states**
   - `ErrorMessage`: `role="alert"`, text from `getErrorMessage`, `Button` "Try again".
   - `SearchResults`: empty message "No results found. Try another search term." in the live
     region; error block replaces the list; retry shows skeletons again.
@@ -192,6 +192,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Verify: `pnpm test SearchPage ErrorMessage && pnpm lint && pnpm build`.
   - Files: `ErrorMessage.tsx`, `SearchResults.tsx`, `SearchPage.tsx`, `SearchPage.test.tsx`.
   - Size: S.
+  - Done: the empty text reuses the always-rendered status region. The retry test holds the search response behind a promise: TanStack notifies observers on the next tick, and per-item skeletons look like the pending grid, so without the gate the "Searching…" window cannot be observed reliably.
 
 - [ ] **T8: Load more**
   - `SearchResults`: `Button` "Load more" while `hasMore`; `pending` + "Loading…" while

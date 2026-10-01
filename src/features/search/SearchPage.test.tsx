@@ -7,6 +7,7 @@ import { SEARCH_URL } from '../../api/rijksmuseum/constants';
 import {
   generatedObjectId,
   makeGeneratedObject,
+  makeSearchPage,
 } from '../../test/msw/factories';
 import { generatedSearchHandlers } from '../../test/msw/handlers';
 import { server } from '../../test/msw/server';
@@ -201,5 +202,82 @@ describe('SearchPage results grid', () => {
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(10)
     );
     expect(screen.queryByText('This artwork could not be loaded.')).toBeNull();
+  });
+});
+
+describe('SearchPage empty and error states', () => {
+  const GENERIC = 'Something went wrong. Please try again.';
+  const failSearch = (status: number) =>
+    server.use(http.get(SEARCH_URL, () => new HttpResponse(null, { status })));
+
+  it('shows the empty message when nothing matches', async () => {
+    renderPage(0);
+    typeTerm('Nobody');
+    pressEnter();
+
+    expect(
+      await screen.findByText('No results found. Try another search term.')
+    ).toBeDefined();
+    expect(screen.queryByRole('list')).toBeNull();
+  });
+
+  it.each([500, 400])(
+    'shows the generic error for %i and recovers with Try again',
+    async (status) => {
+      renderPage();
+      failSearch(status);
+      typeTerm('Rembrandt');
+      pressEnter();
+
+      const alert = await screen.findByRole('alert');
+      expect(alert.textContent).toContain(GENERIC);
+
+      server.resetHandlers(...generatedSearchHandlers(23));
+      fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+
+      expect(await screen.findByText('Showing 10 of 23 results')).toBeDefined();
+      expect(screen.queryByRole('alert')).toBeNull();
+    }
+  );
+
+  it('asks to try later when the service answers 429', async () => {
+    renderPage();
+    failSearch(429);
+    typeTerm('Rembrandt');
+    pressEnter();
+
+    expect((await screen.findByRole('alert')).textContent).toContain(
+      'The service is not available right now. Please try again later.'
+    );
+  });
+
+  it('retries when the same term is submitted after an error', async () => {
+    renderPage();
+    failSearch(400);
+    typeTerm('Rembrandt');
+    pressEnter();
+    await screen.findByRole('alert');
+
+    const [, entityHandler] = generatedSearchHandlers(23);
+    let releaseSearch = () => {};
+    const searchGate = new Promise<void>((resolve) => {
+      releaseSearch = resolve;
+    });
+    server.resetHandlers(
+      http.get(SEARCH_URL, async () => {
+        await searchGate;
+        return HttpResponse.json(makeSearchPage({ total: 23, pageIndex: 0 }));
+      }),
+      entityHandler
+    );
+    pressEnter();
+
+    expect(
+      await screen.findByRole('button', { name: 'Searching…' })
+    ).toBeDefined();
+    expect(screen.queryByRole('alert')).toBeNull();
+
+    releaseSearch();
+    expect(await screen.findByText('Showing 10 of 23 results')).toBeDefined();
   });
 });

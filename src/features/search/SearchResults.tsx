@@ -1,5 +1,6 @@
 import { PAGE_SIZE, type useArtworkSearch } from '../../api/rijksmuseum';
 import { ArtworkCard, ArtworkCardSkeleton } from './ArtworkCard';
+import { ErrorMessage } from './ErrorMessage';
 
 type ArtworkSearch = ReturnType<typeof useArtworkSearch>;
 
@@ -15,9 +16,12 @@ const SKELETON_KEYS = Array.from(
   (_, index) => `skeleton-${index}`
 );
 
+const EMPTY_TEXT = 'No results found. Try another search term.';
+
 const formatCount = (count: number) => count.toLocaleString('en-US');
 
-function getStatusText({ status, artworks, total }: ArtworkSearch) {
+function getStatusText({ status, artworks, total, isEmpty }: ArtworkSearch) {
+  if (isEmpty) return EMPTY_TEXT;
   if (status !== 'success' || total === null) return '';
   const noun = total === 1 ? 'result' : 'results';
   return `Showing ${formatCount(artworks.length)} of ${formatCount(total)} ${noun}`;
@@ -54,7 +58,12 @@ export function SearchResults({ search }: SearchResultsProps) {
         {getStatusText(search)}
       </p>
       {search.status === 'pending' && <SkeletonGrid />}
-      {search.status === 'success' && <ResultGrid artworks={search.artworks} />}
+      {search.error && (
+        <ErrorMessage error={search.error} onRetry={search.retry} />
+      )}
+      {search.status === 'success' && !search.isEmpty && (
+        <ResultGrid artworks={search.artworks} />
+      )}
     </section>
   );
 }
