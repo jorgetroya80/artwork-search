@@ -77,7 +77,10 @@ Concurrency: group `release`, `cancel-in-progress: false` (never cancel a releas
 
 One job `release-please`:
 
-- `permissions: contents: write, pull-requests: write`.
+- Top-level `permissions: {}`. Job-level `permissions: contents: write, issues: write,
+pull-requests: write`. `issues: write` is needed because release-please creates and sets the
+  `autorelease: pending` / `autorelease: tagged` labels it uses to find the merged release PR
+  (release-please-action README). Added during T4 (2026-10-01).
 - Step `googleapis/release-please-action` with `config-file: release-please-config.json` and
   `manifest-file: .release-please-manifest.json`.
 - Exposes the outputs `release_created`, `tag_name`, `version` as job outputs. Nothing consumes
@@ -306,7 +309,7 @@ The app test suite and `vite.config.ts` stay as they are. CI does not run covera
 - [ ] `.github/workflows/ci.yml` and `.github/workflows/release.yml` exist and pass `actionlint`.
 - [ ] Every `uses:` is pinned to a 40-character SHA with a version comment.
 - [ ] `ci.yml` has top-level `permissions: contents: read`. `release.yml` grants only
-      `contents: write` and `pull-requests: write`.
+      `contents: write`, `issues: write` and `pull-requests: write`, at job level.
 - [ ] A PR to `main` runs `lint`, `test`, `build` and `pr-title` as parallel jobs (no `needs`).
 - [ ] `test` runs `pnpm test` without coverage.
 - [ ] A lint error fails `lint`. A failing test fails `test`. A type error fails `build`. An

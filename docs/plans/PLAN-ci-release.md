@@ -130,9 +130,9 @@ Can run in parallel: T2/T3 with T4.
     check out code. The structure script checks that `release 0.1.0` matches `subjectPattern`
     and `Add workflows` does not. No `run:` step in the job.
 
-- [ ] **T4: `release.yml` and release-please config**
+- [x] **T4: `release.yml` and release-please config**
   - `.github/workflows/release.yml`: trigger, concurrency and job `release-please` with
-    job-level `permissions: contents: write, pull-requests: write`. Top-level `permissions: {}`.
+    job-level `permissions: contents: write, issues: write, pull-requests: write`. Top-level `permissions: {}`.
     Expose job outputs `release_created`, `tag_name`, `version`.
   - `release-please-config.json` and `.release-please-manifest.json` copied from the spec.
   - Acceptance: tag format without component (`include-component-in-tag: false`). Manifest
@@ -143,6 +143,10 @@ Can run in parallel: T2/T3 with T4.
   - Files: `.github/workflows/release.yml`, `release-please-config.json`,
     `.release-please-manifest.json`.
   - Size: S.
+  - Done: added `issues: write` after the user approved it (release-please needs it for its
+    `autorelease: *` labels). Spec updated. Checked with the structure script (trigger,
+    concurrency, permissions, outputs, inputs, config values, manifest = `package.json` version),
+    `JSON.parse` and Prettier. `actionlint` still pending.
 
 - [x] **T5: README "Contributing and releases"**
   - PR title format with examples. Squash merge only. What the release PR is. Close and reopen
