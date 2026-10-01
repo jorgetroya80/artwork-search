@@ -1,7 +1,7 @@
 # Plan: Rijksmuseum artwork search — UI (phase 1)
 
 - Created: 2026-10-01
-- Status: **implemented** (2026-10-01), final review pending
+- Status: **implemented** (2026-10-01), PR #3
 - Spec: [SPEC-artwork-search-ui.md](../specs/SPEC-artwork-search-ui.md)
 
 The task list lives in this file. Check off tasks here as they are done.
