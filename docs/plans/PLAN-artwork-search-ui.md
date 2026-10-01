@@ -88,7 +88,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Size: S.
   - Done: the existing `no-restricted-imports` paths moved to `restrictedImportPaths`, so the `src/components/ui/**` override keeps the `FC` ban and only drops the `@base-ui/*` pattern. Checked with temporary files: a Base UI import outside `src/components/ui/` fails lint, inside it passes; token classes (`bg-bg`, `text-fg-muted`, `rounded-control`, `outline-accent`) pass `no-unknown-classes`, an unknown class fails. `@theme inline` works, no fallback needed.
 
-- [ ] **T2: `Button` wrapper**
+- [x] **T2: `Button` wrapper**
   - `src/components/ui/Button.tsx`: app-owned `ButtonProps` from the spec. Wraps Base UI `Button`.
     `pending` maps to `disabled` + `focusableWhenDisabled`. Variants `primary` / `secondary` with
     token classes, `min-h-11`, focus outline, `data-disabled:` styles.
@@ -101,6 +101,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Files: `src/components/ui/Button.tsx`, `src/components/ui/Button.test.tsx`,
     `src/components/ui/index.ts`.
   - Size: S.
+  - Done: `pending` maps to Base UI `disabled` + `focusableWhenDisabled`: the button keeps focus, has `aria-disabled="true"`, and blocks both `onClick` and form submit. `src/test/setup.ts` now calls Testing Library `cleanup()` after each test, because Vitest globals are off and the first `render` tests left DOM behind. jsdom lets `.focus()` reach a natively disabled button, so the disabled test checks the `disabled` property instead.
 
 - [ ] **T3: `TextField` wrapper**
   - `src/components/ui/TextField.tsx`: app-owned `TextFieldProps` from the spec. Wraps
