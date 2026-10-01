@@ -69,7 +69,7 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
 
 ### Phase 1: Foundation
 
-- [ ] **T1: Test tooling**
+- [x] **T1: Test tooling**
   - Install `vitest`, `@vitest/coverage-v8`, `jsdom`, `@testing-library/react`, `msw` (dev) and
     `@tanstack/react-query`.
   - Add the `test`, `test:watch` and `test:coverage` scripts. Add a `test` block to
@@ -84,6 +84,10 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
   - Verify: `pnpm test && pnpm lint && pnpm build`.
   - Files: `package.json`, `vite.config.ts`, `src/test/setup.ts`, `src/test/smoke.test.ts`.
   - Size: S.
+  - Done: jsdom + `AbortSignal.any` + MSW work together, so the main risk is gone. The MSW server
+    lives in `src/test/msw/server.ts` so tests can call `server.use`. The `msw` postinstall
+    script is denied (`allowBuilds: { msw: false }` in `pnpm-workspace.yaml`). It only copies the
+    browser service worker, and tests use `msw/node`.
 
 - [ ] **T2: Fixtures**
   - Save real responses in `src/test/fixtures/`, captured with `curl` (exact commands in
