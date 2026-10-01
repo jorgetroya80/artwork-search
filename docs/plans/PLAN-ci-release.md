@@ -171,7 +171,7 @@ Can run in parallel: T2/T3 with T4.
 
 ### Phase 2: Verify on GitHub
 
-- [ ] **T6: CI behavior**
+- [x] **T6: CI behavior**
   - Happy path: on the workflows PR, `lint`, `test`, `build` and `pr-title` start at the same
     time and pass. Check with `gh pr checks` and the run view.
   - Title check: `gh pr edit --title "Add workflows"` makes `pr-title` fail. Restoring
@@ -184,6 +184,15 @@ Can run in parallel: T2/T3 with T4.
   - Acceptance: the outcomes above, written in this task's "Done" note.
   - Files: none kept.
   - Size: S.
+  - Done (PR #4, throwaway PR #5):
+    - Happy path: the four jobs started within 1 s of each other and passed (run 36886825952).
+    - Title check: `Add workflows` failed with "No release type found in pull request title".
+      `ci: Add workflows` failed with "must not start with an uppercase letter". Restoring
+      `ci: add CI and release workflows` passed.
+    - Failures (PR #5, branch `ci-check-failures`): `lint` failed on `no-debugger`, `test` on
+      `AssertionError: expected 1 to be 2`, `build` on `TS2322`. After a `package.json` change
+      without the lockfile, all three failed at install with `ERR_PNPM_OUTDATED_LOCKFILE`.
+      PR #5 closed and its branch deleted.
 
 - [ ] **T7: Repository settings (maintainer)**
   - The maintainer applies spec settings 1–3 in the GitHub UI. Setting 2 ("Allow GitHub
