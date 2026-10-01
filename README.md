@@ -80,12 +80,51 @@ Run `pnpm start` and search by artist name. The API matches whole words, so use 
 UI library components are never imported directly: feature code uses the wrappers in
 `src/components/ui`, and ESLint rejects `@base-ui/*` imports anywhere else.
 
+## Contributing and releases
+
+### Pull requests
+
+Pull requests to `main` are squash-merged, so the PR title becomes the commit message on `main`.
+The title must be a [Conventional Commit](https://www.conventionalcommits.org/):
+
+```
+<type>(<optional scope>): <subject>
+```
+
+- Types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `revert`.
+- The subject starts with a lowercase letter.
+- A breaking change adds `!` after the type or scope: `feat(search)!: drop the title field`.
+
+Examples: `feat(search): add a year filter`, `fix: keep focus on Retry`, `docs: update README`.
+
+CI (`.github/workflows/ci.yml`) runs four checks on every pull request, in parallel: `lint`,
+`test`, `build` and `pr-title`. A pull request can only be merged when all four pass.
+
+### Releases
+
+Releases are automated with [release-please](https://github.com/googleapis/release-please)
+(`.github/workflows/release.yml`):
+
+1. Every merge to `main` updates one open release PR, titled `chore(main): release X.Y.Z`. It
+   bumps `version` in `package.json`, updates `.release-please-manifest.json` and adds the new
+   entries to `CHANGELOG.md`.
+2. `fix` and `perf` bump the patch version. `feat` bumps the minor version. While the version is
+   `0.x`, a breaking change also bumps the minor version. Other types do not create a release.
+3. The release PR is opened by GitHub Actions, so CI does not start on it by itself. Before
+   merging it, **close it and reopen it**: the reopen starts CI.
+4. Merging the release PR creates the tag `vX.Y.Z` and a GitHub Release with the changelog notes.
+
+Never edit `CHANGELOG.md` or `.release-please-manifest.json` by hand, and never push tags by
+hand. To release `1.0.0`, merge a commit whose body has the footer `Release-As: 1.0.0`.
+
 ## Documentation
 
 - API spec: [`docs/specs/SPEC-artwork-search-api.md`](docs/specs/SPEC-artwork-search-api.md)
 - API plan: [`docs/plans/PLAN-artwork-search-api.md`](docs/plans/PLAN-artwork-search-api.md)
 - UI spec: [`docs/specs/SPEC-artwork-search-ui.md`](docs/specs/SPEC-artwork-search-ui.md)
 - UI plan: [`docs/plans/PLAN-artwork-search-ui.md`](docs/plans/PLAN-artwork-search-ui.md)
+- CI and release spec: [`docs/specs/SPEC-ci-release.md`](docs/specs/SPEC-ci-release.md)
+- CI and release plan: [`docs/plans/PLAN-ci-release.md`](docs/plans/PLAN-ci-release.md)
 
 ## Notes
 
