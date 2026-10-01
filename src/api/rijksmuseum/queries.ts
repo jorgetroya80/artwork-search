@@ -107,17 +107,26 @@ function toSearchStatus(
 // The batch belongs to one search. A new search starts from the first batch again.
 type VisibleBatch = { searchKey: string; count: number };
 
-export function useArtworkSearch(input: SearchInput) {
-  const params = normalizeSearchInput(input);
-  const searchKey = JSON.stringify(params);
-  const queryClient = useQueryClient();
-  const search = useInfiniteQuery(searchQueryOptions(params));
+function useVisibleBatch(searchKey: string) {
   const [batch, setBatch] = useState<VisibleBatch>({
     searchKey,
     count: PAGE_SIZE,
   });
-
   const visibleCount = batch.searchKey === searchKey ? batch.count : PAGE_SIZE;
+  const nextCount = visibleCount + PAGE_SIZE;
+  const showNextBatch = () => setBatch({ searchKey, count: nextCount });
+
+  return { visibleCount, nextCount, showNextBatch };
+}
+
+export function useArtworkSearch(input: SearchInput) {
+  const params = normalizeSearchInput(input);
+  const queryClient = useQueryClient();
+  const search = useInfiniteQuery(searchQueryOptions(params));
+  const { visibleCount, nextCount, showNextBatch } = useVisibleBatch(
+    JSON.stringify(params)
+  );
+
   const pages = search.data?.pages ?? [];
   const visibleIds = getVisibleIds(pages, visibleCount);
   const artworkQueries = useQueries({
@@ -129,12 +138,11 @@ export function useArtworkSearch(input: SearchInput) {
 
   async function loadMore() {
     if (!hasMore || search.isFetching) return;
-    const nextCount = visibleCount + PAGE_SIZE;
     if (needsNextApiPage(pages, nextCount)) {
       const result = await search.fetchNextPage({ cancelRefetch: false });
       if (result.isError) return;
     }
-    setBatch({ searchKey, count: nextCount });
+    showNextBatch();
   }
 
   return {

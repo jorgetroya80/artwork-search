@@ -330,7 +330,10 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     data maps to `status: 'success'` (`toSearchStatus`), which also removed the nested ternary.
   - `pickImageUrl` accepts only `https:` URLs (first match in `access_point`). Anything else
     gives `imageUrl: null`, so the UI shows its placeholder.
-  - Not changed, by decision: the review Suggestions / FYI items.
+  - Suggestion 1 applied: `useVisibleBatch(searchKey)` holds the `{ searchKey, count }` state and
+    its reset, so `useArtworkSearch` only orchestrates. Behavior unchanged (117 tests green).
+  - Not changed, by decision: the thumbnail regex, the redirect check and the `loadMore` guard.
+    Entity retry latency and large lists move to the UI spec.
 
 ## Risks and mitigations
 
