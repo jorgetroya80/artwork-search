@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { server } from './msw/server';
 
@@ -32,6 +32,14 @@ describe('test environment', () => {
   });
 
   it('rejects requests without a handler', async () => {
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
     await expect(fetch('https://example.com/unhandled')).rejects.toThrow();
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining('without a matching request handler')
+    );
+    consoleError.mockRestore();
   });
 });
