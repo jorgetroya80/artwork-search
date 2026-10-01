@@ -1,9 +1,9 @@
 // Linked Art JSON-LD from a third party: read every field defensively and never throw.
 import { AAT, THUMBNAIL_WIDTH } from './constants';
-import type { Language } from './types';
 
 type JsonRecord = Record<string, unknown>;
 type Name = { content: string; languages: string[]; classes: string[] };
+export type ArtistRef = { id: string; name: string | null };
 
 const IIIF_FULL_SIZE = '/full/max/';
 
@@ -32,19 +32,14 @@ function readNames(entity: unknown): Name[] {
   }));
 }
 
-export function pickPreferredName(
-  entity: unknown,
-  language: Language
-): string | null {
+export function pickPreferredName(entity: unknown): string | null {
   const names = readNames(entity);
   const isPreferred = (name: Name) => name.classes.includes(AAT.preferredTerm);
-  const inLanguage = names.filter((name) =>
-    name.languages.includes(AAT.language[language])
-  );
+  const english = names.filter((name) => name.languages.includes(AAT.english));
 
   return (
-    inLanguage.find(isPreferred)?.content ??
-    inLanguage[0]?.content ??
+    english.find(isPreferred)?.content ??
+    english[0]?.content ??
     names.find(isPreferred)?.content ??
     names[0]?.content ??
     null
@@ -63,14 +58,33 @@ export function pickDateRange(object: unknown) {
   };
 }
 
-export function pickArtistIds(object: unknown): string[] {
-  const production = asRecord(asRecord(object).produced_by);
-  const partArtistIds = asArray(production.part).flatMap((part) =>
-    readRefIds(asRecord(part).carried_out_by)
+const readEnglishNotation = (notation: unknown): string | null =>
+  asString(
+    asArray(notation)
+      .map(asRecord)
+      .find((value) => value['@language'] === 'en')?.['@value']
   );
-  return [
-    ...new Set([...readRefIds(production.carried_out_by), ...partArtistIds]),
+
+function readArtistRefs(refs: unknown): ArtistRef[] {
+  return asArray(refs).flatMap((ref) => {
+    const { id, notation } = asRecord(ref);
+    if (typeof id !== 'string') return [];
+    return [{ id, name: readEnglishNotation(notation) }];
+  });
+}
+
+/** Artists with the English name from `notation`, or `name: null` when it is missing. */
+export function pickArtists(object: unknown): ArtistRef[] {
+  const production = asRecord(asRecord(object).produced_by);
+  const artists = [
+    ...readArtistRefs(production.carried_out_by),
+    ...asArray(production.part).flatMap((part) =>
+      readArtistRefs(asRecord(part).carried_out_by)
+    ),
   ];
+  return artists.filter(
+    (artist, index) => artists.findIndex(({ id }) => id === artist.id) === index
+  );
 }
 
 export const pickVisualItemIds = (object: unknown) =>

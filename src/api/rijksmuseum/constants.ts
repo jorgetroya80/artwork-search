@@ -7,9 +7,6 @@ export const THUMBNAIL_WIDTH = 400;
 export const REQUEST_TIMEOUT_MS = 15_000;
 
 export const AAT = {
-  language: {
-    en: 'http://vocab.getty.edu/aat/300388277',
-    nl: 'http://vocab.getty.edu/aat/300388256',
-  },
+  english: 'http://vocab.getty.edu/aat/300388277',
   preferredTerm: 'http://vocab.getty.edu/aat/300404670',
 } as const;

@@ -190,15 +190,20 @@ Can run in parallel: T5 with T6, and T8 at any time after T3.
     throws. The raw Linked Art types were not needed.
   - Found: the object record already has the artist name in
     `produced_by.part[].carried_out_by[].notation` (`[{ "@language": "en", "@value": "Rembrandt
-van Rijn" }]`). Using it could avoid one request per artist. Not used: the spec says to
-    fetch the artist. Decide with the user before T7.
+van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there too.
+  - Decided with the user (follow-up commit): English only, so `Language` and the language option
+    are removed from the spec and the code (`AAT.english` instead of `AAT.language`).
+    `pickArtistIds` became `pickArtists`, which returns `{ id, name }` with the English
+    `notation` as `name`, or `null` when it is missing. The spec is updated.
 
 - [ ] **T7: `fetchArtwork`**
-  - Fetches the object, then resolves artists and the image chain in parallel with
-    `Promise.allSettled`. Takes the internal `fetchEntity` option.
-  - Acceptance: the Night Watch result matches the spec success criterion. An artist `500` gives
-    `artists: []`. A visual item or digital object `500` gives `imageUrl: null`. An object `500`
-    rejects with `RijksApiError`. A shared artist goes through `fetchEntity` once per ID.
+  - Fetches the object, then resolves the image chain and the artists without an English
+    `notation` in parallel with `Promise.allSettled`. Takes the internal `fetchEntity` option.
+  - Acceptance: the Night Watch result matches the spec success criterion with no artist request
+    (name from `notation`). An artist without `notation` is fetched, and a `500` for it leaves
+    that artist out of `artists`. A visual item or digital object `500` gives `imageUrl: null`. An
+    object `500` rejects with `RijksApiError`. A shared artist goes through `fetchEntity` once per
+    ID.
   - Verify: `pnpm test artwork`, `pnpm build`.
   - Files: `artwork.ts`, `artwork.test.ts`.
   - Size: S.

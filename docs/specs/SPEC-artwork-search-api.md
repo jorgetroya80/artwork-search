@@ -51,22 +51,23 @@ GET https://data.rijksmuseum.nl/search/collection?creator=<name>&title=<title>&i
 Resolving one result costs several more requests to `https://id.rijksmuseum.nl/{id}` (JSON-LD,
 ~100 KB, ~250 ms each). An unknown ID returns `400`.
 
-| Data            | Path in object JSON-LD                                                                               |
-| --------------- | ---------------------------------------------------------------------------------------------------- |
-| Object number   | `identified_by[]` where `type == "Identifier"`, `.content` (e.g. `SK-C-5`)                           |
-| Titles          | `identified_by[]` where `type == "Name"`, `.content`                                                 |
-| Title language  | `language[].id`: AAT `300388256` = Dutch, AAT `300388277` = English                                  |
-| Preferred title | Name whose `classified_as[].id` includes AAT `300404670` (preferred term, e.g. "De Nachtwacht")      |
-| Date            | `produced_by.timespan.begin_of_the_begin` / `end_of_the_end` (ISO strings)                           |
-| Artist IDs      | `produced_by.part[].carried_out_by[].id` (may also sit at `produced_by.carried_out_by[]`)            |
-| Artist name     | fetch artist ID, `identified_by[]` `type == "Name"`; same preferred-term rule ("Rembrandt van Rijn") |
-| Image           | `shows[].id` → VisualItem `digitally_shown_by[].id` → DigitalObject `access_point[].id` = IIIF URL   |
+| Data            | Path in object JSON-LD                                                                                   |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| Object number   | `identified_by[]` where `type == "Identifier"`, `.content` (e.g. `SK-C-5`)                               |
+| Titles          | `identified_by[]` where `type == "Name"`, `.content`                                                     |
+| Title language  | `language[].id`: AAT `300388256` = Dutch, AAT `300388277` = English                                      |
+| Preferred title | Name whose `classified_as[].id` includes AAT `300404670` (preferred term, e.g. "De Nachtwacht")          |
+| Date            | `produced_by.timespan.begin_of_the_begin` / `end_of_the_end` (ISO strings)                               |
+| Artist IDs      | `produced_by.part[].carried_out_by[].id` (may also sit at `produced_by.carried_out_by[]`)                |
+| Artist name     | `carried_out_by[].notation` value with `@language: "en"`; else fetch the artist ID (preferred-term rule) |
+| Image           | `shows[].id` → VisualItem `digitally_shown_by[].id` → DigitalObject `access_point[].id` = IIIF URL       |
 
 IIIF image URL example: `https://iiif.micr.io/PJEZO/full/max/0/default.jpg`. Replace `max` with
 `400,` to get a 400 px wide thumbnail.
 
-Full cost per artwork: object + visual item + digital object + one request per artist (artists
-are shared across results and are cached).
+Full cost per artwork: object + visual item + digital object. An artist request is added only when
+the object has no English `notation` for that artist. Artist requests are cached and shared across
+results.
 
 ## Pagination model
 
@@ -127,14 +128,12 @@ export type SearchPage = {
 export type Artwork = {
   id: string; // full object URL
   objectNumber: string | null; // "SK-C-5"
-  title: string; // display title in requested language, falls back to any language
+  title: string; // English preferred title, falls back to any language
   artists: string[]; // display names, [] when unknown
   date: { start: string | null; end: string | null }; // ISO dates
   imageUrl: string | null; // IIIF full size
   thumbnailUrl: string | null; // IIIF 400px wide
 };
-
-export type Language = 'en' | 'nl';
 
 // Pure
 export function normalizeSearchInput(input: SearchInput): SearchParams | null;
@@ -157,14 +156,11 @@ export function searchCollection(
 ): Promise<SearchPage>;
 export function fetchArtwork(
   id: string,
-  options?: { language?: Language; signal?: AbortSignal }
+  options?: { signal?: AbortSignal }
 ): Promise<Artwork>;
 
 // React hooks (TanStack Query)
-export function useArtworkSearch(
-  input: SearchInput,
-  options?: { language?: Language }
-): {
+export function useArtworkSearch(input: SearchInput): {
   status: 'idle' | 'pending' | 'error' | 'success';
   artworks: ArtworkResult[]; // every loaded batch, in API order
   total: number | null; // null while idle or before the first response
@@ -176,10 +172,7 @@ export function useArtworkSearch(
   isLoadingMore: boolean; // true while loadMore fetches a new API page
   loadMoreError: RijksApiError | null; // last loadMore search request failed
 };
-export function useArtwork(
-  id: string,
-  options?: { language?: Language }
-): UseQueryResult<Artwork, RijksApiError>;
+export function useArtwork(id: string): UseQueryResult<Artwork, RijksApiError>;
 
 export type ArtworkResult =
   | { id: string; status: 'pending' }
@@ -295,13 +288,17 @@ Artist and image sub-requests use the same retry policy before they fall back to
   `invalid-id` and is not fetched. IDs come from a third-party response and must not be followed
   blindly.
 - Sends `Accept: application/ld+json`.
-- Language defaults to `en`.
-- Title and artist name use the same rule (`pickPreferredName`): the preferred term (AAT
-  `300404670`) in the requested language, then any name in that language, then the preferred term
-  in any language, then the first Name.
-- Artists: resolves every artist ID in parallel and removes duplicates. The rule above gives
-  "Rembrandt van Rijn". The person record also has inverted names ("Rijn, Rembrandt van", AAT
-  `300404672`) and alternative names ("Rembrandt Harmensz. van Rijn", AAT `300404671`).
+- English only. There is no language option.
+- Title and fetched artist name use the same rule (`pickPreferredName`): the English preferred term
+  (AAT `300404670`), then any English name, then the preferred term in any language, then the
+  first Name.
+- Artists (`pickArtists`), without duplicates:
+  1. Use the `notation` value with `@language: "en"` from the object's `carried_out_by` entry. No
+     request. Example: `{ "@language": "en", "@value": "Rembrandt van Rijn" }`.
+  2. If there is no English notation, fetch the artist ID and apply the rule above. This gives
+     "Rembrandt van Rijn" too. The person record also has inverted names ("Rijn, Rembrandt van",
+     AAT `300404672`) and alternative names ("Rembrandt Harmensz. van Rijn", AAT `300404671`).
+     Fetched artists resolve in parallel.
 - **Partial failure does not fail the artwork.** If the image chain or an artist request fails, the
   matching field is `null` / skipped. Only a failed object request fails the artwork.
   `imageAvailable=true` makes a missing image rare, but the code still handles it. The UI shows its
@@ -321,7 +318,7 @@ Artist and image sub-requests use the same retry policy before they fall back to
   click never skips or repeats a batch.
 - `hasMore` is `visibleCount < total`.
 - Resolves the IDs from `getVisibleIds`, with one `useQueries` entry per ID and key
-  `['rijksmuseum', 'artwork', id, language]`. Earlier batches stay resolved from cache.
+  `['rijksmuseum', 'artwork', id]`. Earlier batches stay resolved from cache.
 - Artist and image sub-requests go through `queryClient.fetchQuery` with their own keys
   (`['rijksmuseum', 'entity', id]`), so a shared artist is fetched once.
 - `staleTime`: search 5 minutes, objects and entities `Infinity` (collection data rarely changes).
@@ -392,32 +389,30 @@ imports. Named exports in `src/api`. Pure functions take parsed JSON and return 
 Fetching stays out of `parse.ts` and `pagination.ts`.
 
 ```ts
-import { AAT } from './constants';
-import type { LinkedArtName, LinkedArtObject } from './types';
-
-const hasClass = (name: LinkedArtName, aat: string): boolean =>
-  name.classified_as?.some((c) => c.id === aat) ?? false;
-
-export function pickPreferredName(
-  object: LinkedArtObject,
-  language: Language
-): string | null {
-  const names = object.identified_by?.filter((n) => n.type === 'Name') ?? [];
-  const inLanguage = names.filter((n) =>
-    n.language?.some((l) => l.id === AAT.language[language])
+const readEnglishNotation = (notation: unknown): string | null =>
+  asString(
+    asArray(notation)
+      .map(asRecord)
+      .find((value) => value['@language'] === 'en')?.['@value']
   );
 
+export function pickPreferredName(entity: unknown): string | null {
+  const names = readNames(entity);
+  const isPreferred = (name: Name) => name.classes.includes(AAT.preferredTerm);
+  const english = names.filter((name) => name.languages.includes(AAT.english));
+
   return (
-    inLanguage.find((n) => hasClass(n, AAT.preferredTerm))?.content ??
-    inLanguage[0]?.content ??
-    names.find((n) => hasClass(n, AAT.preferredTerm))?.content ??
+    english.find(isPreferred)?.content ??
+    english[0]?.content ??
+    names.find(isPreferred)?.content ??
     names[0]?.content ??
     null
   );
 }
 ```
 
-- No `any`. Raw API types are partial (`?`) on purpose: never trust third-party shape.
+- No `any`. Third-party JSON is read as `unknown` with type guards (`asRecord`, `asArray`,
+  `asString`): never trust its shape, never throw on a missing or malformed field.
 - No default exports in `src/api`.
 - Comments only for non-obvious API quirks (e.g. whole-word matching, cursor pagination).
 
@@ -488,7 +483,10 @@ export function pickPreferredName(
   `isEmpty` for this. The message text and design belong to the UI spec.
 - When an image is missing (`imageUrl: null`) or fails to load (`onError`), the UI shows a
   placeholder that says "Image not available". The placeholder design belongs to the UI spec.
-- Default title language is English (`en`), with Dutch as fallback.
+- English only: no language option. Titles and artist names use the English preferred term, with
+  any language as fallback.
+- Artist names come from the object's English `notation`. The artist record is fetched only when
+  that is missing.
 - `imageAvailable=true` is always sent. `type` is not supported.
 - "Load more" button with `useInfiniteQuery`, 10 artworks per click. No page numbers. The API layer
   owns the mapping to the 100-item cursor pages.

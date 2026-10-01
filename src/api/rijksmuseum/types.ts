@@ -1,5 +1,3 @@
-export type Language = 'en' | 'nl';
-
 export type SearchInput = {
   creator?: string | null;
   title?: string | null;

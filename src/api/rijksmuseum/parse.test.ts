@@ -6,7 +6,7 @@ import rembrandt from '../../test/fixtures/person-2103429.json';
 import visualItem from '../../test/fixtures/visual-202107928.json';
 import { AAT } from './constants';
 import {
-  pickArtistIds,
+  pickArtists,
   pickDateRange,
   pickDigitalObjectIds,
   pickImageUrl,
@@ -16,6 +16,9 @@ import {
   toThumbnailUrl,
 } from './parse';
 
+const DUTCH = 'http://vocab.getty.edu/aat/300388256';
+const LANGUAGE_IDS = { en: AAT.english, nl: DUTCH };
+
 const name = (
   content: string,
   language: 'en' | 'nl' | null,
@@ -23,7 +26,7 @@ const name = (
 ) => ({
   type: 'Name',
   content,
-  language: language ? [{ id: AAT.language[language] }] : [],
+  language: language ? [{ id: LANGUAGE_IDS[language] }] : [],
   classified_as: isPreferred ? [{ id: AAT.preferredTerm }] : [],
 });
 
@@ -33,26 +36,22 @@ const entityWithNames = (...names: ReturnType<typeof name>[]) => ({
 
 describe('pickPreferredName', () => {
   it('picks the preferred English title of The Night Watch', () => {
-    expect(pickPreferredName(nightWatch, 'en')).toBe(
+    expect(pickPreferredName(nightWatch)).toBe(
       'The Night Watch Militia Company of District II under the Command of Captain Frans Banninck Cocq'
     );
   });
 
-  it('picks the preferred Dutch title of The Night Watch', () => {
-    expect(pickPreferredName(nightWatch, 'nl')).toBe('De Nachtwacht');
-  });
-
   it('picks the preferred English artist name, not an inverted one', () => {
-    expect(pickPreferredName(rembrandt, 'en')).toBe('Rembrandt van Rijn');
+    expect(pickPreferredName(rembrandt)).toBe('Rembrandt van Rijn');
   });
 
-  it('falls back to any name in the language', () => {
+  it('falls back to any English name', () => {
     const entity = entityWithNames(
       name('Preferred Dutch', 'nl', true),
       name('Any English', 'en')
     );
 
-    expect(pickPreferredName(entity, 'en')).toBe('Any English');
+    expect(pickPreferredName(entity)).toBe('Any English');
   });
 
   it('falls back to the preferred name in any language', () => {
@@ -61,13 +60,13 @@ describe('pickPreferredName', () => {
       name('Preferred Dutch', 'nl', true)
     );
 
-    expect(pickPreferredName(entity, 'en')).toBe('Preferred Dutch');
+    expect(pickPreferredName(entity)).toBe('Preferred Dutch');
   });
 
   it('falls back to the first name', () => {
     const entity = entityWithNames(name('First', null), name('Second', 'nl'));
 
-    expect(pickPreferredName(entity, 'en')).toBe('First');
+    expect(pickPreferredName(entity)).toBe('First');
   });
 
   it('ignores identifiers and returns null without names', () => {
@@ -75,7 +74,7 @@ describe('pickPreferredName', () => {
       identified_by: [{ type: 'Identifier', content: 'SK-C-5' }],
     };
 
-    expect(pickPreferredName(entity, 'en')).toBeNull();
+    expect(pickPreferredName(entity)).toBeNull();
   });
 });
 
@@ -91,9 +90,9 @@ describe('Night Watch fixture', () => {
     });
   });
 
-  it('gives the artist ID', () => {
-    expect(pickArtistIds(nightWatch)).toEqual([
-      'https://id.rijksmuseum.nl/2103429',
+  it('gives the artist with the English name from notation', () => {
+    expect(pickArtists(nightWatch)).toEqual([
+      { id: 'https://id.rijksmuseum.nl/2103429', name: 'Rembrandt van Rijn' },
     ]);
   });
 
@@ -110,21 +109,44 @@ describe('Night Watch fixture', () => {
   });
 });
 
-describe('pickArtistIds', () => {
+describe('pickArtists', () => {
+  const artist = (id: string, notation?: object[]) => ({
+    id: `https://id.rijksmuseum.nl/${id}`,
+    notation,
+  });
+
   it('reads artists from produced_by and its parts without duplicates', () => {
     const object = {
       produced_by: {
-        carried_out_by: [{ id: 'https://id.rijksmuseum.nl/1' }],
+        carried_out_by: [artist('1')],
         part: [
-          { carried_out_by: [{ id: 'https://id.rijksmuseum.nl/2' }] },
-          { carried_out_by: [{ id: 'https://id.rijksmuseum.nl/1' }] },
+          { carried_out_by: [artist('2')] },
+          { carried_out_by: [artist('1')] },
         ],
       },
     };
 
-    expect(pickArtistIds(object)).toEqual([
+    expect(pickArtists(object).map(({ id }) => id)).toEqual([
       'https://id.rijksmuseum.nl/1',
       'https://id.rijksmuseum.nl/2',
+    ]);
+  });
+
+  it('gives a null name when notation has no English value', () => {
+    const object = {
+      produced_by: {
+        carried_out_by: [
+          artist('1', [{ '@language': 'nl', '@value': 'anoniem' }]),
+          artist('2'),
+          artist('3', [{ '@language': 'en', '@value': 42 }]),
+        ],
+      },
+    };
+
+    expect(pickArtists(object).map(({ name }) => name)).toEqual([
+      null,
+      null,
+      null,
     ]);
   });
 });
@@ -147,10 +169,10 @@ describe('missing or malformed fields', () => {
   it.each([[{}], [{ identified_by: 'x', produced_by: 1, shows: {} }]])(
     'gives null or [] and never throws: %o',
     (entity) => {
-      expect(pickPreferredName(entity, 'en')).toBeNull();
+      expect(pickPreferredName(entity)).toBeNull();
       expect(pickObjectNumber(entity)).toBeNull();
       expect(pickDateRange(entity)).toEqual({ start: null, end: null });
-      expect(pickArtistIds(entity)).toEqual([]);
+      expect(pickArtists(entity)).toEqual([]);
       expect(pickVisualItemIds(entity)).toEqual([]);
       expect(pickDigitalObjectIds(entity)).toEqual([]);
       expect(pickImageUrl(entity)).toBeNull();
