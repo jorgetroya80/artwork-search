@@ -322,7 +322,7 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
 
 - [x] All spec success criteria are checked.
 - [x] `pnpm lint`, `pnpm test:coverage` and `pnpm build` pass.
-- [ ] Review with the user, then open the PR from `feat-build-api`.
+- [x] Review with the user, then open the PR from `feat-build-api`.
 - Review fixes (2026-10-01), after `/review`:
   - `hasMore` now uses the loaded pages (`hasMoreResults`), not `total`. Before, a last page with
     fewer IDs than `total` left `hasMore: true` with a `loadMore` that loaded nothing.
