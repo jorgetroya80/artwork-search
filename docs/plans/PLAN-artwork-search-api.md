@@ -224,11 +224,11 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
       fixture result. `creator=Vermeer`: 12 results, no next token. The Milkmaid, Woman Reading a
       Letter and Landscape with a Farm resolve with English titles, artists from `notation` and
       IIIF URLs. The 400 px thumbnail URL returns `200 image/jpeg`.
-- [ ] Review with the user.
+- [x] Review with the user.
 
 ### Phase 3: Hooks
 
-- [ ] **T8: Pagination helpers (pure)**
+- [x] **T8: Pagination helpers (pure)**
   - `pagination.ts`: `getVisibleIds`, `needsNextApiPage`.
   - Acceptance: tests at 10, 100 and 110 visible, across 2 pages, on the last partial batch (1423 →
     3), and with total 0. With 100 IDs loaded plus a token, `needsNextApiPage` is false at 100 and
@@ -236,6 +236,9 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
   - Verify: `pnpm test pagination`.
   - Files: `pagination.ts`, `pagination.test.ts`.
   - Size: XS.
+  - Done: 12 tests. Extra cases beyond the plan: only the loaded IDs are visible while the next
+    page is missing (100 of 110), `needsNextApiPage` is false once page 2 is loaded, and false
+    before the first page arrives (`[]`).
 
 - [ ] **T9: `QueryClient`, query keys, `useArtwork`**
   - `queryClient.ts`: `createQueryClient()` with the retry policy (`error.retryable && count < 2`)
