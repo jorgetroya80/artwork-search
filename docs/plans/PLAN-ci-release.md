@@ -194,7 +194,7 @@ Can run in parallel: T2/T3 with T4.
       without the lockfile, all three failed at install with `ERR_PNPM_OUTDATED_LOCKFILE`.
       PR #5 closed and its branch deleted.
 
-- [ ] **T7: Repository settings (maintainer)**
+- [x] **T7: Repository settings (maintainer)**
   - The maintainer applies spec settings 1–3 in the GitHub UI. Setting 2 ("Allow GitHub
     Actions to create and approve pull requests") is required before T8.
   - Required checks: `lint`, `test`, `build`, `pr-title`. They show up in the picker only
@@ -204,10 +204,15 @@ Can run in parallel: T2/T3 with T4.
     shows squash only. A PR with a failing check shows "Merging is blocked".
   - Files: none.
   - Size: XS.
+  - Done (checked with `gh api`): squash merge only, squash title `PR_TITLE`, head branches
+    deleted on merge, workflow permissions `read` with "Allow GitHub Actions to create and
+    approve pull requests" on. Branch protection is a ruleset `main` (active, default branch, no
+    bypass): no deletion, no force push, PR required with 0 approvals and squash as the only
+    merge method, required checks `lint`, `test`, `build`, `pr-title` with branches up to date.
 
 ### Checkpoint 2: Ready to merge
 
-- [ ] All four checks are green on the workflows PR. Settings 1–3 are on.
+- [x] All four checks are green on the workflows PR. Settings 1–3 are on.
 - [ ] Review with the user, then squash-merge the workflows PR.
 
 ### Phase 3: First release
