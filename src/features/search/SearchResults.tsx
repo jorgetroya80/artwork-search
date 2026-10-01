@@ -1,10 +1,19 @@
-import type { useArtworkSearch } from '../../api/rijksmuseum';
+import { PAGE_SIZE, type useArtworkSearch } from '../../api/rijksmuseum';
+import { ArtworkCard, ArtworkCardSkeleton } from './ArtworkCard';
 
 type ArtworkSearch = ReturnType<typeof useArtworkSearch>;
 
 type SearchResultsProps = {
   search: ArtworkSearch;
 };
+
+const GRID_CLASSES =
+  'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+
+const SKELETON_KEYS = Array.from(
+  { length: PAGE_SIZE },
+  (_, index) => `skeleton-${index}`
+);
 
 const formatCount = (count: number) => count.toLocaleString('en-US');
 
@@ -14,12 +23,38 @@ function getStatusText({ status, artworks, total }: ArtworkSearch) {
   return `Showing ${formatCount(artworks.length)} of ${formatCount(total)} ${noun}`;
 }
 
+function SkeletonGrid() {
+  return (
+    <ul aria-busy className={GRID_CLASSES}>
+      {SKELETON_KEYS.map((key) => (
+        <li key={key}>
+          <ArtworkCardSkeleton />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ResultGrid({ artworks }: Pick<ArtworkSearch, 'artworks'>) {
+  return (
+    <ul className={GRID_CLASSES}>
+      {artworks.map((result) => (
+        <li key={result.id}>
+          <ArtworkCard result={result} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function SearchResults({ search }: SearchResultsProps) {
   return (
     <section className="flex flex-col gap-4">
       <p role="status" className="text-sm text-fg-muted">
         {getStatusText(search)}
       </p>
+      {search.status === 'pending' && <SkeletonGrid />}
+      {search.status === 'success' && <ResultGrid artworks={search.artworks} />}
     </section>
   );
 }

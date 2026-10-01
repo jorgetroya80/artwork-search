@@ -156,7 +156,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Size: M.
   - Done: `handleSubmit` normalizes the draft with `normalizeSearchInput` (not only `trim`), so "Rembrandt van Rijn" and "Rembrandt van Rijn" count as the same term for the retry-after-error rule. The live region is a `<p role="status">` (implicit `aria-live="polite"`). The Search button sits in a `flex-col` div: full width below `sm`, offset by the label height (`sm:mt-7`) from `sm`, so the `Button` wrapper needs no layout prop. Enter is tested with `fireEvent.submit`, because jsdom has no implicit submission on key events. `renderHookWithClient` and `renderWithClient` share one test client factory.
 
-- [ ] **T6: Artwork cards**
+- [x] **T6: Artwork cards**
   - `ArtworkImage`: `thumbnailUrl` in an `aspect-[4/3]` box, `object-cover`, `loading="lazy"`,
     `alt` = title. Placeholder "Image not available" for `null` or `onError`.
   - `ArtworkCard`: `<article>` per status. Pending skeleton (`bg-bg-subtle`,
@@ -172,6 +172,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Files: `ArtworkImage.tsx`, `ArtworkCard.tsx`, `ArtworkCard.test.tsx`, `SearchResults.tsx`,
     `SearchPage.test.tsx`.
   - Size: M.
+  - Done: Skeleton cards are `<article aria-label="Loading artwork" aria-busy>`, so tests find them by role, name and `busy`. `ArtworkCardSkeleton` is exported and reused by the pending grid. The image test uses a hand-made `Artwork` in `ArtworkCard.test.tsx`, because generated objects have no image. In `SearchPage.test.tsx`, the failing-object handler is registered after `generatedSearchHandlers`, since `server.use` gives the latest handler precedence.
 
 ### Checkpoint 2: Search works end to end
 
