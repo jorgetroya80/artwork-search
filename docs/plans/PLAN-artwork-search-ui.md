@@ -70,7 +70,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 ### Phase 1: Foundation
 
-- [ ] **T1: Base UI, tokens, ESLint import guard**
+- [x] **T1: Base UI, tokens, ESLint import guard**
   - `pnpm add @base-ui/react@1.8.0` (released 2026-09-04, old enough for the pnpm release-age
     policy).
   - `src/index.css`: keep `@import 'tailwindcss'`, add the `@theme inline` tokens from the spec and
@@ -86,6 +86,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Files: `package.json`, `pnpm-lock.yaml`, `src/index.css`, `eslint.config.js`,
     `vite.config.ts`.
   - Size: S.
+  - Done: the existing `no-restricted-imports` paths moved to `restrictedImportPaths`, so the `src/components/ui/**` override keeps the `FC` ban and only drops the `@base-ui/*` pattern. Checked with temporary files: a Base UI import outside `src/components/ui/` fails lint, inside it passes; token classes (`bg-bg`, `text-fg-muted`, `rounded-control`, `outline-accent`) pass `no-unknown-classes`, an unknown class fails. `@theme inline` works, no fallback needed.
 
 - [ ] **T2: `Button` wrapper**
   - `src/components/ui/Button.tsx`: app-owned `ButtonProps` from the spec. Wraps Base UI `Button`.

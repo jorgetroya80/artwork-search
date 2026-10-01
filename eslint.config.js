@@ -9,6 +9,21 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+const restrictedImportPaths = [
+  {
+    name: 'react',
+    importNames: ['FC'],
+    message:
+      '`FC` is unnecessary and has many downsides, as explained in https://github.com/facebook/create-react-app/pull/8177',
+  },
+];
+
+const restrictedUiLibrary = {
+  group: ['@base-ui/*'],
+  message:
+    'Import UI components from src/components/ui, not from the UI library.',
+};
+
 export default defineConfig([
   globalIgnores(['dist']),
   {
@@ -144,16 +159,17 @@ export default defineConfig([
 
       '@typescript-eslint/no-restricted-imports': [
         'error',
-        {
-          paths: [
-            {
-              name: 'react',
-              importNames: ['FC'],
-              message:
-                '`FC` is unnecessary and has many downsides, as explained in https://github.com/facebook/create-react-app/pull/8177',
-            },
-          ],
-        },
+        { paths: restrictedImportPaths, patterns: [restrictedUiLibrary] },
+      ],
+    },
+  },
+  {
+    // UI wrappers are the only place allowed to import the UI library
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        { paths: restrictedImportPaths },
       ],
     },
   },
