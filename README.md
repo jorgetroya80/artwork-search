@@ -8,7 +8,9 @@ Rijksmuseum Linked Art API.
 - React `19.3` with [React Compiler](https://react.dev/learn/react-compiler)
 - TypeScript `6.0`
 - Vite `8`
-- Tailwind CSS `4`
+- Tailwind CSS `4`, with semantic color and radius tokens in `src/index.css`
+- [Base UI](https://base-ui.com/react) `1.8`, used only behind the wrappers in `src/components/ui`
+- TanStack Query `5`
 - ESLint `10` and Prettier `3`
 
 ## Requirements
@@ -67,12 +69,23 @@ Runs the tests in watch mode.
 
 ### `pnpm test:coverage`
 
-Runs the tests with coverage. It fails when line coverage of `src/api/rijksmuseum` is below 90%.
+Runs the tests with coverage. It fails when line coverage of `src/api/rijksmuseum`,
+`src/features/search` or `src/components` is below 90%.
+
+## Search UI
+
+Run `pnpm start` and search by artist name. The API matches whole words, so use a full name
+("Rembrandt", not "Rembr"). Results load 10 at a time with "Load more".
+
+UI library components are never imported directly: feature code uses the wrappers in
+`src/components/ui`, and ESLint rejects `@base-ui/*` imports anywhere else.
 
 ## Documentation
 
-- Spec: [`docs/specs/SPEC-artwork-search-api.md`](docs/specs/SPEC-artwork-search-api.md)
-- Plan: [`docs/plans/PLAN-artwork-search-api.md`](docs/plans/PLAN-artwork-search-api.md)
+- API spec: [`docs/specs/SPEC-artwork-search-api.md`](docs/specs/SPEC-artwork-search-api.md)
+- API plan: [`docs/plans/PLAN-artwork-search-api.md`](docs/plans/PLAN-artwork-search-api.md)
+- UI spec: [`docs/specs/SPEC-artwork-search-ui.md`](docs/specs/SPEC-artwork-search-ui.md)
+- UI plan: [`docs/plans/PLAN-artwork-search-ui.md`](docs/plans/PLAN-artwork-search-ui.md)
 
 ## Notes
 

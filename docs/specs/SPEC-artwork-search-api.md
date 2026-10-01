@@ -160,7 +160,7 @@ export function fetchArtwork(
 ): Promise<Artwork>;
 
 // React hooks (TanStack Query)
-export function useArtworkSearch(input: SearchInput): {
+export type ArtworkSearch = {
   status: 'idle' | 'pending' | 'error' | 'success';
   artworks: ArtworkResult[]; // every loaded batch, in API order
   total: number | null; // null while idle or before the first response
@@ -172,6 +172,7 @@ export function useArtworkSearch(input: SearchInput): {
   isLoadingMore: boolean; // true while loadMore fetches a new API page
   loadMoreError: RijksApiError | null; // last loadMore search request failed
 };
+export function useArtworkSearch(input: SearchInput): ArtworkSearch;
 export function useArtwork(id: string): UseQueryResult<Artwork, RijksApiError>;
 
 // Setup: the QueryClient with the retry policy and stale times from "Error handling"

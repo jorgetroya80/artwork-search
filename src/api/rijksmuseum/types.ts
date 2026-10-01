@@ -33,3 +33,23 @@ export type ArtworkResult =
   | { id: string; status: 'success'; artwork: Artwork };
 
 export type SearchStatus = 'idle' | 'pending' | 'error' | 'success';
+
+/** What `useArtworkSearch` returns: the contract between the API layer and the UI. */
+export type ArtworkSearch = {
+  status: SearchStatus;
+  /** Every loaded batch, in API order. */
+  artworks: ArtworkResult[];
+  /** `null` while idle or before the first response. */
+  total: number | null;
+  /** True only when the search succeeded with 0 results. */
+  isEmpty: boolean;
+  /** Set when the first search request failed (`status: 'error'`). */
+  error: RijksApiError | null;
+  /** Repeats the failed first search request. */
+  retry: () => void;
+  hasMore: boolean;
+  /** Shows `PAGE_SIZE` more artworks; after `loadMoreError` it retries. */
+  loadMore: () => void;
+  isLoadingMore: boolean;
+  loadMoreError: RijksApiError | null;
+};

@@ -19,7 +19,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['src/test/setup.ts'],
     coverage: {
-      include: ['src/api/rijksmuseum/**'],
+      include: [
+        'src/api/rijksmuseum/**',
+        'src/features/search/**',
+        'src/components/**'
+      ],
       exclude: ['**/*.test.{ts,tsx}'],
       thresholds: { lines: 90 }
     }

@@ -1,1 +1,17 @@
 @import 'tailwindcss';
+
+/* Semantic tokens: components use only these for color and radius, so a theme change lives here. */
+@theme inline {
+  --color-bg: var(--color-white);
+  --color-bg-subtle: var(--color-stone-100);
+  --color-fg: var(--color-stone-900);
+  --color-fg-muted: var(--color-stone-600);
+  --color-border: var(--color-stone-300);
+  --color-accent: var(--color-stone-900);
+  --color-accent-fg: var(--color-white);
+  --radius-control: var(--radius-md);
+}
+
+body {
+  @apply bg-bg text-fg;
+}

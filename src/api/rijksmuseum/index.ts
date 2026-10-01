@@ -9,6 +9,7 @@ export { searchCollection } from './search';
 export type {
   Artwork,
   ArtworkResult,
+  ArtworkSearch,
   SearchInput,
   SearchPage,
   SearchParams,
