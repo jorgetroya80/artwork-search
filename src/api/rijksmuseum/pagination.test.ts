@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getVisibleIds, needsNextApiPage } from './pagination';
+import { getVisibleIds, hasMoreResults, needsNextApiPage } from './pagination';
 import type { SearchPage } from './types';
 
 const TOTAL = 1423;
@@ -74,5 +74,30 @@ describe('needsNextApiPage', () => {
   it('is false for zero results and before the first page', () => {
     expect(needsNextApiPage(makePages(1, 0), 10)).toBe(false);
     expect(needsNextApiPage([], 10)).toBe(false);
+  });
+});
+
+describe('hasMoreResults', () => {
+  it('is true while loaded IDs are not all visible', () => {
+    expect(hasMoreResults(makePages(1), 90)).toBe(true);
+  });
+
+  it('is true when all loaded IDs are visible and a next page exists', () => {
+    expect(hasMoreResults(makePages(1), 100)).toBe(true);
+  });
+
+  it('is false at the end, even if total promised more', () => {
+    const shortLastPage = {
+      total: 15,
+      ids: ['a', 'b', 'c'],
+      nextPageToken: null,
+    };
+
+    expect(hasMoreResults([shortLastPage], 10)).toBe(false);
+  });
+
+  it('is false for zero results and before the first page', () => {
+    expect(hasMoreResults(makePages(1, 0), 10)).toBe(false);
+    expect(hasMoreResults([], 10)).toBe(false);
   });
 });

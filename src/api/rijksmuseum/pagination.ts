@@ -6,8 +6,16 @@ const loadedIds = (pages: SearchPage[]) => pages.flatMap((page) => page.ids);
 export const getVisibleIds = (pages: SearchPage[], visibleCount: number) =>
   loadedIds(pages).slice(0, visibleCount);
 
+const hasNextApiPage = (pages: SearchPage[]) =>
+  Boolean(pages.at(-1)?.nextPageToken);
+
 /** True when fewer than `visibleCount` IDs are loaded and the last page has a token. */
-export function needsNextApiPage(pages: SearchPage[], visibleCount: number) {
-  const hasNextPage = Boolean(pages.at(-1)?.nextPageToken);
-  return hasNextPage && loadedIds(pages).length < visibleCount;
-}
+export const needsNextApiPage = (pages: SearchPage[], visibleCount: number) =>
+  hasNextApiPage(pages) && loadedIds(pages).length < visibleCount;
+
+/**
+ * True while loaded IDs are hidden or another API page exists. Based on what the API really
+ * returns, not on `total`, which can promise more results than the pages hold.
+ */
+export const hasMoreResults = (pages: SearchPage[], visibleCount: number) =>
+  visibleCount < loadedIds(pages).length || hasNextApiPage(pages);

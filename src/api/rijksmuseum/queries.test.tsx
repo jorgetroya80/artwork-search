@@ -366,6 +366,53 @@ describe('useArtworkSearch, load more', () => {
     await waitFor(() => expect(result.current.artworks).toHaveLength(10));
   });
 
+  it('stops at the last page when the API total promises more results', async () => {
+    server.use(
+      http.get(SEARCH_URL, () =>
+        HttpResponse.json({
+          partOf: { totalItems: 25 },
+          orderedItems: Array.from({ length: 12 }, (_, index) => ({
+            id: generatedObjectId(index),
+          })),
+        })
+      ),
+      ...generatedSearchHandlers(15).slice(1)
+    );
+    const { result } = renderHookWithClient(() =>
+      useArtworkSearch({ creator: 'Rembrandt' })
+    );
+    await waitFor(() => expect(result.current.artworks).toHaveLength(10));
+    expect(result.current.hasMore).toBe(true);
+
+    act(() => result.current.loadMore());
+
+    await waitFor(() => expect(result.current.artworks).toHaveLength(12));
+    expect(result.current.hasMore).toBe(false);
+  });
+
+  it('keeps the results and status when a background refetch fails', async () => {
+    const { result, queryClient } = await renderSearch(1423);
+    server.use(
+      http.get(SEARCH_URL, () => new HttpResponse(null, { status: 500 }))
+    );
+
+    const searchKey = ['rijksmuseum', 'search', { creator: 'Rembrandt' }];
+
+    await act(() => queryClient.refetchQueries({ queryKey: searchKey }));
+    await waitFor(() =>
+      expect(queryClient.getQueryState(searchKey)?.status).toBe('error')
+    );
+
+    expect(searchRequestCount()).toBe(4);
+    expect(result.current).toMatchObject({
+      status: 'success',
+      error: null,
+      loadMoreError: null,
+      total: 1423,
+    });
+    expect(result.current.artworks).toHaveLength(10);
+  });
+
   it('has nothing more for idle and empty searches', async () => {
     const idle = renderHookWithClient(() => useArtworkSearch({}));
     const empty = renderHookWithClient(() =>

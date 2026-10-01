@@ -250,6 +250,7 @@ at once: retrying a `400` or a bad body gives the same result.
 | ------------------------------------------ | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | First search page                          | Search fails. Nothing to show                        | `status: 'error'`, `error`, `artworks: []`, `retry()`                                                                  |
 | Next search page (`loadMore`)              | Loaded artworks stay                                 | `status: 'success'`, `loadMoreError`. Next `loadMore()` retries the same page. `visibleCount` grows only after success |
+| Background refetch of loaded pages         | Loaded artworks stay                                 | `status: 'success'`, `error: null`. The failure is ignored until the next refetch                                      |
 | Object (`fetchArtwork`)                    | Only that artwork fails. The others are not affected | `artworks[i]` is `{ status: 'error', error, retry }`                                                                   |
 | Artist                                     | Artwork still resolves                               | Missing name is left out of `artists`. `[]` when all fail                                                              |
 | Image chain (visual item / digital object) | Artwork still resolves                               | `imageUrl: null`, `thumbnailUrl: null`                                                                                 |
@@ -322,15 +323,17 @@ Artist and image sub-requests use the same retry policy before they fall back to
   `fetchNextPage`. `isLoadingMore` is true while that request runs.
 - `loadMore()` does nothing while `hasMore` is false or while a search request is running. A double
   click never skips or repeats a batch.
-- `hasMore` is `visibleCount < total`.
+- `hasMore` is true while loaded IDs are still hidden or the last API page has a `nextPageToken`.
+  It does not use `total`, because `total` can promise more results than the pages hold. Using
+  it could leave a "Load more" button that loads nothing.
 - Resolves the IDs from `getVisibleIds`, with one `useQueries` entry per ID and key
   `['rijksmuseum', 'artwork', id]`. Earlier batches stay resolved from cache.
 - Artist and image sub-requests go through `queryClient.fetchQuery` with their own keys
   (`['rijksmuseum', 'entity', id]`), so a shared artist is fetched once.
 - `staleTime`: search 5 minutes, objects and entities `Infinity` (collection data rarely changes).
 - Changing the input cancels in-flight requests of the old search (TanStack `signal`).
-- `status` is `error` only when the first search request fails. `loadMore` and item errors do not
-  change `status` (see "Error handling", section 4).
+- `status` is `error` only when the first search request fails. `loadMore` errors, background
+  refetch errors and item errors do not change `status` (see "Error handling", section 4).
 - Zero results: `status: 'success'`, `isEmpty: true`, `artworks: []`, `total: 0`, `hasMore: false`.
   `isEmpty` is false in every other state (idle, pending, error, results found). The UI uses it to
   show a "no results" message, so it never confuses "no results" with "not searched yet" or "still

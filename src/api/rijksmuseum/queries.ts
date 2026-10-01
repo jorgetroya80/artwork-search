@@ -8,13 +8,14 @@ import {
   useQuery,
   useQueryClient,
   type QueryClient,
+  type UseInfiniteQueryResult,
   type UseQueryResult,
 } from '@tanstack/react-query';
 
 import { fetchArtwork, fetchLinkedArt, type FetchEntity } from './artwork';
 import { PAGE_SIZE } from './constants';
 import { normalizeSearchInput } from './normalize';
-import { getVisibleIds, needsNextApiPage } from './pagination';
+import { getVisibleIds, hasMoreResults, needsNextApiPage } from './pagination';
 import { searchCollection } from './search';
 import type {
   Artwork,
@@ -88,6 +89,21 @@ function toArtworkResult(
   return { id, status: 'pending' };
 }
 
+type SearchQueryState = Pick<
+  UseInfiniteQueryResult,
+  'status' | 'isError' | 'data'
+>;
+
+function toSearchStatus(
+  hasParams: boolean,
+  search: SearchQueryState
+): SearchStatus {
+  if (!hasParams) return 'idle';
+  // A failed next page or background refetch keeps the results already loaded.
+  if (search.isError && search.data) return 'success';
+  return search.status;
+}
+
 // The batch belongs to one search. A new search starts from the first batch again.
 type VisibleBatch = { searchKey: string; count: number };
 
@@ -108,13 +124,8 @@ export function useArtworkSearch(input: SearchInput) {
     queries: visibleIds.map((id) => artworkQueryOptions(queryClient, id)),
   });
   const total = pages[0]?.total ?? null;
-  const hasMore = total !== null && visibleCount < total;
-  const isLoadMoreFailure = search.isFetchNextPageError;
-  const status: SearchStatus = !params
-    ? 'idle'
-    : isLoadMoreFailure
-      ? 'success'
-      : search.status;
+  const hasMore = hasMoreResults(pages, visibleCount);
+  const status = toSearchStatus(params !== null, search);
 
   async function loadMore() {
     if (!hasMore || search.isFetching) return;
@@ -138,6 +149,6 @@ export function useArtworkSearch(input: SearchInput) {
     hasMore,
     loadMore: () => void loadMore(),
     isLoadingMore: search.isFetchingNextPage,
-    loadMoreError: isLoadMoreFailure ? search.error : null,
+    loadMoreError: search.isFetchNextPageError ? search.error : null,
   };
 }
