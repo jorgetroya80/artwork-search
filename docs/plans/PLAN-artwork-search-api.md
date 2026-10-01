@@ -301,7 +301,7 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     to `status: 'success'` plus `loadMoreError`, as the spec says. 8 tests. The 1423-result
     test walks all 142 calls (15 search requests). The whole suite runs in about 4 s.
 
-- [ ] **T12: Public index and coverage gate**
+- [x] **T12: Public index and coverage gate**
   - `index.ts` exports only the spec interface. Nothing else imports internal files from outside
     `src/api/rijksmuseum`.
   - README: document `pnpm test`, `pnpm test:watch`, `pnpm test:coverage`.
@@ -311,11 +311,17 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
   - Verify: `pnpm lint && pnpm test:coverage && pnpm build`.
   - Files: `index.ts`, `README.md`, `docs/specs/SPEC-artwork-search-api.md`.
   - Size: XS.
+  - Done: `index.ts` also exports `createQueryClient`, because `main.tsx` needs it for the
+    provider. The spec interface now lists it, together with `SearchStatus`. `main.tsx` imports
+    from the index. Only test helpers import internal files. `index.test.ts` locks the list of
+    runtime exports. Coverage: 100% lines, 89.9% branches. Each spec success criterion maps to a
+    test: `normalize`, `search`, `artwork`, `http` and `pagination` tests, plus the
+    `useArtworkSearch` tests in `queries.test.tsx`.
 
 ### Checkpoint 3: Complete
 
-- [ ] All spec success criteria are checked.
-- [ ] `pnpm lint`, `pnpm test:coverage` and `pnpm build` pass.
+- [x] All spec success criteria are checked.
+- [x] `pnpm lint`, `pnpm test:coverage` and `pnpm build` pass.
 - [ ] Review with the user, then open the PR from `feat-build-api`.
 
 ## Risks and mitigations

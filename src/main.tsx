@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 
 import './index.css';
 
-import { createQueryClient } from './api/rijksmuseum/queryClient';
+import { createQueryClient } from './api/rijksmuseum';
 import App from './App.tsx';
 
 const queryClient = createQueryClient();

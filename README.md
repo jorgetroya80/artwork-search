@@ -56,6 +56,24 @@ Serves the production build from `dist` locally.
 
 Lints the `src` folder with ESLint.
 
+### `pnpm test`
+
+Runs the tests once with Vitest. Tests use jsdom and mock the Rijksmuseum API with MSW, so they
+never call the real API.
+
+### `pnpm test:watch`
+
+Runs the tests in watch mode.
+
+### `pnpm test:coverage`
+
+Runs the tests with coverage. It fails when line coverage of `src/api/rijksmuseum` is below 90%.
+
+## Documentation
+
+- Spec: [`docs/specs/SPEC-artwork-search-api.md`](docs/specs/SPEC-artwork-search-api.md)
+- Plan: [`docs/plans/PLAN-artwork-search-api.md`](docs/plans/PLAN-artwork-search-api.md)
+
 ## Notes
 
 - TypeScript stays on `6.0` because `typescript-eslint` does not support

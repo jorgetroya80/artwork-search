@@ -1,7 +1,7 @@
 # Spec: Rijksmuseum artwork search — API layer
 
 - Created: 2026-10-01
-- Status: **approved** (2026-10-01)
+- Status: **implemented** (2026-10-01)
 - Plan: [PLAN-artwork-search-api.md](../plans/PLAN-artwork-search-api.md)
 
 Scope is the data layer only. The search UI gets its own spec
@@ -173,6 +173,11 @@ export function useArtworkSearch(input: SearchInput): {
   loadMoreError: RijksApiError | null; // last loadMore search request failed
 };
 export function useArtwork(id: string): UseQueryResult<Artwork, RijksApiError>;
+
+// Setup: the QueryClient with the retry policy and stale times from "Error handling"
+export function createQueryClient(): QueryClient;
+
+export type SearchStatus = 'idle' | 'pending' | 'error' | 'success';
 
 export type ArtworkResult =
   | { id: string; status: 'pending' }
@@ -452,30 +457,30 @@ export function pickPreferredName(entity: unknown): string | null {
 
 ## Success Criteria
 
-- [ ] `normalizeSearchInput({ creator: '  ', title: null })` returns `null`, and the hook makes 0
+- [x] `normalizeSearchInput({ creator: '  ', title: null })` returns `null`, and the hook makes 0
       requests.
-- [ ] Every search URL contains `imageAvailable=true`.
-- [ ] `searchCollection({ creator: 'Rembrandt', title: 'Nachtwacht' })` returns `total: 1` and the ID
+- [x] Every search URL contains `imageAvailable=true`.
+- [x] `searchCollection({ creator: 'Rembrandt', title: 'Nachtwacht' })` returns `total: 1` and the ID
       `https://id.rijksmuseum.nl/200107928` (fixture).
-- [ ] `fetchArtwork` for that ID returns `objectNumber: 'SK-C-5'`, the English title, artists
+- [x] `fetchArtwork` for that ID returns `objectNumber: 'SK-C-5'`, the English title, artists
       `['Rembrandt van Rijn']`, date 1642, and the IIIF image and thumbnail URLs.
-- [ ] Image or artist failure still gives an `Artwork` with `null` / `[]` in that field.
-- [ ] Non-allowlisted ID throws `RijksApiError` with kind `invalid-id`, and no fetch happens.
-- [ ] Every failure that reaches a hook is a `RijksApiError` with the `kind` and `retryable` from
+- [x] Image or artist failure still gives an `Artwork` with `null` / `[]` in that field.
+- [x] Non-allowlisted ID throws `RijksApiError` with kind `invalid-id`, and no fetch happens.
+- [x] Every failure that reaches a hook is a `RijksApiError` with the `kind` and `retryable` from
       the error table. A cancelled request never shows as an error.
-- [ ] `5xx`, `429`, `network` and `timeout` are retried at most 2 times. `4xx`, `parse` and
+- [x] `5xx`, `429`, `network` and `timeout` are retried at most 2 times. `4xx`, `parse` and
       `invalid-id` are not retried.
-- [ ] First search failure gives `status: 'error'` and `retry()`. `loadMore` failure gives
+- [x] First search failure gives `status: 'error'` and `retry()`. `loadMore` failure gives
       `loadMoreError` and keeps the list. Object failure affects only its own item.
-- [ ] With one loaded ID page of 100 and a `nextPageToken`: `needsNextApiPage` is false at 100
+- [x] With one loaded ID page of 100 and a `nextPageToken`: `needsNextApiPage` is false at 100
       visible and true at 110.
-- [ ] `useArtworkSearch` shows 10 artworks first. Each `loadMore` adds 10 and keeps the previous
+- [x] `useArtworkSearch` shows 10 artworks first. Each `loadMore` adds 10 and keeps the previous
       ones. `loadMore` 1–9 sends no search request. The 10th sends exactly one.
-- [ ] A search with 0 results gives `status: 'success'` and `isEmpty: true`. Idle, pending and
+- [x] A search with 0 results gives `status: 'success'` and `isEmpty: true`. Idle, pending and
       error states give `isEmpty: false`.
-- [ ] With 1423 results: after 142 `loadMore` calls, 1423 artworks are listed, the last batch has 3,
+- [x] With 1423 results: after 142 `loadMore` calls, 1423 artworks are listed, the last batch has 3,
       and `hasMore` is false.
-- [ ] `pnpm lint`, `pnpm test` (coverage ≥ 90% in `src/api/rijksmuseum`) and `pnpm build` pass.
+- [x] `pnpm lint`, `pnpm test` (coverage ≥ 90% in `src/api/rijksmuseum`) and `pnpm build` pass.
 
 ## Decisions
 
