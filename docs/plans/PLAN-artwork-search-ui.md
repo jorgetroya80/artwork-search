@@ -214,7 +214,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 ### Phase 4: Polish and gate
 
-- [ ] **T9: Accessibility and responsive pass**
+- [x] **T9: Accessibility and responsive pass**
   - Check against the spec "Accessibility" and "Styling" sections: one `<h1>`, `role="search"`,
     live region always rendered, `aria-busy`, focus outline on every control, keyboard-only flow
     (type, Enter, Tab to Load more / Retry).
@@ -226,6 +226,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Verify: `pnpm lint && pnpm test && pnpm build`, plus the manual checks.
   - Files: only the components that need fixes.
   - Size: S.
+  - Done: checked with headless Chrome over the DevTools protocol against `pnpm start` and the real API. "Rembrandt" shows "Showing 10 of 1,447 results", 10 cards with images, no placeholders, no item errors. No horizontal scroll at 320, 640, 1024, 1280 and 1920 px. Grid columns 1 / 2 / 3 / 4 / 4. Form stacked at 320 (button full width), one row from 640. Buttons 44 px high. Tab reaches the input, Search and Load more, each with a 2 px `accent` outline. Raw-color grep and `@base-ui` grep are clean, no `outline-none`. Fixes: page `<title>` is now "Artwork search" (`index.html`, outside the spec file list), card text gets `wrap-break-word` for long unbroken names, and a test checks one `main`, one `h1` and the `search` form. The `--color-accent` check holds by construction (components use only token classes). Note: with `@theme inline`, utilities get the resolved value, so changing the variable at runtime does nothing; a dark-mode spec that switches tokens at runtime needs plain `@theme`.
 
 - [ ] **T10: Coverage gate and spec status**
   - `pnpm test:coverage` ≥ 90% lines for `src/features/search/**` and `src/components/**`.

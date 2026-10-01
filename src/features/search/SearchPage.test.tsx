@@ -42,6 +42,14 @@ function renderPage(total = 23) {
 }
 
 describe('SearchPage form', () => {
+  it('has one main landmark, one h1 and a search form', () => {
+    renderPage();
+
+    expect(screen.getByRole('main')).toBeDefined();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('search')).toBeDefined();
+  });
+
   it('describes the input with the full-name hint', () => {
     renderPage();
 

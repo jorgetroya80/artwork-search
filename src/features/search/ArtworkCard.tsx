@@ -50,7 +50,7 @@ function ArtworkCardContent({ artwork }: { artwork: Artwork }) {
   return (
     <article className={CARD_CLASSES}>
       <ArtworkImage src={artwork.thumbnailUrl} alt={artwork.title} />
-      <div className="flex flex-col gap-1 p-3">
+      <div className="flex flex-col gap-1 p-3 wrap-break-word">
         <h2 title={artwork.title} className="line-clamp-2 font-semibold">
           {artwork.title}
         </h2>
