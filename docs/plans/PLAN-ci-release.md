@@ -144,7 +144,7 @@ Can run in parallel: T2/T3 with T4.
     `.release-please-manifest.json`.
   - Size: S.
 
-- [ ] **T5: README "Contributing and releases"**
+- [x] **T5: README "Contributing and releases"**
   - PR title format with examples. Squash merge only. What the release PR is. Close and reopen
     the release PR before merging it to start CI. Never edit `CHANGELOG.md` or the manifest by
     hand. How to go to `1.0.0` (`Release-As: 1.0.0` footer).
@@ -152,6 +152,8 @@ Can run in parallel: T2/T3 with T4.
   - Verify: `pnpm exec prettier --check README.md`.
   - Files: `README.md`.
   - Size: XS.
+  - Done before T4 (no dependency between them). Also links the new spec and plan under
+    "Documentation".
 
 ### Checkpoint 1: Local checks pass, open PR
 
