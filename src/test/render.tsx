@@ -5,7 +5,10 @@ import { renderHook } from '@testing-library/react';
 import { createQueryClient } from '../api/rijksmuseum/queryClient';
 
 /** Renders a hook with a fresh production QueryClient, without waiting between retries. */
-export function renderHookWithClient<TResult>(hook: () => TResult) {
+export function renderHookWithClient<TResult, TProps>(
+  hook: (props: TProps) => TResult,
+  options?: { initialProps?: TProps }
+) {
   const queryClient = createQueryClient();
   queryClient.setDefaultOptions({
     queries: { ...queryClient.getDefaultOptions().queries, retryDelay: 0 },
@@ -13,5 +16,5 @@ export function renderHookWithClient<TResult>(hook: () => TResult) {
   const wrapper = ({ children }: PropsWithChildren) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
-  return { queryClient, ...renderHook(hook, { wrapper }) };
+  return { queryClient, ...renderHook(hook, { ...options, wrapper }) };
 }

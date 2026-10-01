@@ -263,7 +263,7 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     `200` and logs no errors. The browser console was not checked, because no browser is
     available in this session.
 
-- [ ] **T10: `useArtworkSearch`, first batch**
+- [x] **T10: `useArtworkSearch`, first batch**
   - Idle state for `null` input. `useInfiniteQuery` for the search. `useQueries` for the visible
     IDs. Maps the result to `ArtworkResult[]` with item `retry`. Sets `total`, `isEmpty`, `error`,
     `retry`.
@@ -274,6 +274,13 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
   - Verify: `pnpm test queries`, `pnpm build`.
   - Files: `queries.ts`, `queries.test.tsx`, `src/test/msw/handlers.ts`.
   - Size: S.
+  - Done: the search uses `skipToken` when the input is blank, so there is no request and the
+    hook reports `idle`. `ArtworkResult` and `SearchStatus` were added to `types.ts`. Test helpers:
+    `generatedSearchHandlers(total)` serves generated pages by `pageToken` and minimal generated
+    objects without an image. `renderHookWithClient` now accepts `initialProps` for `rerender`.
+    The cancellation test checks that the MSW request signal of the old search is aborted.
+    Lesson learned: `server.resetHandlers(...handlers)` replaces the initial handlers for the
+    rest of the file. Tests must use `server.use` instead.
 
 - [ ] **T11: `loadMore`**
   - `{ key, count }` state, `loadMore`, `hasMore`, `isLoadingMore`, `loadMoreError`.

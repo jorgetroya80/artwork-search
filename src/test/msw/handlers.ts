@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { SEARCH_URL } from '../../api/rijksmuseum/constants';
+import { ENTITY_URL_PREFIX, SEARCH_URL } from '../../api/rijksmuseum/constants';
 import digitalObject from '../fixtures/digital-500711199912110510799100.json';
 import nightWatch from '../fixtures/object-200107928.json';
 import rembrandt from '../fixtures/person-2103429.json';
@@ -8,6 +8,12 @@ import searchEmpty from '../fixtures/search-empty.json';
 import searchNachtwacht from '../fixtures/search-rembrandt-nachtwacht.json';
 import searchRembrandtPage1 from '../fixtures/search-rembrandt-page1.json';
 import visualItem from '../fixtures/visual-202107928.json';
+import {
+  isGeneratedObjectId,
+  makeGeneratedObject,
+  makeSearchPage,
+  pageIndexFromToken,
+} from './factories';
 
 const searchFixtures: Record<string, object> = {
   'creator=Rembrandt&title=Nachtwacht': searchNachtwacht,
@@ -41,11 +47,25 @@ export const handlers = [
     return HttpResponse.json(fixture);
   }),
 
-  http.get('https://id.rijksmuseum.nl/:id', ({ params }) => {
+  http.get(`${ENTITY_URL_PREFIX}:id`, ({ params }) => {
     const fixture = entityFixtures[String(params.id)];
     if (!fixture) {
       return HttpResponse.json({ detail: 'Unknown id' }, { status: 400 });
     }
     return HttpResponse.json(fixture);
+  }),
+];
+
+/** Any search returns `total` generated results, and generated objects resolve. */
+export const generatedSearchHandlers = (total: number) => [
+  http.get(SEARCH_URL, ({ request }) => {
+    const token = new URL(request.url).searchParams.get('pageToken');
+    const pageIndex = pageIndexFromToken(token);
+    return HttpResponse.json(makeSearchPage({ total, pageIndex }));
+  }),
+
+  http.get(`${ENTITY_URL_PREFIX}:id`, ({ params, request }) => {
+    if (!isGeneratedObjectId(Number(params.id))) return undefined;
+    return HttpResponse.json(makeGeneratedObject(request.url));
   }),
 ];

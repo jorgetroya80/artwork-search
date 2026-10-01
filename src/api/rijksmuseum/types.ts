@@ -1,3 +1,5 @@
+import type { RijksApiError } from './errors';
+
 export type SearchInput = {
   creator?: string | null;
   title?: string | null;
@@ -24,3 +26,10 @@ export type Artwork = {
   imageUrl: string | null;
   thumbnailUrl: string | null;
 };
+
+export type ArtworkResult =
+  | { id: string; status: 'pending' }
+  | { id: string; status: 'error'; error: RijksApiError; retry: () => void }
+  | { id: string; status: 'success'; artwork: Artwork };
+
+export type SearchStatus = 'idle' | 'pending' | 'error' | 'success';

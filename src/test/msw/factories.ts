@@ -1,4 +1,5 @@
 import {
+  AAT,
   API_PAGE_SIZE,
   ENTITY_URL_PREFIX,
   SEARCH_URL,
@@ -9,10 +10,22 @@ const FIRST_GENERATED_OBJECT_ID = 900_000_000;
 
 type SearchPageOptions = { total: number; pageIndex: number };
 
-export const pageTokenFor = (pageIndex: number) => `test-page-${pageIndex}`;
+const PAGE_TOKEN_PREFIX = 'test-page-';
+
+export const pageTokenFor = (pageIndex: number) =>
+  `${PAGE_TOKEN_PREFIX}${pageIndex}`;
+
+export const pageIndexFromToken = (token: string | null) =>
+  token ? Number(token.slice(PAGE_TOKEN_PREFIX.length)) : 0;
+
+export const generatedObjectId = (index: number) =>
+  `${ENTITY_URL_PREFIX}${FIRST_GENERATED_OBJECT_ID + index}`;
+
+export const isGeneratedObjectId = (numericId: number) =>
+  numericId >= FIRST_GENERATED_OBJECT_ID;
 
 const makeObjectRef = (index: number) => ({
-  id: `${ENTITY_URL_PREFIX}${FIRST_GENERATED_OBJECT_ID + index}`,
+  id: generatedObjectId(index),
   type: 'HumanMadeObject',
 });
 
@@ -48,3 +61,25 @@ export function nightWatchWithoutNotation() {
     },
   };
 }
+
+/** A minimal object with an English title and an artist notation, and no image. */
+export const makeGeneratedObject = (id: string) => ({
+  id,
+  type: 'HumanMadeObject',
+  identified_by: [
+    {
+      type: 'Name',
+      content: `Artwork ${id}`,
+      language: [{ id: AAT.english }],
+      classified_as: [{ id: AAT.preferredTerm }],
+    },
+  ],
+  produced_by: {
+    carried_out_by: [
+      {
+        id: `${ENTITY_URL_PREFIX}1`,
+        notation: [{ '@language': 'en', '@value': 'Test Artist' }],
+      },
+    ],
+  },
+});
