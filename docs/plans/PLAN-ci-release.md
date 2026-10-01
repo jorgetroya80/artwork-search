@@ -1,7 +1,7 @@
 # Plan: CI and release automation
 
 - Created: 2026-10-01
-- Status: **in progress**
+- Status: **implemented** (2026-10-01), PR #4, release v0.1.0
 - Spec: [SPEC-ci-release.md](../specs/SPEC-ci-release.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -215,11 +215,11 @@ Can run in parallel: T2/T3 with T4.
 ### Checkpoint 2: Ready to merge
 
 - [x] All four checks are green on the workflows PR. Settings 1–3 are on.
-- [ ] Review with the user, then squash-merge the workflows PR.
+- [x] Review with the user, then squash-merge the workflows PR.
 
 ### Phase 3: First release
 
-- [ ] **T8: Release PR and v0.1.0**
+- [x] **T8: Release PR and v0.1.0**
   - After the merge, `release.yml` runs on `main` and opens `chore(main): release 0.1.0`.
   - Check the release PR: `package.json` and the manifest say `0.1.0`. `CHANGELOG.md` has only
     Features and Bug Fixes sections, and the entries come from PRs #1–#3.
@@ -228,18 +228,31 @@ Can run in parallel: T2/T3 with T4.
     `gh release view v0.1.0` shows the same notes as `CHANGELOG.md`.
   - Files: none by hand (release-please writes them).
   - Size: XS.
+  - Done: PR #4 squash-merged as `9928795`. `release.yml` opened release PR #6 with
+    `package.json` and the manifest at `0.1.0`. Its changelog had noise from the old history:
+    three commits typed `feat` by mistake (`9d72776`, `5374e64`, `5071314`), the merge-commit
+    bodies of PRs #2 and #3 (`5a94905`, `e6f0332`), and a compare link to `v0.0.1`, a tag that
+    does not exist. At the user's request, these were cleaned by hand once, in `CHANGELOG.md`
+    (a commit on the release branch) and in the PR #6 body. The link now points to
+    `commits/v0.1.0`. That push used the user's token, so CI ran without close/reopen. PR #6
+    squash-merged as `51e3bf4`. Tag `v0.1.0` and the GitHub Release exist, label
+    `autorelease: tagged`. The release notes were missing the last changelog entry, so they
+    were set from `CHANGELOG.md` with `gh release edit`.
 
-- [ ] **T9: No release for `docs:`, close the spec**
+- [x] **T9: No release for `docs:`, close the spec**
   - In a `docs:` PR: set the spec status to **implemented**, set this plan's status, and check
     off the spec success criteria. After the merge, `release.yml` runs and opens no release PR.
   - Acceptance: `gh pr list --label "autorelease: pending"` is empty after the `docs:` merge.
   - Files: `docs/specs/SPEC-ci-release.md`, `docs/plans/PLAN-ci-release.md`.
   - Size: XS.
+  - Done: throwaway PR #7 with a lint error showed `mergeStateStatus: BLOCKED`, and
+    `gh pr merge` refused it; closed and branch deleted. This PR checks off the spec.
+    Confirming that its merge opens no release PR happens after the merge.
 
 ### Checkpoint 3: Complete
 
-- [ ] All spec success criteria are checked.
-- [ ] Tag `v0.1.0` and its GitHub Release exist.
+- [x] All spec success criteria are checked.
+- [x] Tag `v0.1.0` and its GitHub Release exist.
 
 ## Pinning change (after T7)
 
