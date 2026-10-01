@@ -1,7 +1,7 @@
 # Plan: Rijksmuseum artwork search — UI (phase 1)
 
 - Created: 2026-10-01
-- Status: **approved** (2026-10-01)
+- Status: **implemented** (2026-10-01), final review pending
 - Spec: [SPEC-artwork-search-ui.md](../specs/SPEC-artwork-search-ui.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -129,9 +129,9 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 ### Checkpoint 1: Foundation
 
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass.
-- [ ] `grep -rn "@base-ui" src` lists only `src/components/ui/`.
-- [ ] Review with the user.
+- [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
+- [x] `grep -rn "@base-ui" src` lists only `src/components/ui/`.
+- [ ] Review with the user. Skipped: `/build auto` has one gate; covered by the final review.
 
 ### Phase 2: Search and results
 
@@ -176,9 +176,9 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 ### Checkpoint 2: Search works end to end
 
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass.
-- [ ] Manual: `pnpm start`, search "Rembrandt" against the real API, 10 cards with images appear.
-- [ ] Review with the user.
+- [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
+- [x] Manual: `pnpm start`, search "Rembrandt" against the real API, 10 cards with images appear.
+- [ ] Review with the user. Skipped: `/build auto` has one gate; covered by the final review.
 
 ### Phase 3: States and Load more
 
@@ -209,8 +209,8 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
 
 ### Checkpoint 3: All states
 
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass.
-- [ ] Every result state from the spec table has a test.
+- [x] `pnpm lint`, `pnpm test` and `pnpm build` pass.
+- [x] Every result state from the spec table has a test.
 
 ### Phase 4: Polish and gate
 
@@ -228,7 +228,7 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Size: S.
   - Done: checked with headless Chrome over the DevTools protocol against `pnpm start` and the real API. "Rembrandt" shows "Showing 10 of 1,447 results", 10 cards with images, no placeholders, no item errors. No horizontal scroll at 320, 640, 1024, 1280 and 1920 px. Grid columns 1 / 2 / 3 / 4 / 4. Form stacked at 320 (button full width), one row from 640. Buttons 44 px high. Tab reaches the input, Search and Load more, each with a 2 px `accent` outline. Raw-color grep and `@base-ui` grep are clean, no `outline-none`. Fixes: page `<title>` is now "Artwork search" (`index.html`, outside the spec file list), card text gets `wrap-break-word` for long unbroken names, and a test checks one `main`, one `h1` and the `search` form. The `--color-accent` check holds by construction (components use only token classes). Note: with `@theme inline`, utilities get the resolved value, so changing the variable at runtime does nothing; a dark-mode spec that switches tokens at runtime needs plain `@theme`.
 
-- [ ] **T10: Coverage gate and spec status**
+- [x] **T10: Coverage gate and spec status**
   - `pnpm test:coverage` ≥ 90% lines for `src/features/search/**` and `src/components/**`.
   - README: short "Search UI" note (run `pnpm start`, search by artist).
   - Spec: set status to "implemented" and check the success criteria. Plan: set status.
@@ -236,11 +236,12 @@ Can run in parallel: T2 with T3, T4 at any time, and T7 with T8.
   - Files: `README.md`, `docs/specs/SPEC-artwork-search-ui.md`,
     `docs/plans/PLAN-artwork-search-ui.md`.
   - Size: XS.
+  - Done: line coverage 100% in `src/features/search` and `src/components` (branches 74% in features, not gated). README documents the search UI, the wrapper rule and the wider coverage gate. Every spec success criterion is checked.
 
 ### Checkpoint 4: Complete
 
-- [ ] All spec success criteria are checked.
-- [ ] `pnpm lint`, `pnpm test:coverage` and `pnpm build` pass.
+- [x] All spec success criteria are checked.
+- [x] `pnpm lint`, `pnpm test:coverage` and `pnpm build` pass.
 - [ ] Review with the user, then open the PR from `feat-initial-ui`.
 
 ## Risks and mitigations

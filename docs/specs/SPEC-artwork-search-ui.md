@@ -1,7 +1,7 @@
 # Spec: Rijksmuseum artwork search — UI
 
 - Created: 2026-10-01
-- Status: **approved** (2026-10-01)
+- Status: **implemented** (2026-10-01)
 - Plan: [PLAN-artwork-search-ui.md](../plans/PLAN-artwork-search-ui.md)
 - Depends on: [SPEC-artwork-search-api.md](SPEC-artwork-search-api.md) (implemented)
 
@@ -479,36 +479,36 @@ export function ErrorMessage({ error, onRetry }: ErrorMessageProps) {
 
 ## Success Criteria
 
-- [ ] Manual check: no horizontal scroll at 320, 640, 1024, 1280 and 1920 px; grid shows 1 / 2 /
+- [x] Manual check: no horizontal scroll at 320, 640, 1024, 1280 and 1920 px; grid shows 1 / 2 /
       3 / 4 columns at the breakpoints above.
-- [ ] `src/index.css` keeps `@import 'tailwindcss'` and defines the tokens from "Styling".
-- [ ] `grep -rE -e '-(stone|white|black)(-[0-9]+)?\b|\[#' src/features src/components` finds no raw color
+- [x] `src/index.css` keeps `@import 'tailwindcss'` and defines the tokens from "Styling".
+- [x] `grep -rE -e '-(stone|white|black)(-[0-9]+)?\b|\[#' src/features src/components` finds no raw color
       class. Colors and radius come only from tokens.
-- [ ] Changing one token value (e.g. `--color-accent`) restyles every button without editing
+- [x] Changing one token value (e.g. `--color-accent`) restyles every button without editing
       components (manual check).
-- [ ] All buttons render through `Button`. Every control shows a focus outline on keyboard focus.
-- [ ] `grep -rn "@base-ui" src` lists files in `src/components/ui/` only, with subpath imports of
+- [x] All buttons render through `Button`. Every control shows a focus outline on keyboard focus.
+- [x] `grep -rn "@base-ui" src` lists files in `src/components/ui/` only, with subpath imports of
       `button`, `field`, `input` only.
-- [ ] ESLint fails when a file outside `src/components/ui/` imports `@base-ui/*` (checked once by
+- [x] ESLint fails when a file outside `src/components/ui/` imports `@base-ui/*` (checked once by
       hand with a temporary import).
-- [ ] Wrapper props expose no Base UI type or prop name. Feature code imports UI only from
+- [x] Wrapper props expose no Base UI type or prop name. Feature code imports UI only from
       `src/components/ui`.
-- [ ] Focus stays on the Search and Load more buttons while they show "Searching…" / "Loading…".
-- [ ] `pnpm lint` resolves the token classes (ESLint `better-tailwindcss` reads `src/index.css` as
+- [x] Focus stays on the Search and Load more buttons while they show "Searching…" / "Loading…".
+- [x] `pnpm lint` resolves the token classes (ESLint `better-tailwindcss` reads `src/index.css` as
       `entryPoint`).
-- [ ] Blank input: Search disabled, 0 requests.
-- [ ] Search sends `creator` only; button disabled with label "Searching…" while it runs and
+- [x] Blank input: Search disabled, 0 requests.
+- [x] Search sends `creator` only; button disabled with label "Searching…" while it runs and
       enabled after it ends.
-- [ ] Same term again: no request after success, retry after error.
-- [ ] Success shows the first 10 artworks with image (or placeholder), title, artists, date.
-- [ ] "Load more" shown only while `hasMore`; each click adds 10.
-- [ ] 0 results shows "No results found. Try another search term."
-- [ ] 429 shows "The service is not available right now. Please try again later." with "Try again".
-- [ ] Any other error (400, 500, network, …) shows "Something went wrong. Please try again." with
+- [x] Same term again: no request after success, retry after error.
+- [x] Success shows the first 10 artworks with image (or placeholder), title, artists, date.
+- [x] "Load more" shown only while `hasMore`; each click adds 10.
+- [x] 0 results shows "No results found. Try another search term."
+- [x] 429 shows "The service is not available right now. Please try again later." with "Try again".
+- [x] Any other error (400, 500, network, …) shows "Something went wrong. Please try again." with
       "Try again", and "Try again" recovers.
-- [ ] Failed artwork affects only its own card.
-- [ ] Keyboard-only use works: type, Enter, Tab to Load more and Retry buttons.
-- [ ] `pnpm lint`, `pnpm test:coverage` (≥ 90% lines in `src/features/search` and `src/components`) and `pnpm build`
+- [x] Failed artwork affects only its own card.
+- [x] Keyboard-only use works: type, Enter, Tab to Load more and Retry buttons.
+- [x] `pnpm lint`, `pnpm test:coverage` (≥ 90% lines in `src/features/search` and `src/components`) and `pnpm build`
       pass.
 
 ## Decisions
