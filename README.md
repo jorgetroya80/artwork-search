@@ -9,7 +9,7 @@ A React + TypeScript search interface for the Rijksmuseum collection, built on t
 
 <!-- TODO: replace with a screenshot or GIF of the search UI -->
 
-![Screenshot of the artwork search UI](docs/images/screenshot.png)
+![Screenshot of the artwork search UI](docs/images/screenshot-app.png)
 
 <!-- TODO: add a link to the live demo once deployed -->
 
@@ -177,10 +177,6 @@ size, titles indexed in Dutch and English.
 **Decision:** Every feature starts with a spec, then a plan, then the implementation. API behavior
 was verified with `curl` and recorded in the spec before any code was written.
 
-- API: [spec](docs/specs/SPEC-artwork-search-api.md), [plan](docs/plans/PLAN-artwork-search-api.md)
-- UI: [spec](docs/specs/SPEC-artwork-search-ui.md), [plan](docs/plans/PLAN-artwork-search-ui.md)
-- CI and releases: [spec](docs/specs/SPEC-ci-release.md), [plan](docs/plans/PLAN-ci-release.md)
-
 **Trade-off:** Slower start on each feature, fewer surprises during implementation.
 
 ### 8. Supply-chain hygiene
@@ -204,7 +200,7 @@ work.
 
 ## Tech stack
 
-- **React 19** with [React Compiler](https://react.dev/learn/react-compiler): automatic
+- **React 19** with React Compiler: automatic
   memoization, no manual `useMemo` or `useCallback`.
 - **TypeScript 6** in strict mode.
 - **Vite 8** for the dev server and build.
