@@ -1,7 +1,8 @@
+import eslintReact from '@eslint-react/eslint-plugin';
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
-import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -15,7 +16,7 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommendedTypeChecked,
-      react.configs.flat.recommended,
+      eslintReact.configs['recommended-type-checked'],
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
       eslintPluginPrettier,
@@ -24,36 +25,40 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
-      parserOptions: { project: ['./tsconfig.app.json', './tsconfig.node.json'] },
+      parserOptions: {
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+      },
     },
+    plugins: { '@stylistic': stylistic },
     settings: {
-      react: { version: 'detect' },
       'better-tailwindcss': { entryPoint: 'src/index.css' },
     },
     rules: {
       'no-console': 'error', // https://eslint.org/docs/latest/rules/no-console
       'no-tabs': 'off', // https://eslint.org/docs/latest/rules/no-tabs
       quotes: 'off', // https://eslint.org/docs/latest/rules/quotes
-      // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-boolean-value.md
-      'react/jsx-boolean-value': 'error',
+      // Overlap with eslint-plugin-react-hooks (official React Compiler rules); keep those
+      '@eslint-react/error-boundaries': 'off',
+      '@eslint-react/exhaustive-deps': 'off',
+      '@eslint-react/purity': 'off',
+      '@eslint-react/rules-of-hooks': 'off',
+      '@eslint-react/set-state-in-effect': 'off',
+      '@eslint-react/set-state-in-render': 'off',
+      '@eslint-react/static-components': 'off',
+      '@eslint-react/unsupported-syntax': 'off',
+      '@eslint-react/use-memo': 'off',
 
-      // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/self-closing-comp.md
-      'react/self-closing-comp': 'error',
+      // https://eslint.style/rules/jsx-self-closing-comp
+      '@stylistic/jsx-self-closing-comp': 'error',
 
-      // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/react-in-jsx-scope.md
-      'react/react-in-jsx-scope': 'off',
-
-      // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-brace-presence.md
-      'react/jsx-curly-brace-presence': [
+      // https://eslint.style/rules/jsx-curly-brace-presence
+      '@stylistic/jsx-curly-brace-presence': [
         'error',
         { props: 'never', children: 'never', propElementValues: 'always' },
       ],
 
-      // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-useless-fragment.md
-      'react/jsx-no-useless-fragment': 'error',
-
-      // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md
-      'react/prop-types': 'off',
+      // https://www.eslint-react.xyz/docs/rules/jsx-no-useless-fragment
+      '@eslint-react/jsx-no-useless-fragment': 'error',
 
       // https://github.com/facebook/react/blob/main/packages/eslint-plugin-react-hooks/src/rules/ExhaustiveDeps.ts
       'react-hooks/exhaustive-deps': 'error',
@@ -115,6 +120,13 @@ export default defineConfig([
         {
           selector: 'TSEnumDeclaration',
           message: 'Use `as const` or string union instead.',
+        },
+
+        // Replaces react/jsx-boolean-value ('never'): ban `prop={true}`
+        {
+          selector:
+            'JSXAttribute > JSXExpressionContainer > Literal[value=true]',
+          message: 'Use the shorthand `prop` instead of `prop={true}`.',
         },
       ],
 

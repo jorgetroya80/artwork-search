@@ -1,34 +1,69 @@
 # Artwork search
 
-This project is searching in Rijksmuseum.
+This project is searching and viewing interface for the Rijksmuseum collection, built on the public
+Rijksmuseum Linked Art API.
+
+## Stack
+
+- React `19.3` with [React Compiler](https://react.dev/learn/react-compiler)
+- TypeScript `6.0`
+- Vite `8`
+- Tailwind CSS `4`
+- ESLint `10` and Prettier `3`
 
 ## Requirements
 
 This project requires to run:
 
-- NodeJS version `20.19.5`
-- NPM version `10.8.2`
+- NodeJS version `24.18.0` (see `.nvmrc`)
+- pnpm version `12.8.1` (pinned in the `packageManager` field of `package.json`)
 - API Key from Rijksmuseum.
   - To run the search create an account in
     [Rijks Data](https://data.rijksmuseum.nl/object-metadata/api/).
-  - Add it in .env.local file, in the field `VITE_API_KEY`.
+  - Copy `.env.local.example` to `.env.local` and add the key in the field
+    `VITE_API_KEY`.
+
+## Setup
+
+```sh
+nvm use
+corepack enable
+pnpm install
+```
+
+pnpm only installs package versions published at least 10 days ago
+(`minimumReleaseAge`). Dependencies are pinned to exact versions
+(`saveExact: true` in `pnpm-workspace.yaml`).
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `pnpm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The page will reload if you make edits.
 
-### `npm test`
+### `pnpm build`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests)
-for more information.
+Type-checks the project and builds the app for production to the `dist`
+folder.
 
-### `npm build`
+### `pnpm preview`
+
+Serves the production build from `dist` locally.
+
+### `pnpm lint`
+
+Lints the `src` folder with ESLint.
+
+## Notes
+
+- TypeScript stays on `6.0` because `typescript-eslint` does not support
+  TypeScript 7 yet
+  ([typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)).
+- React Compiler runs through Babel (`@rolldown/plugin-babel` with
+  `reactCompilerPreset`), configured in `vite.config.ts`.
+- A pre-commit hook runs `lint-staged` (Prettier and ESLint) on staged files.
