@@ -309,6 +309,9 @@ Artist and image sub-requests use the same retry policy before they fall back to
   matching field is `null` / skipped. Only a failed object request fails the artwork.
   `imageAvailable=true` makes a missing image rare, but the code still handles it. The UI shows its
   "Image not available" placeholder for a `null` image.
+- The image URL must use `https:`. The first `https:` URL in `access_point` is used. Any other
+  scheme (`http:`, `javascript:`, `data:`, relative) gives `imageUrl: null`, so the UI shows its
+  "Image not available" placeholder. This keeps third-party URLs safe to use in `src` and `href`.
 - Missing fields map to `null` / `[]`, never throw. An object with no name at all gets the title
   `'Untitled'`, because `title` is a `string`.
 

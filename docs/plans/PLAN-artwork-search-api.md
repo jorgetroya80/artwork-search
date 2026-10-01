@@ -328,8 +328,9 @@ van Rijn" }]`). Checked on more objects (Vermeer, anonymous prints): it is there
     fewer IDs than `total` left `hasMore: true` with a `loadMore` that loaded nothing.
   - A failed background refetch kept `status: 'error'` with results loaded. Now any error with
     data maps to `status: 'success'` (`toSearchStatus`), which also removed the nested ternary.
-  - Not changed, by decision: the `https:` check on image URLs is still open (API or UI spec),
-    and the review Suggestions / FYI items.
+  - `pickImageUrl` accepts only `https:` URLs (first match in `access_point`). Anything else
+    gives `imageUrl: null`, so the UI shows its placeholder.
+  - Not changed, by decision: the review Suggestions / FYI items.
 
 ## Risks and mitigations
 

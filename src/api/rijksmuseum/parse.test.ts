@@ -151,6 +151,33 @@ describe('pickArtists', () => {
   });
 });
 
+describe('pickImageUrl', () => {
+  const digitalObjectWith = (...urls: string[]) => ({
+    access_point: urls.map((id) => ({ id, type: 'DigitalObject' })),
+  });
+
+  it.each([
+    ['javascript:alert(1)'],
+    ['http://iiif.micr.io/PJEZO/full/max/0/default.jpg'],
+    ['data:image/png;base64,AAAA'],
+    ['//iiif.micr.io/PJEZO/full/max/0/default.jpg'],
+    ['not a url'],
+  ])('gives null for a URL that is not https: %s', (url) => {
+    expect(pickImageUrl(digitalObjectWith(url))).toBeNull();
+  });
+
+  it('picks the first https URL', () => {
+    expect(
+      pickImageUrl(
+        digitalObjectWith(
+          'http://example.com/a.jpg',
+          'https://iiif.micr.io/PJEZO/full/max/0/default.jpg'
+        )
+      )
+    ).toBe('https://iiif.micr.io/PJEZO/full/max/0/default.jpg');
+  });
+});
+
 describe('toThumbnailUrl', () => {
   it('asks IIIF for a 400 px wide image', () => {
     expect(

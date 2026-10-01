@@ -93,8 +93,11 @@ export const pickVisualItemIds = (object: unknown) =>
 export const pickDigitalObjectIds = (visualItem: unknown) =>
   readRefIds(asRecord(visualItem).digitally_shown_by);
 
+const isHttpsUrl = (url: string) => URL.parse(url)?.protocol === 'https:';
+
+/** First https image URL. Any other scheme gives `null`, so the UI shows its placeholder. */
 export const pickImageUrl = (digitalObject: unknown): string | null =>
-  readRefIds(asRecord(digitalObject).access_point)[0] ?? null;
+  readRefIds(asRecord(digitalObject).access_point).find(isHttpsUrl) ?? null;
 
 export const toThumbnailUrl = (imageUrl: string) =>
   imageUrl.replace(IIIF_FULL_SIZE, `/full/${THUMBNAIL_WIDTH},/`);
