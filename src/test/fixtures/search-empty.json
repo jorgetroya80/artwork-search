@@ -1,0 +1,19 @@
+{
+  "@context": "https://linked.art/ns/v1/search.json",
+  "id": "https://data.rijksmuseum.nl/search/collection?title=zzqqxx&imageAvailable=true",
+  "type": "OrderedCollectionPage",
+  "partOf": {
+    "id": "https://data.rijksmuseum.nl/search/collection?title=zzqqxx&imageAvailable=true",
+    "type": "OrderedCollection",
+    "totalItems": 0,
+    "first": {
+      "id": "https://data.rijksmuseum.nl/search/collection?title=zzqqxx&imageAvailable=true",
+      "type": "OrderedCollectionPage"
+    },
+    "last": {
+      "id": "https://data.rijksmuseum.nl/search/collection?title=zzqqxx&imageAvailable=true",
+      "type": "OrderedCollectionPage"
+    }
+  },
+  "orderedItems": []
+}

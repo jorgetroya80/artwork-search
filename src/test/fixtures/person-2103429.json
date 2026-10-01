@@ -1,0 +1,362 @@
+{
+  "@context": "https://linked.art/ns/v1/linked-art.json",
+  "id": "https://id.rijksmuseum.nl/2103429",
+  "type": "Person",
+  "died": {
+    "type": "Death",
+    "timespan": {
+      "type": "TimeSpan",
+      "identified_by": [
+        {
+          "type": "Name",
+          "content": "1669-10-08",
+          "language": [
+            {
+              "id": "http://vocab.getty.edu/aat/300388256",
+              "type": "Language"
+            }
+          ]
+        },
+        {
+          "type": "Name",
+          "content": "1669-10-08",
+          "language": [
+            {
+              "id": "http://vocab.getty.edu/aat/300388277",
+              "type": "Language"
+            }
+          ]
+        }
+      ],
+      "begin_of_the_begin": "1669-10-08T00:00:00Z",
+      "end_of_the_end": "1669-10-08T23:59:59Z"
+    },
+    "took_place_at": [
+      {
+        "id": "https://id.rijksmuseum.nl/23029985",
+        "type": "Place"
+      }
+    ]
+  },
+  "subject_of": [
+    {
+      "id": "https://data.rijksmuseum.nl/2103429",
+      "type": "LinguisticObject",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300379475",
+          "type": "Type"
+        }
+      ]
+    }
+  ],
+  "carried_out": [
+    {
+      "type": "Activity",
+      "classified_as": [
+        {
+          "id": "https://id.rijksmuseum.nl/2202348",
+          "type": "Type",
+          "classified_as": [
+            {
+              "id": "http://vocab.getty.edu/aat/300393177",
+              "type": "Type",
+              "_label": "Professional Activities"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activity",
+      "classified_as": [
+        {
+          "id": "https://id.rijksmuseum.nl/2202217",
+          "type": "Type",
+          "classified_as": [
+            {
+              "id": "http://vocab.getty.edu/aat/300393177",
+              "type": "Type",
+              "_label": "Professional Activities"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activity",
+      "classified_as": [
+        {
+          "id": "https://id.rijksmuseum.nl/2202371",
+          "type": "Type",
+          "classified_as": [
+            {
+              "id": "http://vocab.getty.edu/aat/300393177",
+              "type": "Type",
+              "_label": "Professional Activities"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "identified_by": [
+    {
+      "type": "Name",
+      "content": "Rijn, Rembrandt van",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404672",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388277",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rembrandt Harmensz. van Rijn",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404671",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rembrandt van Rijn",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404671",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rijn, Rembrandt Harmensz. van",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404672",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rijn, Rembrandt van",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404672",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rembrandt van Rijn",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404670",
+          "type": "Type"
+        },
+        {
+          "id": "http://vocab.getty.edu/aat/300404671",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388277",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rembrandt Harmensz. van Rijn",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404671",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rembrandt",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404671",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    },
+    {
+      "type": "Name",
+      "content": "Rembrandt van Rijn",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300404670",
+          "type": "Type"
+        },
+        {
+          "id": "http://vocab.getty.edu/aat/300404671",
+          "type": "Type"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    }
+  ],
+  "classified_as": [
+    {
+      "id": "https://id.rijksmuseum.nl/22012059",
+      "type": "Type",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300055147",
+          "type": "Type"
+        }
+      ]
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/22015713",
+      "type": "Type",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300379842",
+          "type": "Type"
+        }
+      ]
+    }
+  ],
+  "referred_to_by": [
+    {
+      "type": "LinguisticObject",
+      "content": "Rembrandt Harmensz. van Rijn (1606-1669) is ongetwijfeld de bekendste Nederlandse schilder uit de 17de eeuw. Hij werd geboren in Leiden. Hij ging daar in de leer bij Jacob van Swanenburch. Bij Pieter Lastman in Amsterdam maakte hij vervolgens kennis met de sterke licht-donkercontrasten in het werk van Caravaggio. Terug in Leiden vestigde hij zich met Jan Lievens als zelfstandig schilder. Gerard Dou was zijn eerste leerling. In 1631 verhuisde hij naar Amsterdam. Hij kreeg steeds meer opdrachten voor portretten en had talloze leerlingen onder wie Ferdinand Bol en Govert Flinck. [Rijkscanon 2007]",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300435422",
+          "type": "Type",
+          "classified_as": [
+            {
+              "id": "http://vocab.getty.edu/aat/300418049",
+              "type": "Type",
+              "_label": "brief text"
+            }
+          ]
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388256",
+          "type": "Language"
+        }
+      ]
+    }
+  ],
+  "born": {
+    "type": "Birth",
+    "timespan": {
+      "type": "TimeSpan",
+      "identified_by": [
+        {
+          "type": "Name",
+          "content": "1606-07-15",
+          "language": [
+            {
+              "id": "http://vocab.getty.edu/aat/300388277",
+              "type": "Language"
+            }
+          ]
+        },
+        {
+          "type": "Name",
+          "content": "1606-07-15",
+          "language": [
+            {
+              "id": "http://vocab.getty.edu/aat/300388256",
+              "type": "Language"
+            }
+          ]
+        }
+      ],
+      "begin_of_the_begin": "1606-07-15T00:00:00Z",
+      "end_of_the_end": "1606-07-15T23:59:59Z"
+    },
+    "took_place_at": [
+      {
+        "id": "https://id.rijksmuseum.nl/230105",
+        "type": "Place"
+      }
+    ]
+  },
+  "equivalent": [
+    {
+      "id": "http://www.wikidata.org/entity/Q5598",
+      "type": "Person"
+    },
+    {
+      "id": "https://id.rijksmuseum.nl/1101626",
+      "type": "Person"
+    },
+    {
+      "id": "http://vocab.getty.edu/ulan/500011051",
+      "type": "Person"
+    },
+    {
+      "id": "http://viaf.org/viaf/64013650",
+      "type": "Person"
+    },
+    {
+      "id": "https://rkd.nl/artists/66219",
+      "type": "Person"
+    }
+  ]
+}
