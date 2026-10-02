@@ -188,8 +188,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     auto-deploy "After CI checks pass" and the build filter visible in its settings.
   - Files: none.
   - Size: XS.
-  - Done: the maintainer created the Blueprint from `main`. Site `artwork-search` at
-    <https://artwork-search-0lvp.onrender.com> (Render added the `-0lvp` suffix). Settings show
+  - Done: the maintainer created the Blueprint from `main`. Site `artwork-search` at Render. Settings show
     auto-deploy "After CI checks pass" and the build filter.
 
 - [x] **T7: Live checks on the first deploy**

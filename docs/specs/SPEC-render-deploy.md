@@ -1,8 +1,7 @@
 # Spec: Deploy to Render
 
 - Created: 2026-10-02
-- Status: **implemented** (2026-10-02), PR #13, release v0.3.0. Live at
-  <https://artwork-search-0lvp.onrender.com>. Approved 2026-10-02. Revised the same day: Render auto-deploy replaces the deploy
+- Status: **implemented** (2026-10-02), PR #13, release v0.3.0. Approved 2026-10-02. Revised the same day: Render auto-deploy replaces the deploy
   hook (see "Decisions").
 - Plan: [PLAN-render-deploy.md](../plans/PLAN-render-deploy.md)
 - Depends on: [SPEC-ci-release.md](SPEC-ci-release.md) (implemented)
