@@ -110,7 +110,7 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     and `labels`. `build-push-action` has a `provenance` input, left at its default, as the
     spec says.
 
-- [ ] **T2: Runnable image**
+- [x] **T2: Runnable image**
   - Rename the branch: `git branch -m feat/docker-image`.
   - `Dockerfile` and `.dockerignore` as in the spec, with the base image tags from T1.
   - Minimal `nginx.conf`: `listen ${PORT};`, `root /usr/share/nginx/html;`,
@@ -120,6 +120,21 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     `docker build -t artwork-search .`, then the `docker run` / `curl` commands of those checks.
   - Files: `Dockerfile`, `.dockerignore`, `nginx.conf`.
   - Size: S.
+  - Done: branch renamed to `feat/docker-image`. Checks run with a script in the session
+    scratchpad that copies tracked and untracked-not-ignored files into a clean context (same
+    as a fresh clone plus the new files), builds, runs and asserts. It failed before the files
+    existed (no `Dockerfile`) and passes now:
+    - 1: build succeeds, no warnings in `--progress=plain` output.
+    - 2: `/` serves `index.html` with `<div id="root">` and its JS bundle returns `200`. The
+      API sends `access-control-allow-origin: *`, so calls from `localhost:8080` are allowed.
+      A search in the browser is still to be checked by the user.
+    - 5: `/missing` → `404`. 6: `PORT=9000` serves on 9000.
+    - 7: `id -u` is `101` and every running nginx process is user `nginx` (none `root`).
+    - 8: 22 MB. 9: no `.env*` under `/usr/share/nginx/html`.
+    - No `emerg`, `error` or `denied` in the nginx log.
+
+    Both T2 risks are cleared: Corepack installs pnpm 12.8.1 in the container, and `envsubst`
+    writes `conf.d` as UID 101. `pnpm test` (169 tests) and `pnpm build` still pass.
 
 - [ ] **T3: nginx caching, gzip and headers**
   - `index.html` → `Cache-Control: no-cache`. `/assets/` →
