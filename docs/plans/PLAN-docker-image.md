@@ -1,0 +1,256 @@
+# Plan: Docker image published to GHCR
+
+- Created: 2026-10-02
+- Status: **in progress** (approved 2026-10-02)
+- Spec: [SPEC-docker-image.md](../specs/SPEC-docker-image.md)
+
+The task list lives in this file. Check off tasks here as they are done.
+
+## Overview
+
+Add the files described in the spec:
+
+- `Dockerfile`, `nginx.conf`, `.dockerignore`: a multi-stage image that serves `dist/` with
+  `nginx-unprivileged` on `PORT` (default `8080`).
+- Job `docker-publish` in `release.yml`: on release, build for `linux/amd64` and `linux/arm64`
+  and push to `ghcr.io/jorgetroya80/artwork-search` with tags `X.Y.Z`, `X.Y`, `latest`.
+- README section "Docker".
+
+Spec, plan and implementation land in one PR. The branch `docs/docker-image-spec` is renamed to
+`feat/docker-image` before T2. The PR is titled `feat: publish Docker image to GHCR`, so its
+merge leads to release `0.2.0`, which runs `docker-publish` for the first time. Part of the
+verification can only happen on GitHub after that release. Making the package public is a manual
+step for the maintainer.
+
+No change to `src/`, `package.json` or `vite.config.ts`.
+
+Local tools: Docker 29.7.2 (arm64) and `actionlint` are installed. Nothing new is installed.
+
+## Dependency graph
+
+```
+T1 resolve versions and SHAs ──┬──► T2 Dockerfile + .dockerignore + minimal nginx.conf
+                               │              │
+                               │              ▼
+                               │    T3 nginx.conf: caching, gzip, headers
+                               │              │
+                               └──► T4 docker-publish job ◄┘ (needs a working image)
+                                              │
+                                              ▼
+                                    T5 README "Docker"
+                                              │
+                                              ▼
+                        Checkpoint 1: local checks pass, open PR
+                                              │
+                                              ▼
+                        T6 merge, release PR 0.2.0, merge, docker-publish runs
+                                              │
+                                              ▼
+                        T7 package public (maintainer, manual), anonymous pull
+                                              │
+                                              ▼
+                        T8 docs-only merge runs no docker-publish, spec status
+```
+
+Can run in parallel: T3 with the YAML part of T4. T4's multi-platform build check needs T2.
+
+## Architecture decisions
+
+- **Versions resolved from the source, not from memory.** Action SHAs with the `gh` commands
+  from PLAN-ci-release (T1). Base image tags checked on Docker Hub with
+  `docker buildx imagetools inspect <image>:<tag>`, which also shows that both `amd64` and
+  `arm64` exist.
+- **Thin vertical slice first.** T2 produces a runnable image with the smallest `nginx.conf`
+  (`listen`, `root`, `try_files`). T3 adds caching and headers on top. If T3 goes wrong, T2 still
+  works.
+- **Local multi-platform build before publishing.** `docker buildx build --platform
+linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `amd64` variant
+  builds without QEMU. That is the opposite direction of the runner (amd64 building arm64), and
+  the same property: the final stage has only `COPY`.
+- **pnpm through Corepack.** `corepack enable` reads `packageManager` (`pnpm@12.8.1`) and
+  downloads pnpm during the build. Fallback if Corepack fails in the container:
+  `npm install -g pnpm@12.8.1`. Not a spec change, but asked first because it duplicates the
+  version.
+- **Build from the release commit.** `actions/checkout` with
+  `ref: ${{ needs.release-please.outputs.tag_name }}`. `tag_name` is `vX.Y.Z`;
+  `metadata-action` strips the `v` (`{{version}}` → `X.Y.Z`, verified 2026-10-02 in its README).
+- **No untrusted input in `run:`.** The job has no `run:` steps. `tag_name` comes from
+  release-please, and is only passed to action inputs.
+
+## Task list
+
+### Phase 1: Files (local)
+
+- [x] **T1: Resolve versions and SHAs**
+  - Action SHAs for `docker/setup-buildx-action`, `docker/login-action`,
+    `docker/metadata-action`, `docker/build-push-action` (latest major of each), and the current
+    major tag of `actions/checkout` (already `@v7` in the repo).
+  - Latest stable `nginxinc/nginx-unprivileged:<X.Y.Z>-alpine` tag.
+  - `node:24.18.0-alpine` exists.
+  - Check each action README for the inputs used in the spec (`registry`, `username`,
+    `password`, `images`, `tags`, `context`, `platforms`, `push`, `labels`).
+  - Acceptance: a list of `action@sha # vX.Y.Z` lines and the two image tags, in this task's
+    "Done" note.
+  - Verify: each SHA is 40 hex characters and `gh api repos/<repo>/commits/<sha>` returns it.
+    `docker buildx imagetools inspect` lists `linux/amd64` and `linux/arm64` for both images.
+  - Files: none (this plan only).
+  - Size: XS.
+  - Done: resolved on 2026-10-02 with `gh release view` + `gh api repos/<repo>/commits/<tag>`:
+    - `docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1`
+    - `docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0`
+    - `docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0`
+    - `docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0`
+    - `actions/checkout@v7` (latest release `v7.0.1`, same major as the repo).
+    - `nginxinc/nginx-unprivileged:1.30.5-alpine`: latest stable (even minor; `1.31.x` is
+      mainline). Same digest as `stable-alpine`.
+    - `node:24.18.0-alpine` exists.
+
+    `docker buildx imagetools inspect` lists `linux/amd64` and `linux/arm64` for both images.
+    Each action's `action.yml` has the inputs the spec uses. `metadata-action` outputs `tags`
+    and `labels`. `build-push-action` has a `provenance` input, left at its default, as the
+    spec says.
+
+- [x] **T2: Runnable image**
+  - Rename the branch: `git branch -m feat/docker-image`.
+  - `Dockerfile` and `.dockerignore` as in the spec, with the base image tags from T1.
+  - Minimal `nginx.conf`: `listen ${PORT};`, `root /usr/share/nginx/html;`,
+    `location / { try_files $uri $uri/ =404; }`.
+  - Acceptance: spec local checks 1, 2, 5, 6, 7, 8, 9 pass.
+  - Verify: in a fresh clone in the session scratchpad (no `node_modules`, no `.env*`):
+    `docker build -t artwork-search .`, then the `docker run` / `curl` commands of those checks.
+  - Files: `Dockerfile`, `.dockerignore`, `nginx.conf`.
+  - Size: S.
+  - Done: branch renamed to `feat/docker-image`. Checks run with a script in the session
+    scratchpad that copies tracked and untracked-not-ignored files into a clean context (same
+    as a fresh clone plus the new files), builds, runs and asserts. It failed before the files
+    existed (no `Dockerfile`) and passes now:
+    - 1: build succeeds, no warnings in `--progress=plain` output.
+    - 2: `/` serves `index.html` with `<div id="root">` and its JS bundle returns `200`. The
+      API sends `access-control-allow-origin: *`, so calls from `localhost:8080` are allowed.
+      A search in the browser is still to be checked by the user.
+    - 5: `/missing` → `404`. 6: `PORT=9000` serves on 9000.
+    - 7: `id -u` is `101` and every running nginx process is user `nginx` (none `root`).
+    - 8: 22 MB. 9: no `.env*` under `/usr/share/nginx/html`.
+    - No `emerg`, `error` or `denied` in the nginx log.
+
+    Both T2 risks are cleared: Corepack installs pnpm 12.8.1 in the container, and `envsubst`
+    writes `conf.d` as UID 101. `pnpm test` (169 tests) and `pnpm build` still pass.
+
+- [x] **T3: nginx caching, gzip and headers**
+  - `index.html` → `Cache-Control: no-cache`. `/assets/` →
+    `Cache-Control: public, max-age=31536000, immutable`.
+  - `gzip on` for the four types in the spec. `server_tokens off`.
+  - The three security headers on every response, including `/assets/` and `index.html`
+    (`add_header` is not inherited into a `location` with its own `add_header`).
+  - Acceptance: spec local checks 3 and 4 pass. Check 5 (404) still passes.
+  - Verify: rebuild, then `curl -I` on `/`, `/index.html`, one file under `/assets/` and
+    `/missing`. `curl -sI -H 'Accept-Encoding: gzip'` on the JS file shows
+    `Content-Encoding: gzip`.
+  - Files: `nginx.conf`.
+  - Size: S.
+  - Done: the check script got assertions for checks 3, 4 and gzip. They failed on the T2
+    image (no `Cache-Control`, no headers, no gzip) and pass now. Instead of repeating headers
+    per `location`, every `add_header` is at `server` level with `always`, and `Cache-Control`
+    comes from `map $uri $cache_control` (`/assets/` → immutable, default `no-cache`). Spec
+    updated to match. Also `gzip_vary on`, added to the spec. Checked by hand: CSS is gzipped
+    with `Vary: Accept-Encoding`, `Server: nginx` has no version, `404` responses carry the
+    security headers, and the rendered `conf.d/default.conf` has `listen 8080` with `$uri` and
+    `$cache_control` left alone by `envsubst`.
+
+- [x] **T4: `docker-publish` job**
+  - Add the job from the spec to `release.yml`, with the SHAs from T1.
+  - Job-level `permissions: contents: read, packages: write`. `timeout-minutes: 20`.
+  - Acceptance: `needs: release-please`, `if` on `release_created == 'true'`, tags and
+    platforms as in the spec. The `release-please` job does not change.
+  - Verify: `actionlint .github/workflows/release.yml`,
+    `pnpm exec prettier --check .github/workflows/release.yml`, the SHA grep from
+    PLAN-ci-release Checkpoint 1, and locally
+    `docker buildx build --platform linux/amd64,linux/arm64 .` (no push) succeeds.
+  - Files: `.github/workflows/release.yml`.
+  - Size: S.
+  - Done: job added with the T1 SHAs. A structure test in the session scratchpad (Ruby, stdlib
+    YAML) checks 19 properties: `needs`, `if`, exact job permissions, empty top-level
+    permissions, timeout, no `run:` steps, SHA pins, checkout `ref`, GHCR login, image name, the
+    three tag rules, platforms, `push`, tags and labels from `meta`, no build cache, step order.
+    It failed before the job existed and passes now. `actionlint` (both workflows) and Prettier
+    pass. A grep confirms each `docker/*` line ends in `@<sha> # vX.Y.Z`. The local
+    `docker buildx build --platform linux/amd64,linux/arm64` (no push) succeeds. Its log shows
+    the `build` stage once (native `linux/arm64`) and only the three `COPY`-only final-stage
+    steps for `linux/amd64`, so no QEMU is needed. The `metadata-action` step has a comment on
+    why `latest` is explicit.
+
+- [x] **T5: README "Docker"**
+  - Build and run locally, `PORT`, pull from GHCR, available tags, platforms. Note that images
+    are published only on release.
+  - Acceptance: the commands in the section are the ones in the spec's "Commands" and work as
+    written (the GHCR pull only after T7).
+  - Verify: `pnpm exec prettier --check README.md`.
+  - Files: `README.md`.
+  - Size: XS.
+  - Done: new `## Docker` section after "Getting started", and a Docker line in "Tech stack".
+    A check script in the session scratchpad asserts the section has the spec's build, run,
+    `PORT` and pull commands, both platforms, `latest` and the release-only rule. It failed
+    before the section existed and passes now. The local commands are the ones the T2/T3 image
+    checks run. Prettier passes.
+
+### Checkpoint 1: Local checks pass, open PR
+
+- [x] Spec local checks 1–9 pass on the final files (12 assertions in the image check script,
+      plus the workflow structure test and the README check).
+- [x] `actionlint` and Prettier pass. Prettier on the branch's changed files; a full
+      `prettier --check .` also flags `CHANGELOG.md`, `pnpm-lock.yaml`, `vite.config.ts` and
+      `.release-please-manifest.json`, which this branch does not touch (same on `main`).
+- [x] `pnpm lint`, `pnpm test` (169 tests) and `pnpm build` pass (unchanged app).
+- [x] Spec status set to **in progress** and this plan to **in progress**.
+- [x] Review with the user, then push `feat/docker-image` and open the PR titled
+      `feat: publish Docker image to GHCR`. CI (`lint`, `test`, `build`, `pr-title`) passes.
+      PR #10, all four checks green (run 36986608334).
+
+### Phase 2: First publication
+
+- [ ] **T6: Release 0.2.0 and `docker-publish`**
+  - Squash-merge the PR. `release.yml` opens `chore(main): release 0.2.0`. Its changelog lists
+    the `feat` entry.
+  - Close and reopen the release PR so CI runs, then squash-merge it.
+  - `docker-publish` runs after `release-please` and succeeds.
+  - Acceptance: spec checks 10 and 11. `docker buildx imagetools inspect
+ghcr.io/jorgetroya80/artwork-search:0.2.0` lists both platforms. Tags `0.2.0`, `0.2` and
+    `latest` point to the same digest.
+  - Files: none by hand.
+  - Size: XS.
+
+- [ ] **T7: Package settings (maintainer)**
+  - In GitHub → Packages → `artwork-search` → Package settings: visibility **Public**. Check the
+    repository link and that `artwork-search` has **write** under "Manage Actions access".
+  - Acceptance: spec check 12. `docker logout ghcr.io`, then
+    `docker pull ghcr.io/jorgetroya80/artwork-search:latest` and `docker run` of it serve the
+    app.
+  - Files: none.
+  - Size: XS.
+
+- [ ] **T8: No publish for `docs:`, close the spec**
+  - In a `docs:` PR: set the spec status to **implemented**, set this plan's status, and check
+    off the spec success criteria.
+  - Acceptance: after the merge, the `release.yml` run shows `docker-publish` as skipped (spec
+    check 13), and no new image tag appears.
+  - Files: `docs/specs/SPEC-docker-image.md`, `docs/plans/PLAN-docker-image.md`.
+  - Size: XS.
+
+### Checkpoint 2: Complete
+
+- [ ] All spec success criteria are checked.
+- [ ] `ghcr.io/jorgetroya80/artwork-search:0.2.0` is public and runs on amd64 and arm64.
+
+## Risks and mitigations
+
+| Risk                                                                       | Impact                                  | Mitigation                                                                                                                                                      |
+| -------------------------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No image build on PRs: a broken `Dockerfile` is found only at release time | Medium: release exists without an image | Spec checks 1–9 before merging any PR that touches Docker files. If `docker-publish` fails: fix in a `fix:` PR, which makes a new release                       |
+| `docker-publish` fails for a transient reason (registry, network)          | Low                                     | Re-run the failed job. It checks out the same tag                                                                                                               |
+| First push cannot create the package (`403`)                               | Medium: no image for `0.2.0`            | Check job `permissions` and the repository's Actions settings, then re-run the job. Package Actions access (T7) only exists after the first push                |
+| New package is private                                                     | Low: anonymous pull fails               | T7                                                                                                                                                              |
+| Corepack cannot download pnpm 12 in the container                          | Medium: build fails                     | Found in T2. Fallback `npm install -g pnpm@12.8.1`, after asking                                                                                                |
+| `envsubst` cannot write `conf.d` as UID 101                                | Medium: container does not start        | Found in T2. `nginx-unprivileged` makes `conf.d` writable; if not, ask before changing the approach                                                             |
+| Building `arm64` on the amd64 runner needs QEMU                            | Medium: job fails                       | Final stage has no `RUN`. Checked locally in T4 for the opposite direction. If it fails on GitHub: adding `docker/setup-qemu-action` is "ask first" in the spec |
+| Release PR checks stay pending (`GITHUB_TOKEN` starts no workflows)        | Low: merge blocked                      | Close and reopen (as in PLAN-ci-release)                                                                                                                        |
+| Base images get old (no Dependabot)                                        | Low                                     | Accepted in the spec. Update by hand, `node` together with `.nvmrc`                                                                                             |
