@@ -76,19 +76,35 @@
         box-shadow: 0 2px 3px rgb(0 0 0 / 0.5);
       }
 
+      /* Two halves of the wire, each drawn as the diagonal of its box, from the frame up to the nail */
       .wire {
         position: absolute;
         top: 0.4rem;
         left: 18%;
         width: 64%;
-        height: 2.7rem;
-        overflow: visible;
+        height: 2.6rem;
       }
 
-      .wire polyline {
-        fill: none;
-        stroke: #a8a29e;
-        stroke-width: 1.5;
+      .wire::before,
+      .wire::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 50%;
+        height: 100%;
+        --line:
+          transparent calc(50% - 1px), #a8a29e calc(50% - 1px),
+          #a8a29e calc(50% + 1px), transparent calc(50% + 1px);
+      }
+
+      .wire::before {
+        left: 0;
+        background: linear-gradient(to top left, var(--line));
+      }
+
+      .wire::after {
+        right: 0;
+        background: linear-gradient(to top right, var(--line));
       }
 
       .frame {
@@ -208,13 +224,8 @@
   <body>
     <main>
       <div class="hanging" aria-hidden="true">
+        <span class="wire"></span>
         <span class="nail"></span>
-        <svg class="wire" viewBox="0 0 100 40" preserveAspectRatio="none">
-          <polyline
-            points="0,40 50,0 100,40"
-            vector-effect="non-scaling-stroke"
-          />
-        </svg>
         <div class="frame"><div class="empty"></div></div>
       </div>
 

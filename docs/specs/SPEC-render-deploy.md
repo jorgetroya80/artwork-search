@@ -134,7 +134,8 @@ Added 2026-10-02 (maintainer), to resolve the "Headers on 404" follow-up.
 - **nginx parity.** `nginx.conf` gets `error_page 404 /404.html;` at `server` level, so the Docker
   image serves the same page with status `404`. Its headers do not change (server-level
   `add_header ... always`, `Cache-Control: no-cache` from the `map` default).
-- **Self-contained.** One HTML file with inline CSS. No JavaScript, no web fonts, no images, no
+- **Self-contained.** One HTML file with inline CSS; the frame, wire and nail are drawn in CSS.
+  No JavaScript, no SVG, no web fonts, no images, no
   requests to other origins. Every link and asset path is absolute (`/`, `/vite.svg`), because the
   page is served at any unknown path, including nested ones like `/a/b`.
 - **Design.** Playful and on theme: the artwork is missing. An empty gilded frame hangs slightly

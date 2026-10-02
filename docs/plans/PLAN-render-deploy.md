@@ -267,7 +267,7 @@ Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It change
   - Files: `public/404.html`, `nginx.conf`.
   - Size: S.
   - Done: an empty gilded frame (CSS gradients and inset shadows) hangs crooked from a nail and
-    wire (inline SVG) on a slate gallery wall under a soft spotlight, next to a paper wall label:
+    wire on a slate gallery wall under a soft spotlight, next to a paper wall label:
     "Untitled (404)", "Artist unknown", "Date unknown", "Empty frame, 0 × 0 cm", "SK-A-404", a
     sentence on what happened, and "Search the collection" (`/`). The frame swings once on load
     (2.8 s) and settles at -2°; no motion with reduced motion. System font stack starting with
@@ -277,6 +277,9 @@ Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It change
     security headers); `/` and `/404.html` → `200`; no nginx errors. Screenshots (headless Chrome)
     at 1280×800 and, through iframes of the local file, at 390 and 320 px wide. The live-site
     iframe attempt showed `X-Frame-Options: DENY` working: the browser refused to frame it.
+    Revised after review (maintainer): the wire is CSS too (two half-width boxes, each with a
+    diagonal `linear-gradient` line from the frame to the nail), replacing an inline SVG. The
+    check script now also rejects `<svg>` and `<img>`.
 
 - [ ] **Checkpoint 3: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
