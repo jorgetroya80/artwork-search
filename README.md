@@ -211,6 +211,7 @@ work.
 - **ESLint** and **Prettier**, with a pre-commit hook that runs `lint-staged`.
 - **GitHub Actions** and **release-please** for CI and releases.
 - **Docker** with nginx, published to GitHub Container Registry on each release.
+- **Render** Static Site, deployed on each push to `main`.
 
 ## Getting started
 
@@ -256,6 +257,12 @@ without a release publish nothing.
 docker pull ghcr.io/jorgetroya80/artwork-search:latest
 docker run --rm -p 8080:8080 ghcr.io/jorgetroya80/artwork-search:latest
 ```
+
+## Deploy
+
+<!-- TODO: add the live URL once the Render static site exists -->
+
+The app is deployed on Render as a [Static Site](https://render.com/docs/static-sites).
 
 ## Known limitations and next steps
 
