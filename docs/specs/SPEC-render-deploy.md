@@ -3,7 +3,7 @@
 - Created: 2026-10-02
 - Status: **implemented** (2026-10-02), PR #13, release v0.3.0. Approved 2026-10-02. Revised the same day: Render auto-deploy replaces the deploy
   hook (see "Decisions").
-- Extension: not-found page, **in progress** (2026-10-02).
+- Extension: not-found page and app icon, **implemented** (2026-10-02), PR #16, release v0.4.0.
 - Plan: [PLAN-render-deploy.md](../plans/PLAN-render-deploy.md)
 - Depends on: [SPEC-ci-release.md](SPEC-ci-release.md) (implemented)
 - Related: [SPEC-docker-image.md](SPEC-docker-image.md) (implemented). Its "Next phases" planned a
@@ -243,10 +243,10 @@ No unit tests. The app test suite does not change.
       public URL, with the headers of check 7. (Exception: Render's own 404 page carries only
       `X-Content-Type-Options`; see "Follow-ups".)
 - [x] A merge that changes the app deploys after its checks pass.
-- [ ] A merge that changes only files outside `buildFilter` deploys nothing. (Checked on the merge
-      of the `docs:` PR that closes this spec; see the plan, T8.)
+- [x] A merge that changes only files outside `buildFilter` deploys nothing. (The merge of PR #15
+      started no Render deploy.)
 - [x] The workflows are unchanged and the repository has no Render secret.
-- [ ] `/missing` on the live site returns `404` with the custom page, and the three security
+- [x] `/missing` on the live site returns `404` with the custom page, and the three security
       headers (checks 11–14).
 - [x] README has a "Deploy" section that says only that the app is deployed on Render as a
       Static Site, with the live URL.
@@ -269,10 +269,17 @@ No unit tests. The app test suite does not change.
 
 ## Follow-ups
 
-- **Headers on 404.** Render's 404 page for unknown paths returns only
-  `X-Content-Type-Options: nosniff`; the `X-Frame-Options` and `Referrer-Policy` rules on `/*` are
-  not applied to it. nginx sends them on 404 too. Low risk (plain-text page, no app content).
-  Being addressed with a custom not-found page (see "Not-found page", 2026-10-02).
+- **Headers on 404.** Resolved (2026-10-02, PR #16). Render's built-in 404 page carried only
+  `X-Content-Type-Options`. With `/404.html`, `/missing` and `/a/b` return `404` with the custom
+  page and all three security headers.
+- **Default `Cache-Control`.** Observed live: files with no `Cache-Control` rule (`/404.html`,
+  `/favicon.svg`) get `public, max-age=0, s-maxage=300`, so the CDN may serve them up to 5 minutes
+  old after a deploy. nginx sends `no-cache` for them. Accepted: they change rarely. A rule can be
+  added if that matters.
+- **Removed files stay online.** After PR #16 deleted `public/vite.svg`, Render still serves
+  `/vite.svg` (`200`, `Last-Modified` of the previous deploy, CDN `MISS`). Render seems to keep
+  files from earlier deploys. Harmless here (nothing links to it). Not documented by Render;
+  watch for it if a file is ever removed for privacy or security reasons.
 
 ## Open Questions
 

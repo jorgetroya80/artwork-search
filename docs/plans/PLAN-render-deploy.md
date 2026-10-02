@@ -301,11 +301,18 @@ The `feat` title leads to a minor release.
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
   - Push and open the PR. CI passes.
 
-- [ ] **T12: Live check (after merge)**
+- [x] **T12: Live check (after merge)**
   - Acceptance: spec check 14. If the headers are present, the follow-up is closed and the spec
     criterion checked in a `docs:` PR; if not, the follow-up stays open with the result.
   - Files: `docs/specs/SPEC-render-deploy.md`, `docs/plans/PLAN-render-deploy.md`.
   - Size: XS.
+  - Done: PR #16 squash-merged as `5ccc980`, then release PR #17 (`a65e63c`, v0.4.0). After the
+    deploy went live (maintainer): `/missing` and `/a/b` → `404`, `text/html`, the custom page,
+    and `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`. `/404.html` → `200`.
+    `/` → `200` with `no-cache` and links `/favicon.svg`, which returns `200`. Follow-up closed.
+    Two observations recorded as spec follow-ups: Render's default `Cache-Control` for files
+    without a rule is `public, max-age=0, s-maxage=300`, and the deleted `/vite.svg` is still
+    served from the previous deploy. Spec check 10 also checked off (PR #15 merge, no deploy).
 
 ## Risks and mitigations
 
