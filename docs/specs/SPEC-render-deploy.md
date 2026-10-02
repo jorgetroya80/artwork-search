@@ -1,7 +1,8 @@
 # Spec: Deploy to Render
 
 - Created: 2026-10-02
-- Status: **in progress** (approved 2026-10-02). Revised the same day: Render auto-deploy replaces the deploy
+- Status: **implemented** (2026-10-02), PR #13, release v0.3.0. Live at
+  <https://artwork-search-0lvp.onrender.com>. Approved 2026-10-02. Revised the same day: Render auto-deploy replaces the deploy
   hook (see "Decisions").
 - Plan: [PLAN-render-deploy.md](../plans/PLAN-render-deploy.md)
 - Depends on: [SPEC-ci-release.md](SPEC-ci-release.md) (implemented)
@@ -192,13 +193,15 @@ No unit tests. The app test suite does not change.
 
 ## Success Criteria
 
-- [ ] `render.yaml` exists at the root with the static site above.
-- [ ] The Render static site `artwork-search` exists from the Blueprint and serves the app on its
-      public URL, with the headers of check 7.
-- [ ] A merge that changes the app deploys after its checks pass.
-- [ ] A merge that changes only files outside `buildFilter` deploys nothing.
-- [ ] The workflows are unchanged and the repository has no Render secret.
-- [ ] README has a "Deploy" section that says only that the app is deployed on Render as a
+- [x] `render.yaml` exists at the root with the static site above.
+- [x] The Render static site `artwork-search` exists from the Blueprint and serves the app on its
+      public URL, with the headers of check 7. (Exception: Render's own 404 page carries only
+      `X-Content-Type-Options`; see "Follow-ups".)
+- [x] A merge that changes the app deploys after its checks pass.
+- [ ] A merge that changes only files outside `buildFilter` deploys nothing. (Checked on the merge
+      of the `docs:` PR that closes this spec; see the plan, T8.)
+- [x] The workflows are unchanged and the repository has no Render secret.
+- [x] README has a "Deploy" section that says only that the app is deployed on Render as a
       Static Site, with the live URL.
 
 ## Decisions
@@ -216,6 +219,13 @@ No unit tests. The app test suite does not change.
 - **`buildFilter`** (maintainer's choice), so docs and CI changes do not rebuild the site. Cost:
   a new file the build reads must be added to the list, or a change to it alone does not deploy.
 - The PR is titled `feat: …`: a live site is a new deliverable.
+
+## Follow-ups
+
+- **Headers on 404.** Render's 404 page for unknown paths returns only
+  `X-Content-Type-Options: nosniff`; the `X-Frame-Options` and `Referrer-Policy` rules on `/*` are
+  not applied to it. nginx sends them on 404 too. Low risk (plain-text page, no app content). The
+  maintainer will handle it later (2026-10-02).
 
 ## Open Questions
 

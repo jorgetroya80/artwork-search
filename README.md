@@ -11,7 +11,7 @@ A React + TypeScript search interface for the Rijksmuseum collection, built on t
 
 ![Screenshot of the artwork search UI](docs/images/screenshot-app.png)
 
-<!-- TODO: add a link to the live demo once deployed -->
+**Live demo:** <https://artwork-search-0lvp.onrender.com>
 
 ## Overview
 
@@ -260,9 +260,7 @@ docker run --rm -p 8080:8080 ghcr.io/jorgetroya80/artwork-search:latest
 
 ## Deploy
 
-<!-- TODO: add the live URL once the Render static site exists -->
-
-The app is deployed on Render as a [Static Site](https://render.com/docs/static-sites).
+The app is deployed on Render as a [Static Site](https://render.com/docs/static-sites): <https://artwork-search-0lvp.onrender.com>.
 
 ## Known limitations and next steps
 
@@ -271,7 +269,6 @@ The app is deployed on Render as a [Static Site](https://render.com/docs/static-
 - Search by artist only. The data layer already supports `title`, but the UI does not expose it
   yet.
 - No artwork detail view.
-- No public deployment yet.
 
 ## License
 

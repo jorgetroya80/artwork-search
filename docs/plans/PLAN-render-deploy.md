@@ -1,7 +1,7 @@
 # Plan: Deploy to Render
 
 - Created: 2026-10-02
-- Status: **in progress**. Revised 2026-10-02 after the spec dropped the deploy hook (see "Design
+- Status: **implemented** (2026-10-02), PR #13, release v0.3.0. Revised 2026-10-02 after the spec dropped the deploy hook (see "Design
   change").
 - Spec: [SPEC-render-deploy.md](../specs/SPEC-render-deploy.md)
 
@@ -172,21 +172,27 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
 
 ### Phase 2: Render
 
-- [ ] **T5: Merge the PR**
+- [x] **T5: Merge the PR**
   - Squash-merge the PR. No site exists yet, so nothing deploys. release-please opens a release
     PR; it can wait.
   - Acceptance: `main` has `render.yaml`.
   - Files: none by hand.
   - Size: XS.
+  - Done: PR #13 squash-merged as `9c72596` (14:09 UTC). CI run 37017862074 and Release run
+    37017862001 green; `docker-publish` skipped (no release). release-please opened #14
+    `chore(main): release 0.3.0`.
 
-- [ ] **T6: Render Blueprint (maintainer)**
+- [x] **T6: Render Blueprint (maintainer)**
   - Spec setup step 1: New → Blueprint from `main`.
   - Acceptance: spec check 5 (Blueprint preview accepts `render.yaml`). The site exists, with
     auto-deploy "After CI checks pass" and the build filter visible in its settings.
   - Files: none.
   - Size: XS.
+  - Done: the maintainer created the Blueprint from `main`. Site `artwork-search` at
+    <https://artwork-search-0lvp.onrender.com> (Render added the `-0lvp` suffix). Settings show
+    auto-deploy "After CI checks pass" and the build filter.
 
-- [ ] **T7: Live checks on the first deploy**
+- [x] **T7: Live checks on the first deploy**
   - Acceptance: spec checks 6, 7 and 8 on the deploy that the Blueprint created.
   - Verify: Render build log (Node `24.18.0`, pnpm `12.8.1`). `curl -I` on `/`, `/index.html`,
     one file under `/assets/` and `/missing`. A search in the browser.
@@ -194,6 +200,15 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     is missing or `Cache-Control` differs: fix `render.yaml` in a `fix:` PR, after asking.
   - Files: none.
   - Size: XS.
+  - Done: build log (checked by the maintainer) shows Node `24.18.0` and pnpm `12.8.1`, so
+    Corepack works on Render. `curl -I`: `/` and `/index.html` → `200`, `Cache-Control: no-cache`
+    and the three security headers; `/assets/index-Cvb7WFEF.js` → `200`,
+    `Cache-Control: public, max-age=31536000, immutable`, the three headers, `Content-Encoding: br`
+    with `Accept-Encoding: br`. `/missing` → `404`, but with only `X-Content-Type-Options`:
+    Render's 404 page does not get the `/*` rules for `X-Frame-Options` and `Referrer-Policy`.
+    Recorded as a spec follow-up; the maintainer will handle it later. The Rijksmuseum API
+    answers the site's origin with `access-control-allow-origin: *`, and a search in the browser
+    returns results (maintainer).
 
 - [ ] **T8: Live URL, no deploy on `docs:`**
   - In a `docs:` PR: the live URL in the README (Deploy section and top of the file), remove "No
@@ -202,8 +217,12 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
   - Acceptance: after the merge, Render shows no new deploy (spec check 10).
   - Files: `README.md`, `docs/specs/SPEC-render-deploy.md`, `docs/plans/PLAN-render-deploy.md`.
   - Size: XS.
+  - Done after T9 (order swapped so this PR closes the spec with everything else verified): live
+    URL at the top of the README and in "Deploy", "No public deployment yet" removed, spec
+    **implemented** with the 404 follow-up, this plan **implemented**. `gh secret list` is empty.
+    Check 10 happens when this PR merges; it is the one criterion left unchecked in the spec.
 
-- [ ] **T9: An app change deploys after checks**
+- [x] **T9: An app change deploys after checks**
   - Merge the open release PR (close and reopen it first so CI runs). It changes `package.json`,
     a `buildFilter` path.
   - Acceptance: spec check 9. Render's deploy of that commit starts only after its checks
@@ -211,11 +230,18 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
   - Verify: Render events (deploy start time) against `gh run list --commit <sha>` (finish times).
   - Files: none by hand.
   - Size: XS.
+  - Done: #14 squash-merged as `4aa5f0b` at 14:23:37 UTC (tag `v0.3.0`; changes `package.json`,
+    `CHANGELOG.md`, the manifest). Checks on that commit: CI run 37019551518 (`build`, `lint`,
+    `test` green, last at 14:24:39) and Release run 37019551669 (`release-please`, and
+    `docker-publish` green at 14:25:08, publishing image `0.3.0`). Render shows a deploy of
+    `4aa5f0b` starting at 16:25 CEST (14:25 UTC), the minute the last check finished and about
+    90 seconds after the push, and it went live. The JS hash did not change, as expected: only
+    the version changed.
 
 ### Checkpoint 2: Complete
 
-- [ ] All spec success criteria are checked.
-- [ ] The live URL serves the current `main`.
+- [x] All spec success criteria are checked, except check 10, which this PR's merge verifies.
+- [x] The live URL serves the current `main` (`4aa5f0b`, v0.3.0).
 
 ## Risks and mitigations
 
