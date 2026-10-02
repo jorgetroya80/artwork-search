@@ -157,7 +157,7 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     security headers, and the rendered `conf.d/default.conf` has `listen 8080` with `$uri` and
     `$cache_control` left alone by `envsubst`.
 
-- [ ] **T4: `docker-publish` job**
+- [x] **T4: `docker-publish` job**
   - Add the job from the spec to `release.yml`, with the SHAs from T1.
   - Job-level `permissions: contents: read, packages: write`. `timeout-minutes: 20`.
   - Acceptance: `needs: release-please`, `if` on `release_created == 'true'`, tags and
@@ -168,6 +168,16 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     `docker buildx build --platform linux/amd64,linux/arm64 .` (no push) succeeds.
   - Files: `.github/workflows/release.yml`.
   - Size: S.
+  - Done: job added with the T1 SHAs. A structure test in the session scratchpad (Ruby, stdlib
+    YAML) checks 19 properties: `needs`, `if`, exact job permissions, empty top-level
+    permissions, timeout, no `run:` steps, SHA pins, checkout `ref`, GHCR login, image name, the
+    three tag rules, platforms, `push`, tags and labels from `meta`, no build cache, step order.
+    It failed before the job existed and passes now. `actionlint` (both workflows) and Prettier
+    pass. A grep confirms each `docker/*` line ends in `@<sha> # vX.Y.Z`. The local
+    `docker buildx build --platform linux/amd64,linux/arm64` (no push) succeeds. Its log shows
+    the `build` stage once (native `linux/arm64`) and only the three `COPY`-only final-stage
+    steps for `linux/amd64`, so no QEMU is needed. The `metadata-action` step has a comment on
+    why `latest` is explicit.
 
 - [ ] **T5: README "Docker"**
   - Build and run locally, `PORT`, pull from GHCR, available tags, platforms. Note that images
