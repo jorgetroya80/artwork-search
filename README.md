@@ -211,6 +211,7 @@ work.
 - **ESLint** and **Prettier**, with a pre-commit hook that runs `lint-staged`.
 - **GitHub Actions** and **release-please** for CI and releases.
 - **Docker** with nginx, published to GitHub Container Registry on each release.
+- **Render** Static Site, deployed on each release.
 
 ## Getting started
 
@@ -256,6 +257,19 @@ without a release publish nothing.
 docker pull ghcr.io/jorgetroya80/artwork-search:latest
 docker run --rm -p 8080:8080 ghcr.io/jorgetroya80/artwork-search:latest
 ```
+
+## Deploy
+
+<!-- TODO: add the live URL once the Render static site exists -->
+
+The app runs on Render as a [Static Site](https://render.com/docs/static-sites), configured in
+`render.yaml`. Render runs `pnpm build` and serves `dist` from its CDN, with the same caching and
+security headers as `nginx.conf`. It does not use the Docker image.
+
+Only releases deploy. Auto-deploy is off, and when release-please creates a release, the
+`render-deploy` job in `release.yml` calls the Render deploy hook with the release commit. Render
+builds that commit and switches to it only if the build succeeds. The hook URL is stored in the
+repository secret `RENDER_DEPLOY_HOOK_URL`.
 
 ## Known limitations and next steps
 

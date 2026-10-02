@@ -135,7 +135,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     body, and an empty secret exits `2`. curl's error line does not print the URL. One comment
     on the step says why the hook is the only deploy trigger.
 
-- [ ] **T4: README "Deploy"**
+- [x] **T4: README "Deploy"**
   - After "Docker": the site is a Render Static Site from `render.yaml`. Only releases deploy, the
     release commit, through a deploy hook stored in `RENDER_DEPLOY_HOOK_URL`. The Docker image
     stays for local use. A placeholder for the live URL, filled in T9.
@@ -143,6 +143,13 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
   - Verify: `pnpm exec prettier --check README.md`.
   - Files: `README.md`.
   - Size: XS.
+  - Done: new `## Deploy` section after "Docker", with a TODO comment for the live URL (T9), and
+    a Render line in "Tech stack". A check script in the session scratchpad (12 assertions)
+    asserts the section's place and that it names the Static Site, `render.yaml`, `pnpm build`
+    and `dist`, the release-only rule, the release commit, the deploy hook, the secret name,
+    `render-deploy` and the header parity with `nginx.conf`, and that the README has no hook URL
+    or key. It failed before the section existed and passes now. Prettier passes. The top-of-file
+    TODO and the "No public deployment yet" limitation stay until T9, when the site exists.
 
 ### Checkpoint 1: Local checks pass, open PR
 
