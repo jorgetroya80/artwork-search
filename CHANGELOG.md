@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/jorgetroya80/artwork-search/compare/v0.1.0...v0.2.0) (2026-10-02)
+
+
+### Features
+
+* publish Docker image to GHCR ([#10](https://github.com/jorgetroya80/artwork-search/issues/10)) ([358e507](https://github.com/jorgetroya80/artwork-search/commit/358e507497d0121e380c1e891d0ed43cf1f736f7))
+
 ## [0.1.0](https://github.com/jorgetroya80/artwork-search/commits/v0.1.0) (2026-10-01)
 
 
