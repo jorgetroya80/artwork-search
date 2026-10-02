@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/jorgetroya80/artwork-search/compare/v0.3.0...v0.4.0) (2026-10-02)
+
+
+### Features
+
+* add custom 404 page and app icon ([#16](https://github.com/jorgetroya80/artwork-search/issues/16)) ([5ccc980](https://github.com/jorgetroya80/artwork-search/commit/5ccc9800056b332d55fd7d5c359f89796f6d50fc))
+
 ## [0.3.0](https://github.com/jorgetroya80/artwork-search/compare/v0.2.0...v0.3.0) (2026-10-02)
 
 
