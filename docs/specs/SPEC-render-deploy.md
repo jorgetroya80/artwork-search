@@ -3,6 +3,7 @@
 - Created: 2026-10-02
 - Status: **implemented** (2026-10-02), PR #13, release v0.3.0. Approved 2026-10-02. Revised the same day: Render auto-deploy replaces the deploy
   hook (see "Decisions").
+- Extension: not-found page, **in progress** (2026-10-02).
 - Plan: [PLAN-render-deploy.md](../plans/PLAN-render-deploy.md)
 - Depends on: [SPEC-ci-release.md](SPEC-ci-release.md) (implemented)
 - Related: [SPEC-docker-image.md](SPEC-docker-image.md) (implemented). Its "Next phases" planned a
@@ -120,6 +121,36 @@ services:
 - **No `plan` or `region`.** They do not apply to Static Sites (assumption 2).
 - **`'true'` is quoted.** Environment variable values are strings.
 
+### Not-found page
+
+Added 2026-10-02 (maintainer), to resolve the "Headers on 404" follow-up.
+
+- **File.** `public/404.html`. Vite copies `public/` as is, so the build writes `dist/404.html`.
+  Render serves `/404.html` for paths that do not exist and match no redirect or rewrite rule
+  (Render community forum; the Render docs do not cover it). The response status stays `404`.
+- **Headers.** The `/*` rules should then apply to the not-found response, as it is a file Render
+  serves. Not documented: checked live with `curl`. If Render still drops them, `render.yaml`
+  cannot fix it, and the follow-up stays open.
+- **nginx parity.** `nginx.conf` gets `error_page 404 /404.html;` at `server` level, so the Docker
+  image serves the same page with status `404`. Its headers do not change (server-level
+  `add_header ... always`, `Cache-Control: no-cache` from the `map` default).
+- **Self-contained.** One HTML file with inline CSS; the frame, wire and nail are drawn in CSS.
+  No JavaScript, no SVG, no web fonts, no images, no
+  requests to other origins. Every link and asset path is absolute (`/`, `/favicon.svg`), because the
+  page is served at any unknown path, including nested ones like `/a/b`.
+- **Design.** Playful and on theme: the artwork is missing. An empty gilded frame hangs slightly
+  crooked from a nail on a gallery wall, next to a museum wall label for the missing piece
+  ("Untitled (404)", unknown artist, object number in the Rijksmuseum style). One short swing of the
+  frame on load, off when `prefers-reduced-motion` is set. The label explains that no page exists
+  at this address and links to the search (`/`). Responsive down to phone width, visible keyboard
+  focus, text contrast at least WCAG AA.
+
+### App icon
+
+Added with the not-found page (maintainer, 2026-10-02). `public/favicon.svg` replaces Vite's
+default `public/vite.svg` in `index.html` and `404.html`: a gilded frame, as on the not-found page,
+holding a mountain landscape with a low sun. Readable at 16 px on light and dark tab bars.
+
 ### One-time setup in Render (manual, maintainer)
 
 1. Render dashboard → **New → Blueprint** → connect the GitHub repository → branch `main`. Render
@@ -131,6 +162,9 @@ Render needs access to the repository through its GitHub app. Nothing is stored 
 
 ```
 render.yaml                       → Blueprint: static site, build, auto-deploy rules, headers
+public/404.html                   → not-found page (Render and nginx)
+public/favicon.svg                → app icon (replaces public/vite.svg)
+nginx.conf                        → error_page 404 /404.html
 README.md                         → add "Deploy" section (Render Static Site) and the live URL
 ```
 
@@ -179,6 +213,18 @@ No unit tests. The app test suite does not change.
    after the commit's checks finish.
 10. A `docs:`-only merge (only files outside `buildFilter`) deploys nothing.
 
+**Not-found page:**
+
+11. A check script: `public/404.html` exists, has `lang`, a `<title>`, a link to `/`, no
+    `<script>`, no `http(s)://` or protocol-relative URLs, and only absolute `href`/`src` paths.
+    After `pnpm build`, `dist/404.html` equals `public/404.html`.
+12. Docker image: `/missing` and `/a/b` → `404` with the page body and the three security headers.
+    `/` still serves the app.
+13. The page looks right on desktop and phone width (headless browser screenshots), and with
+    reduced motion the frame does not move.
+14. Live, after the deploy: `/missing` and `/a/b` → `404` with the page body. The
+    `X-Frame-Options` and `Referrer-Policy` headers are present, or the follow-up stays open.
+
 ## Boundaries
 
 - **Always:** deploy only through Render auto-deploy after checks pass. Keep the headers in
@@ -200,6 +246,8 @@ No unit tests. The app test suite does not change.
 - [ ] A merge that changes only files outside `buildFilter` deploys nothing. (Checked on the merge
       of the `docs:` PR that closes this spec; see the plan, T8.)
 - [x] The workflows are unchanged and the repository has no Render secret.
+- [ ] `/missing` on the live site returns `404` with the custom page, and the three security
+      headers (checks 11–14).
 - [x] README has a "Deploy" section that says only that the app is deployed on Render as a
       Static Site, with the live URL.
 
@@ -223,8 +271,8 @@ No unit tests. The app test suite does not change.
 
 - **Headers on 404.** Render's 404 page for unknown paths returns only
   `X-Content-Type-Options: nosniff`; the `X-Frame-Options` and `Referrer-Policy` rules on `/*` are
-  not applied to it. nginx sends them on 404 too. Low risk (plain-text page, no app content). The
-  maintainer will handle it later (2026-10-02).
+  not applied to it. nginx sends them on 404 too. Low risk (plain-text page, no app content).
+  Being addressed with a custom not-found page (see "Not-found page", 2026-10-02).
 
 ## Open Questions
 

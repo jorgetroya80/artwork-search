@@ -242,6 +242,71 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
 - [x] All spec success criteria are checked, except check 10, which this PR's merge verifies.
 - [x] The live URL serves the current `main` (`4aa5f0b`, v0.3.0).
 
+### Phase 3: Not-found page (spec extension, 2026-10-02)
+
+Branch `fix/not-found-page`, one PR titled `feat: add custom 404 page and app icon` (it
+also adds the app icon, T11b). It changes `public/`, a `buildFilter` path, so its merge deploys.
+The `feat` title leads to a minor release.
+
+- [x] **T10: Check script (RED)**
+  - Script in the session scratchpad for spec check 11, plus the `error_page` line in
+    `nginx.conf`.
+  - Acceptance: it fails before the page exists.
+  - Files: none.
+  - Size: XS.
+  - Done: 17 assertions (doctype, `lang`, title, viewport, link to `/`, "404", no script, no
+    absolute or protocol-relative URL, absolute `href`/`src` only, no CSS `@import`/`url()`,
+    reduced motion, `:focus-visible`, `error_page` in `nginx.conf`, `dist/404.html` equal to the
+    source). Failed with "public/404.html missing".
+
+- [x] **T11: `public/404.html` and `nginx.conf`**
+  - The page as in the spec ("Not-found page"). `error_page 404 /404.html;` in `nginx.conf`.
+  - Acceptance: spec checks 11, 12 and 13. The `render.yaml` check still passes (headers equal to
+    `nginx.conf`).
+  - Verify: the T10 script; `pnpm build`; Docker build and `curl` on `/`, `/missing`, `/a/b`;
+    headless Chrome screenshots at 1280 and 390 px wide, with and without reduced motion.
+  - Files: `public/404.html`, `nginx.conf`.
+  - Size: S.
+  - Done: an empty gilded frame (CSS gradients and inset shadows) hangs crooked from a nail and
+    wire on a slate gallery wall under a soft spotlight, next to a paper wall label:
+    "Untitled (404)", "Artist unknown", "Date unknown", "Empty frame, 0 × 0 cm", "SK-A-404", a
+    sentence on what happened, and "Search the collection" (`/`). The frame swings once on load
+    (2.8 s) and settles at -2°; no motion with reduced motion. System font stack starting with
+    Gill Sans, no web fonts. Below 40rem the label goes under the frame. T10 script and the
+    `render.yaml` check pass, and `pnpm build` writes an identical `dist/404.html`. Docker:
+    `/missing` and `/a/b` → `404` with the page and all four headers (`no-cache` plus the three
+    security headers); `/` and `/404.html` → `200`; no nginx errors. Screenshots (headless Chrome)
+    at 1280×800 and, through iframes of the local file, at 390 and 320 px wide. The live-site
+    iframe attempt showed `X-Frame-Options: DENY` working: the browser refused to frame it.
+    Revised after review (maintainer): the wire is CSS too (two half-width boxes, each with a
+    diagonal `linear-gradient` line from the frame to the nail), replacing an inline SVG. The
+    check script now also rejects `<svg>` and `<img>`.
+
+- [x] **T11b: App icon** (requested by the maintainer before the PR)
+  - `public/favicon.svg` as in the spec ("App icon"), linked from `index.html` and
+    `public/404.html`; `public/vite.svg` deleted.
+  - Verify: `git grep vite.svg` finds only history notes; `dist/` has `favicon.svg` and no
+    `vite.svg`; headless Chrome render at 16, 32 and 96 px on light and dark backgrounds.
+  - Files: `public/favicon.svg`, `public/vite.svg`, `index.html`, `public/404.html`.
+  - Size: XS.
+  - Done: a first version switched the glass stroke with `prefers-color-scheme`; on a dark tab bar
+    the light lens and stroke merged into a blob. The final version draws a light outline under a
+    dark stroke and a translucent lens, readable on both backgrounds at all three sizes.
+    Revised after review (maintainer): the frame now holds a painting, a mountain landscape
+    with a low gilt sun, still readable at 16 px.
+    Second revision (maintainer): magnifying glass removed; the frame is centered and holds the
+    landscape. Readable on light and dark backgrounds at 16, 32 and 96 px.
+
+- [x] **Checkpoint 3: review and PR**
+  - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
+  - Push and open the PR. CI passes.
+
+- [ ] **T12: Live check (after merge)**
+  - Acceptance: spec check 14. If the headers are present, the follow-up is closed and the spec
+    criterion checked in a `docs:` PR; if not, the follow-up stays open with the result.
+  - Files: `docs/specs/SPEC-render-deploy.md`, `docs/plans/PLAN-render-deploy.md`.
+  - Size: XS.
+
 ## Risks and mitigations
 
 | Risk                                                                              | Impact                                       | Mitigation                                                                                                |
@@ -254,4 +319,6 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
 | A failing check on `main` (for example `docker-publish`) blocks the deploy        | Low: production stays on the previous commit | Fix the check; the next push deploys. Render can also deploy by hand from the dashboard                   |
 | A new build input is not in `buildFilter`                                         | Low: a change to it alone does not deploy    | The T2 check lists build inputs; spec "Always" rule                                                       |
 | Release PR checks stay pending (`GITHUB_TOKEN` starts no workflows)               | Low: merge blocked                           | Close and reopen (as in PLAN-ci-release)                                                                  |
+| Render does not serve `/404.html` for unknown paths (only a forum source)         | Low: plain 404 stays                         | T12 shows it. Then ask: a rewrite rule cannot keep status `404`                                           |
+| Render drops the `/*` headers on the not-found response too                       | Low                                          | T12 shows it. Nothing to change in `render.yaml`; follow-up stays open                                    |
 | Free bandwidth or build minutes run out                                           | Low for a portfolio                          | Accepted in the spec                                                                                      |
