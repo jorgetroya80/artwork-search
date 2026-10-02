@@ -162,8 +162,9 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
 - [x] `actionlint` and Prettier pass on the changed files.
 - [x] `pnpm lint`, `pnpm test` (169 tests) and `pnpm build` pass (unchanged app).
 - [x] Spec status **in progress**.
-- [ ] Review with the user, then push `feat/render-deploy` and open the PR titled
+- [x] Review with the user, then push `feat/render-deploy` and open the PR titled
       `feat: deploy to Render`. CI (`lint`, `test`, `build`, `pr-title`) passes.
+      PR #13, all four checks green (run 37017205461).
 
 ### Phase 2: Render
 
