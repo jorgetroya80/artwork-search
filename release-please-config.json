@@ -18,5 +18,7 @@
         { "type": "chore", "section": "Miscellaneous", "hidden": true }
       ]
     }
-  }
+  },
+  "pull-request-header": ":artist: New Release is coming",
+  "pull-request-footer": "This PR was generated with Release Please"
 }
