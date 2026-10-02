@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/jorgetroya80/artwork-search/compare/v0.2.0...v0.3.0) (2026-10-02)
+
+
+### Features
+
+* deploy to Render ([#13](https://github.com/jorgetroya80/artwork-search/issues/13)) ([9c72596](https://github.com/jorgetroya80/artwork-search/commit/9c7259669605ecf086461fd5e8d540b9ef6234be))
+
 ## [0.2.0](https://github.com/jorgetroya80/artwork-search/compare/v0.1.0...v0.2.0) (2026-10-02)
 
 
