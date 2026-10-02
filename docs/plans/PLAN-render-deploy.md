@@ -91,7 +91,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     hashes). The local pnpm store made the install fast; Render starts with an empty store, so
     its first build is slower. Whether `corepack enable` works on Render is still checked in T7.
 
-- [ ] **T2: `render.yaml`**
+- [x] **T2: `render.yaml`**
   - Rename the branch: `git branch -m feat/render-deploy`.
   - `render.yaml` at the root, as in the spec.
   - Acceptance: the YAML parses, has exactly the spec fields, and the headers match `nginx.conf`.
@@ -102,6 +102,15 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     `nginx.conf`. It fails before the file exists. `pnpm exec prettier --check render.yaml`.
   - Files: `render.yaml`.
   - Size: S.
+  - Done: branch renamed to `feat/render-deploy`. The check script (24 assertions) failed before
+    the file existed ("render.yaml missing") and passes now ("6 header rules"). It reads the
+    three security headers and both `Cache-Control` values from `nginx.conf`, so the two files
+    cannot drift apart unnoticed. Mutations it catches: a bare `off` (parsed as `false`), a
+    changed `X-Frame-Options`, a changed `/assets/*` path, and `/index.html` widened to `/*`
+    (overlapping `Cache-Control` rules). Found while writing: Ruby's YAML (1.1) reads a bare
+    `off` as `false`, so `autoDeployTrigger` is quoted (`'off'`, single quotes from the
+    project's Prettier config); spec updated. Short comments in `render.yaml` explain the
+    quoting, `SKIP_INSTALL_DEPS` and the header parity. Prettier passes.
 
 - [ ] **T3: `render-deploy` job**
   - Add `sha: ${{ steps.release.outputs.sha }}` to the `release-please` job outputs.

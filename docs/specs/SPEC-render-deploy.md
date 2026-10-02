@@ -63,7 +63,7 @@ services:
     branch: main
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
     staticPublishPath: ./dist
-    autoDeployTrigger: off
+    autoDeployTrigger: 'off'
     envVars:
       - key: SKIP_INSTALL_DEPS
         value: 'true'
@@ -95,6 +95,8 @@ services:
   paths return Render's 404, as in the Docker image.
 - **No `plan` or `region`.** They do not apply to Static Sites (assumption 2).
 - **`branch: main`.** The release commit is on `main`.
+- **`'off'` is quoted.** YAML 1.1 parsers read a bare `off` as the boolean `false`, not the
+  string Render expects.
 
 ### One-time setup in Render (manual, maintainer)
 
