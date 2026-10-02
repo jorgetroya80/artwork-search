@@ -28,7 +28,7 @@ Local tools: Docker 29.7.2 and `actionlint` are installed. Nothing new is instal
 ## Design change
 
 The first version of the spec deployed only on releases, through a deploy hook called by a
-`render-deploy` job in `release.yml`, with the hook URL in the secret `RENDER_DEPLOY_HOOK_URL`.
+`render-deploy` job in `release.yml`, with the hook URL in a GitHub secret.
 T1–T4 were built for it (commits `a235036`, `1952f1a`, `8244410`, `27c0706`). On 2026-10-02 the
 maintainer chose Render auto-deploy instead: simpler, no workflow job, no secret, and every merge
 that changes the app deploys. T2–T4 are reopened below; T1 still holds.
@@ -143,7 +143,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     "Tech stack": "Render Static Site, deployed on each push to `main`". The live URL stays a
     TODO until T8.
   - Update the check script: mentions `checksPass` or "checks pass", `buildFilter`, `main`; no
-    "deploy hook", `RENDER_DEPLOY_HOOK_URL` or `render-deploy`.
+    "deploy hook", secret or `render-deploy`.
   - Acceptance: the updated script fails on the current README and passes after the change.
   - Verify: the script, `pnpm exec prettier --check README.md`.
   - Files: `README.md`.
@@ -152,7 +152,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     checks pass, `buildFilter` skips pushes that only change docs, workflows or other files
     outside it, a failed build keeps the previous version, and pull requests do not deploy. "Tech
     stack": "Render Static Site, deployed on each push to `main`". The check script (13
-    assertions) now requires those points and rejects "deploy hook", `RENDER_DEPLOY_HOOK_URL` and
+    assertions) now requires those points and rejects "deploy hook", the hook secret and
     `render-deploy`. It failed on the hook version of the README (6 failures) and passes now. One assertion was too narrow ("does not" missing from
     its negation list) and was fixed. Prettier passes.
 
