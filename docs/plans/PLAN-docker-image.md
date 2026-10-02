@@ -202,8 +202,9 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
       `.release-please-manifest.json`, which this branch does not touch (same on `main`).
 - [x] `pnpm lint`, `pnpm test` (169 tests) and `pnpm build` pass (unchanged app).
 - [x] Spec status set to **in progress** and this plan to **in progress**.
-- [ ] Review with the user, then push `feat/docker-image` and open the PR titled
+- [x] Review with the user, then push `feat/docker-image` and open the PR titled
       `feat: publish Docker image to GHCR`. CI (`lint`, `test`, `build`, `pr-title`) passes.
+      PR #10, all four checks green (run 36986608334).
 
 ### Phase 2: First publication
 
