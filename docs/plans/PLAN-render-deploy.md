@@ -124,12 +124,16 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     `RENDER_YAML` to test a mutated copy. The `autoDeployTrigger` comment now explains the deploy
     rule. Prettier passes.
 
-- [ ] **T3: Remove the `render-deploy` job**
+- [x] **T3: Remove the `render-deploy` job**
   - `git revert 8244410` (adds the `sha` output and the `render-deploy` job to `release.yml`).
   - Acceptance: `git diff main -- .github/` is empty (spec check 4).
   - Verify: that diff, and `actionlint .github/workflows/*.yml`.
   - Files: `.github/workflows/release.yml`.
   - Size: XS.
+  - Done: before, `git diff main -- .github/` showed the 17 added lines. `git revert --no-commit
+8244410` reverted `release.yml` cleanly; it conflicted on this plan (that commit also checked off
+    the old T3), resolved by keeping the current plan. Now `git diff main -- .github/` is empty and
+    `actionlint` passes on both workflows.
 
 - [ ] **T4: README "Deploy"**
   - First version (hook design, commit `27c0706`): `## Deploy` after "Docker", a Render line in
