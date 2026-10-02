@@ -211,7 +211,7 @@ work.
 - **ESLint** and **Prettier**, with a pre-commit hook that runs `lint-staged`.
 - **GitHub Actions** and **release-please** for CI and releases.
 - **Docker** with nginx, published to GitHub Container Registry on each release.
-- **Render** Static Site, deployed on each release.
+- **Render** Static Site, deployed on each push to `main`.
 
 ## Getting started
 
@@ -266,10 +266,10 @@ The app runs on Render as a [Static Site](https://render.com/docs/static-sites),
 `render.yaml`. Render runs `pnpm build` and serves `dist` from its CDN, with the same caching and
 security headers as `nginx.conf`. It does not use the Docker image.
 
-Only releases deploy. Auto-deploy is off, and when release-please creates a release, the
-`render-deploy` job in `release.yml` calls the Render deploy hook with the release commit. Render
-builds that commit and switches to it only if the build succeeds. The hook URL is stored in the
-repository secret `RENDER_DEPLOY_HOOK_URL`.
+Render deploys each push to `main` by itself, after the commit's GitHub checks pass. The
+`buildFilter` in `render.yaml` lists the files the build reads, so a push that only changes docs,
+workflows or other files outside it does not deploy. If the build fails, the previous version
+stays live. Pull requests do not deploy.
 
 ## Known limitations and next steps
 

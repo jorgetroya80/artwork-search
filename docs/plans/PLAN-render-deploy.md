@@ -135,7 +135,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     the old T3), resolved by keeping the current plan. Now `git diff main -- .github/` is empty and
     `actionlint` passes on both workflows.
 
-- [ ] **T4: README "Deploy"**
+- [x] **T4: README "Deploy"**
   - First version (hook design, commit `27c0706`): `## Deploy` after "Docker", a Render line in
     "Tech stack", a check script with 12 assertions.
   - Rewrite for auto-deploy: Render deploys each push to `main` that changes the app, after the
@@ -148,6 +148,13 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
   - Verify: the script, `pnpm exec prettier --check README.md`.
   - Files: `README.md`.
   - Size: XS.
+  - Done: the second paragraph of "Deploy" now says Render deploys each push to `main` after the
+    checks pass, `buildFilter` skips pushes that only change docs, workflows or other files
+    outside it, a failed build keeps the previous version, and pull requests do not deploy. "Tech
+    stack": "Render Static Site, deployed on each push to `main`". The check script (13
+    assertions) now requires those points and rejects "deploy hook", `RENDER_DEPLOY_HOOK_URL` and
+    `render-deploy`. It failed on the hook version of the README (6 failures) and passes now. One assertion was too narrow ("does not" missing from
+    its negation list) and was fixed. Prettier passes.
 
 ### Checkpoint 1: Local checks pass, open PR
 
