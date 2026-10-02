@@ -293,6 +293,8 @@ Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It change
     dark stroke and a translucent lens, readable on both backgrounds at all three sizes.
     Revised after review (maintainer): the frame now holds a painting, a mountain landscape
     with a low gilt sun, still readable at 16 px.
+    Second revision (maintainer): magnifying glass removed; the frame is centered and holds the
+    landscape. Readable on light and dark backgrounds at 16, 32 and 96 px.
 
 - [ ] **Checkpoint 3: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
