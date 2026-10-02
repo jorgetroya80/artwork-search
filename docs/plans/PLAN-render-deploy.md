@@ -97,7 +97,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     checked then, for the hook design: `release-please-action` v5.0.0 has output `sha`. No longer
     used.)
 
-- [ ] **T2: `render.yaml` with `checksPass` and `buildFilter`**
+- [x] **T2: `render.yaml` with `checksPass` and `buildFilter`**
   - First version (hook design, commit `1952f1a`): `autoDeployTrigger: 'off'`, headers, a check
     script with 24 assertions that reads the headers from `nginx.conf`.
   - Change `autoDeployTrigger` to `checksPass`. Add `buildFilter.paths` as in the spec. Update the
@@ -113,6 +113,16 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     `autoDeployTrigger: commit`).
   - Files: `render.yaml`.
   - Size: S.
+  - Done: the check script now asserts `checksPass`, a `buildFilter` with only `paths` equal to
+    the spec list, that all 66 tracked build inputs match a path and that no tracked file under
+    `docs/`, `.github/`, `README.md`, `CHANGELOG.md`, `Dockerfile` or `nginx.conf` does. It
+    failed on the hook version (no `buildFilter`, `'off'`) and passes now. Found while testing:
+    Ruby's `File.fnmatch` with `FNM_PATHNAME` treats `src/**` as one level, unlike Render, where
+    `**` crosses `/`. The script uses its own glob-to-regex (`**` → any, `*` and `?` → no `/`)
+    instead. Mutations caught: `commit` instead of `checksPass`, `index.html` or `tsconfig*.json`
+    removed, `src/*` instead of `src/**`, `**` (matches docs), a changed header. The script reads
+    `RENDER_YAML` to test a mutated copy. The `autoDeployTrigger` comment now explains the deploy
+    rule. Prettier passes.
 
 - [ ] **T3: Remove the `render-deploy` job**
   - `git revert 8244410` (adds the `sha` output and the `render-deploy` job to `release.yml`).

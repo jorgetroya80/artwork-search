@@ -5,8 +5,20 @@ services:
     branch: main
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
     staticPublishPath: ./dist
-    # Quoted: YAML 1.1 parsers read a bare off as false. Only release.yml deploys, through the hook
-    autoDeployTrigger: 'off'
+    # Deploy each push to main once its GitHub checks pass, and only if it changes a build input
+    autoDeployTrigger: checksPass
+    buildFilter:
+      paths:
+        - src/**
+        - public/**
+        - index.html
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - vite.config.ts
+        - tsconfig*.json
+        - .nvmrc
+        - render.yaml
     envVars:
       # Render has no documented pnpm version selection, so the build command installs instead
       - key: SKIP_INSTALL_DEPS
