@@ -112,7 +112,7 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     project's Prettier config); spec updated. Short comments in `render.yaml` explain the
     quoting, `SKIP_INSTALL_DEPS` and the header parity. Prettier passes.
 
-- [ ] **T3: `render-deploy` job**
+- [x] **T3: `render-deploy` job**
   - Add `sha: ${{ steps.release.outputs.sha }}` to the `release-please` job outputs.
   - Add job `render-deploy` as in the spec.
   - Acceptance: `needs: release-please`, the `release_created` condition, `permissions: {}`,
@@ -124,6 +124,16 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     `pnpm exec prettier --check .github/workflows/release.yml`.
   - Files: `.github/workflows/release.yml`.
   - Size: S.
+  - Done: the structure test (Ruby, stdlib YAML, 20 assertions) compares with
+    `main:.github/workflows/release.yml`: top level, `docker-publish` and `release-please` are
+    unchanged except the new `sha` output, and `render-deploy` has exactly the spec's keys,
+    `needs`, `if`, `permissions: {}`, timeout, one step with no `uses:`, only the secret and the
+    SHA in `env:`, no `${{ }}` and no tracing flags in `run:`. It failed before the change (14
+    failures) and passes now. `git diff` shows 17 insertions and no deletions. `actionlint` (both
+    workflows) and Prettier pass. The `curl` command was run against a local server: the URL
+    becomes `…?key=k&ref=<sha>`, `200` and `202` exit `0`, `401` exits `22` and prints the
+    body, and an empty secret exits `2`. curl's error line does not print the URL. One comment
+    on the step says why the hook is the only deploy trigger.
 
 - [ ] **T4: README "Deploy"**
   - After "Docker": the site is a Render Static Site from `render.yaml`. Only releases deploy, the

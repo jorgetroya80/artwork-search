@@ -24,6 +24,7 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
       version: ${{ steps.release.outputs.version }}
+      sha: ${{ steps.release.outputs.sha }}
     steps:
       - id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
@@ -68,3 +69,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  render-deploy:
+    name: render-deploy
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      # Render builds the static site from this commit. Auto-deploy is off in render.yaml, so
+      # this hook is the only deploy trigger
+      - name: Trigger the Render deploy hook with the release commit
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          RELEASE_SHA: ${{ needs.release-please.outputs.sha }}
+        run: curl --fail-with-body --silent --show-error --get --data-urlencode "ref=$RELEASE_SHA" "$DEPLOY_HOOK_URL"
