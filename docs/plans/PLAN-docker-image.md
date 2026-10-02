@@ -1,7 +1,7 @@
 # Plan: Docker image published to GHCR
 
 - Created: 2026-10-02
-- Status: **in progress** (approved 2026-10-02)
+- Status: **implemented** (2026-10-02), PR #10, release v0.2.0
 - Spec: [SPEC-docker-image.md](../specs/SPEC-docker-image.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -208,7 +208,7 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
 
 ### Phase 2: First publication
 
-- [ ] **T6: Release 0.2.0 and `docker-publish`**
+- [x] **T6: Release 0.2.0 and `docker-publish`**
   - Squash-merge the PR. `release.yml` opens `chore(main): release 0.2.0`. Its changelog lists
     the `feat` entry.
   - Close and reopen the release PR so CI runs, then squash-merge it.
@@ -218,8 +218,16 @@ ghcr.io/jorgetroya80/artwork-search:0.2.0` lists both platforms. Tags `0.2.0`, `
     `latest` point to the same digest.
   - Files: none by hand.
   - Size: XS.
+  - Done: PR #10 squash-merged as `358e507`. That `release.yml` run (36987356667) ran
+    `release-please` and skipped `docker-publish` (no release yet). Release PR #11 bumped
+    `package.json` and the manifest to `0.2.0`, with one Features entry. Closed and reopened,
+    four checks green, squash-merged as `db8c563`. Run 36987617336: `release-please` and
+    `docker-publish` succeeded. Tag `v0.2.0` and its GitHub Release exist. `0.2.0`, `0.2` and
+    `latest` share digest `sha256:4fc1a06e…` with `linux/amd64` and `linux/arm64` (plus two
+    `unknown/unknown` entries: the default provenance attestations). OCI labels: `source` is the
+    repository, `version` is `0.2.0`.
 
-- [ ] **T7: Package settings (maintainer)**
+- [x] **T7: Package settings (maintainer)**
   - In GitHub → Packages → `artwork-search` → Package settings: visibility **Public**. Check the
     repository link and that `artwork-search` has **write** under "Manage Actions access".
   - Acceptance: spec check 12. `docker logout ghcr.io`, then
@@ -227,19 +235,26 @@ ghcr.io/jorgetroya80/artwork-search:0.2.0` lists both platforms. Tags `0.2.0`, `
     app.
   - Files: none.
   - Size: XS.
+  - Done: the package was already **public** after the first push, linked to the repository
+    through the `source` label; no visibility change was needed. The maintainer confirmed
+    `artwork-search` has **Write** under "Manage Actions access". `docker pull` with an empty
+    `DOCKER_CONFIG` (no credentials) works. The pulled image serves `200` as UID 101, natively
+    (`arm64`) and with `--platform linux/amd64` (`x86_64`, emulated).
 
-- [ ] **T8: No publish for `docs:`, close the spec**
+- [x] **T8: No publish for `docs:`, close the spec**
   - In a `docs:` PR: set the spec status to **implemented**, set this plan's status, and check
     off the spec success criteria.
   - Acceptance: after the merge, the `release.yml` run shows `docker-publish` as skipped (spec
     check 13), and no new image tag appears.
   - Files: `docs/specs/SPEC-docker-image.md`, `docs/plans/PLAN-docker-image.md`.
   - Size: XS.
+  - Done: this PR. Spec check 13 already held for the PR #10 merge (`docker-publish` skipped in
+    run 36987356667). Its merge is a second check.
 
 ### Checkpoint 2: Complete
 
-- [ ] All spec success criteria are checked.
-- [ ] `ghcr.io/jorgetroya80/artwork-search:0.2.0` is public and runs on amd64 and arm64.
+- [x] All spec success criteria are checked.
+- [x] `ghcr.io/jorgetroya80/artwork-search:0.2.0` is public and runs on amd64 and arm64.
 
 ## Risks and mitigations
 
