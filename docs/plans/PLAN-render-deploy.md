@@ -281,6 +281,17 @@ Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It change
     diagonal `linear-gradient` line from the frame to the nail), replacing an inline SVG. The
     check script now also rejects `<svg>` and `<img>`.
 
+- [x] **T11b: App icon** (requested by the maintainer before the PR)
+  - `public/favicon.svg` as in the spec ("App icon"), linked from `index.html` and
+    `public/404.html`; `public/vite.svg` deleted.
+  - Verify: `git grep vite.svg` finds only history notes; `dist/` has `favicon.svg` and no
+    `vite.svg`; headless Chrome render at 16, 32 and 96 px on light and dark backgrounds.
+  - Files: `public/favicon.svg`, `public/vite.svg`, `index.html`, `public/404.html`.
+  - Size: XS.
+  - Done: a first version switched the glass stroke with `prefers-color-scheme`; on a dark tab bar
+    the light lens and stroke merged into a blob. The final version draws a light outline under a
+    dark stroke and a translucent lens, readable on both backgrounds at all three sizes.
+
 - [ ] **Checkpoint 3: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
   - Push and open the PR. CI passes.

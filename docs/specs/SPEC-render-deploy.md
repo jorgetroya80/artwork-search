@@ -136,7 +136,7 @@ Added 2026-10-02 (maintainer), to resolve the "Headers on 404" follow-up.
   `add_header ... always`, `Cache-Control: no-cache` from the `map` default).
 - **Self-contained.** One HTML file with inline CSS; the frame, wire and nail are drawn in CSS.
   No JavaScript, no SVG, no web fonts, no images, no
-  requests to other origins. Every link and asset path is absolute (`/`, `/vite.svg`), because the
+  requests to other origins. Every link and asset path is absolute (`/`, `/favicon.svg`), because the
   page is served at any unknown path, including nested ones like `/a/b`.
 - **Design.** Playful and on theme: the artwork is missing. An empty gilded frame hangs slightly
   crooked from a nail on a gallery wall, next to a museum wall label for the missing piece
@@ -144,6 +144,13 @@ Added 2026-10-02 (maintainer), to resolve the "Headers on 404" follow-up.
   frame on load, off when `prefers-reduced-motion` is set. The label explains that no page exists
   at this address and links to the search (`/`). Responsive down to phone width, visible keyboard
   focus, text contrast at least WCAG AA.
+
+### App icon
+
+Added with the not-found page (maintainer, 2026-10-02). `public/favicon.svg` replaces Vite's
+default `public/vite.svg` in `index.html` and `404.html`: a gilded frame, as on the not-found page,
+under a magnifying glass. The glass has a light outline under its dark stroke, so it reads on light
+and dark tab bars at 16 px.
 
 ### One-time setup in Render (manual, maintainer)
 
@@ -157,6 +164,7 @@ Render needs access to the repository through its GitHub app. Nothing is stored 
 ```
 render.yaml                       → Blueprint: static site, build, auto-deploy rules, headers
 public/404.html                   → not-found page (Render and nginx)
+public/favicon.svg                → app icon (replaces public/vite.svg)
 nginx.conf                        → error_page 404 /404.html
 README.md                         → add "Deploy" section (Render Static Site) and the live URL
 ```
