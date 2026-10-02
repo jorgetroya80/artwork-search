@@ -158,10 +158,10 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
 
 ### Checkpoint 1: Local checks pass, open PR
 
-- [ ] T1 build, T2 and T4 check scripts pass. `git diff main -- .github/` is empty.
-- [ ] `actionlint` and Prettier pass on the changed files.
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass (unchanged app).
-- [ ] Spec status **in progress**.
+- [x] T1 build, T2 and T4 check scripts pass. `git diff main -- .github/` is empty.
+- [x] `actionlint` and Prettier pass on the changed files.
+- [x] `pnpm lint`, `pnpm test` (169 tests) and `pnpm build` pass (unchanged app).
+- [x] Spec status **in progress**.
 - [ ] Review with the user, then push `feat/render-deploy` and open the PR titled
       `feat: deploy to Render`. CI (`lint`, `test`, `build`, `pr-title`) passes.
 
