@@ -244,8 +244,9 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
 
 ### Phase 3: Not-found page (spec extension, 2026-10-02)
 
-Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It changes `public/`, a
-`buildFilter` path, so its merge deploys. The `fix` title leads to a patch release.
+Branch `fix/not-found-page`, one PR titled `feat: add custom 404 page and app icon` (it
+also adds the app icon, T11b). It changes `public/`, a `buildFilter` path, so its merge deploys.
+The `feat` title leads to a minor release.
 
 - [x] **T10: Check script (RED)**
   - Script in the session scratchpad for spec check 11, plus the `error_page` line in
@@ -296,7 +297,7 @@ Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It change
     Second revision (maintainer): magnifying glass removed; the frame is centered and holds the
     landscape. Readable on light and dark backgrounds at 16, 32 and 96 px.
 
-- [ ] **Checkpoint 3: review and PR**
+- [x] **Checkpoint 3: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
   - Push and open the PR. CI passes.
 
