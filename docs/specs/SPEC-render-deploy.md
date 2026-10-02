@@ -149,7 +149,7 @@ Added 2026-10-02 (maintainer), to resolve the "Headers on 404" follow-up.
 
 Added with the not-found page (maintainer, 2026-10-02). `public/favicon.svg` replaces Vite's
 default `public/vite.svg` in `index.html` and `404.html`: a gilded frame, as on the not-found page,
-under a magnifying glass. The glass has a light outline under its dark stroke, so it reads on light
+holding a mountain landscape with a low sun, under a magnifying glass. The glass has a light outline under its dark stroke, so it reads on light
 and dark tab bars at 16 px.
 
 ### One-time setup in Render (manual, maintainer)

@@ -291,6 +291,8 @@ Branch `fix/not-found-page`, one PR titled `fix: add custom 404 page`. It change
   - Done: a first version switched the glass stroke with `prefers-color-scheme`; on a dark tab bar
     the light lens and stroke merged into a blob. The final version draws a light outline under a
     dark stroke and a translucent lens, readable on both backgrounds at all three sizes.
+    Revised after review (maintainer): the frame now holds a painting, a mountain landscape
+    with a low gilt sun, still readable at 16 px.
 
 - [ ] **Checkpoint 3: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Screenshots reviewed with the user.
