@@ -136,7 +136,7 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     Both T2 risks are cleared: Corepack installs pnpm 12.8.1 in the container, and `envsubst`
     writes `conf.d` as UID 101. `pnpm test` (169 tests) and `pnpm build` still pass.
 
-- [ ] **T3: nginx caching, gzip and headers**
+- [x] **T3: nginx caching, gzip and headers**
   - `index.html` → `Cache-Control: no-cache`. `/assets/` →
     `Cache-Control: public, max-age=31536000, immutable`.
   - `gzip on` for the four types in the spec. `server_tokens off`.
@@ -148,6 +148,14 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     `Content-Encoding: gzip`.
   - Files: `nginx.conf`.
   - Size: S.
+  - Done: the check script got assertions for checks 3, 4 and gzip. They failed on the T2
+    image (no `Cache-Control`, no headers, no gzip) and pass now. Instead of repeating headers
+    per `location`, every `add_header` is at `server` level with `always`, and `Cache-Control`
+    comes from `map $uri $cache_control` (`/assets/` → immutable, default `no-cache`). Spec
+    updated to match. Also `gzip_vary on`, added to the spec. Checked by hand: CSS is gzipped
+    with `Vary: Accept-Encoding`, `Server: nginx` has no version, `404` responses carry the
+    security headers, and the rendered `conf.d/default.conf` has `listen 8080` with `$uri` and
+    `$cache_control` left alone by `envsubst`.
 
 - [ ] **T4: `docker-publish` job**
   - Add the job from the spec to `release.yml`, with the SHAs from T1.

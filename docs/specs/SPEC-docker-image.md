@@ -93,14 +93,15 @@ Requirements:
 - `index.html`: `Cache-Control: no-cache` (always revalidated, so a new release is picked up).
 - `/assets/` (Vite output with content hashes): `Cache-Control: public, max-age=31536000,
 immutable`.
-- `gzip on` for `text/css`, `application/javascript`, `application/json`, `image/svg+xml`.
+- `gzip on` and `gzip_vary on` (`Vary: Accept-Encoding` for caches) for `text/css`, `application/javascript`, `application/json`, `image/svg+xml`.
 - `server_tokens off`.
 - Security headers on every response: `X-Content-Type-Options: nosniff`,
   `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`.
 
 nginx does not inherit `add_header` from `server` into a `location` that has its own
-`add_header`. The security headers must therefore be repeated in each such `location` (or kept in
-one `include`d snippet).
+`add_header`. So every `add_header` lives at `server` level, with `always` (headers also on
+`404`), and `Cache-Control` takes its value from a `map $uri $cache_control` (the template is
+included in the `http` block, where `map` is allowed). No `location` has its own `add_header`.
 
 ### `.dockerignore`
 
