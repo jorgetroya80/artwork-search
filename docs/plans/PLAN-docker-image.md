@@ -1,7 +1,7 @@
 # Plan: Docker image published to GHCR
 
 - Created: 2026-10-02
-- Status: **approved** (2026-10-02), not started
+- Status: **in progress** (approved 2026-10-02)
 - Spec: [SPEC-docker-image.md](../specs/SPEC-docker-image.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -81,7 +81,7 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
 
 ### Phase 1: Files (local)
 
-- [ ] **T1: Resolve versions and SHAs**
+- [x] **T1: Resolve versions and SHAs**
   - Action SHAs for `docker/setup-buildx-action`, `docker/login-action`,
     `docker/metadata-action`, `docker/build-push-action` (latest major of each), and the current
     major tag of `actions/checkout` (already `@v7` in the repo).
@@ -95,6 +95,20 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     `docker buildx imagetools inspect` lists `linux/amd64` and `linux/arm64` for both images.
   - Files: none (this plan only).
   - Size: XS.
+  - Done: resolved on 2026-10-02 with `gh release view` + `gh api repos/<repo>/commits/<tag>`:
+    - `docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1`
+    - `docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0`
+    - `docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0`
+    - `docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0`
+    - `actions/checkout@v7` (latest release `v7.0.1`, same major as the repo).
+    - `nginxinc/nginx-unprivileged:1.30.5-alpine`: latest stable (even minor; `1.31.x` is
+      mainline). Same digest as `stable-alpine`.
+    - `node:24.18.0-alpine` exists.
+
+    `docker buildx imagetools inspect` lists `linux/amd64` and `linux/arm64` for both images.
+    Each action's `action.yml` has the inputs the spec uses. `metadata-action` outputs `tags`
+    and `labels`. `build-push-action` has a `provenance` input, left at its default, as the
+    spec says.
 
 - [ ] **T2: Runnable image**
   - Rename the branch: `git branch -m feat/docker-image`.
