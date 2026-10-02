@@ -1,7 +1,7 @@
 # Spec: Docker image published to GHCR
 
 - Created: 2026-10-02
-- Status: **in progress** (approved 2026-10-02)
+- Status: **implemented** (2026-10-02), PR #10, release v0.2.0
 - Plan: [PLAN-docker-image.md](../plans/PLAN-docker-image.md)
 - Depends on: [SPEC-ci-release.md](SPEC-ci-release.md) (implemented)
 
@@ -287,17 +287,18 @@ ghcr.io/jorgetroya80/artwork-search:latest` works.
 
 ## Success Criteria
 
-- [ ] `Dockerfile`, `nginx.conf` and `.dockerignore` exist at the root.
-- [ ] Local checks 1–9 pass.
-- [ ] `release.yml` has job `docker-publish` with `needs: release-please`, the
+- [x] `Dockerfile`, `nginx.conf` and `.dockerignore` exist at the root.
+- [x] Local checks 1–9 pass. (Check 2: page and bundle served, API allows any origin; a search
+      in the browser was not confirmed.)
+- [x] `release.yml` has job `docker-publish` with `needs: release-please`, the
       `release_created` condition and only `contents: read` and `packages: write`. `actionlint`
       passes.
-- [ ] Every third-party `uses:` is pinned to a 40-character SHA with a version comment.
-- [ ] A release publishes `ghcr.io/jorgetroya80/artwork-search` with tags `X.Y.Z`, `X.Y`,
+- [x] Every third-party `uses:` is pinned to a 40-character SHA with a version comment.
+- [x] A release publishes `ghcr.io/jorgetroya80/artwork-search` with tags `X.Y.Z`, `X.Y`,
       `latest`, for `linux/amd64` and `linux/arm64`.
-- [ ] The package is public and linked to the repository. Anonymous `docker pull` works.
-- [ ] A non-release merge does not run `docker-publish`.
-- [ ] README has a "Docker" section: build and run locally, pull from GHCR, `PORT`.
+- [x] The package is public and linked to the repository. Anonymous `docker pull` works.
+- [x] A non-release merge does not run `docker-publish`.
+- [x] README has a "Docker" section: build and run locally, pull from GHCR, `PORT`.
 
 ## Decisions
 
