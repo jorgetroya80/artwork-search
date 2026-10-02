@@ -74,7 +74,7 @@ T2 and T3 can run in parallel.
 
 ### Phase 1: Files (local)
 
-- [ ] **T1: Verify facts and the clean build**
+- [x] **T1: Verify facts and the clean build**
   - Confirm `release-please-action` v5.0.0 has output `sha` (done while planning, see
     "Architecture decisions").
   - In a fresh clone in the session scratchpad (no `node_modules`), with Node from `.nvmrc`, run
@@ -84,6 +84,12 @@ T2 and T3 can run in parallel.
   - Verify: the commands above and `ls dist dist/assets`.
   - Files: none (this plan only).
   - Size: XS.
+  - Done: 2026-10-02. `git clone` of the repository into the session scratchpad (no
+    `node_modules`), Node `v24.18.0`. `corepack enable && pnpm install --frozen-lockfile &&
+pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` with no errors.
+    `dist/` has `index.html`, `vite.svg` and `assets/` (one CSS and one JS file with content
+    hashes). The local pnpm store made the install fast; Render starts with an empty store, so
+    its first build is slower. Whether `corepack enable` works on Render is still checked in T7.
 
 - [ ] **T2: `render.yaml`**
   - Rename the branch: `git branch -m feat/render-deploy`.
