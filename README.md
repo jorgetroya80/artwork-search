@@ -262,14 +262,7 @@ docker run --rm -p 8080:8080 ghcr.io/jorgetroya80/artwork-search:latest
 
 <!-- TODO: add the live URL once the Render static site exists -->
 
-The app runs on Render as a [Static Site](https://render.com/docs/static-sites), configured in
-`render.yaml`. Render runs `pnpm build` and serves `dist` from its CDN, with the same caching and
-security headers as `nginx.conf`. It does not use the Docker image.
-
-Render deploys each push to `main` by itself, after the commit's GitHub checks pass. The
-`buildFilter` in `render.yaml` lists the files the build reads, so a push that only changes docs,
-workflows or other files outside it does not deploy. If the build fails, the previous version
-stays live. Pull requests do not deploy.
+The app is deployed on Render as a [Static Site](https://render.com/docs/static-sites).
 
 ## Known limitations and next steps
 

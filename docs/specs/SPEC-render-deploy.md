@@ -131,7 +131,7 @@ Render needs access to the repository through its GitHub app. Nothing is stored 
 
 ```
 render.yaml                       → Blueprint: static site, build, auto-deploy rules, headers
-README.md                         → add "Deploy" section and the live URL
+README.md                         → add "Deploy" section (Render Static Site) and the live URL
 ```
 
 ## Tech Stack
@@ -198,7 +198,8 @@ No unit tests. The app test suite does not change.
 - [ ] A merge that changes the app deploys after its checks pass.
 - [ ] A merge that changes only files outside `buildFilter` deploys nothing.
 - [ ] The workflows are unchanged and the repository has no Render secret.
-- [ ] README has a "Deploy" section with the live URL and when a deploy happens.
+- [ ] README has a "Deploy" section that says only that the app is deployed on Render as a
+      Static Site, with the live URL.
 
 ## Decisions
 

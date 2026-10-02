@@ -155,6 +155,10 @@ pnpm build` passes: "Done … using pnpm v12.8.1", `tsc -b` and `vite build` wit
     assertions) now requires those points and rejects "deploy hook", the hook secret and
     `render-deploy`. It failed on the hook version of the README (6 failures) and passes now. One assertion was too narrow ("does not" missing from
     its negation list) and was fixed. Prettier passes.
+  - Revised after review (maintainer, 2026-10-02): the section says only "The app is deployed on
+    Render as a Static Site", plus the live URL TODO. The check script now requires exactly that
+    sentence; it fails on the previous two-paragraph section and passes now. "Tech stack" keeps
+    its Render line.
 
 ### Checkpoint 1: Local checks pass, open PR
 
