@@ -210,6 +210,7 @@ work.
 - **Vitest**, **Testing Library** and **MSW** for tests.
 - **ESLint** and **Prettier**, with a pre-commit hook that runs `lint-staged`.
 - **GitHub Actions** and **release-please** for CI and releases.
+- **Docker** with nginx, published to GitHub Container Registry on each release.
 
 ## Getting started
 
@@ -234,6 +235,27 @@ pnpm start        # http://localhost:3000
 | `pnpm test:coverage` | Run the tests with the 90% coverage threshold |
 
 Search with a full artist name ("Rembrandt", not "Rembr"): the API matches whole words only.
+
+## Docker
+
+The image builds the app with Node and serves `dist` with
+[nginx-unprivileged](https://hub.docker.com/r/nginxinc/nginx-unprivileged) as a non-root user.
+It needs no environment variables to build.
+
+```sh
+docker build -t artwork-search .
+docker run --rm -p 8080:8080 artwork-search                 # http://localhost:8080
+docker run --rm -p 9000:9000 -e PORT=9000 artwork-search    # listen on another port
+```
+
+Each release publishes the image to GitHub Container Registry for `linux/amd64` and
+`linux/arm64`, tagged with the version (`0.2.0`), the minor version (`0.2`) and `latest`. Commits
+without a release publish nothing.
+
+```sh
+docker pull ghcr.io/jorgetroya80/artwork-search:latest
+docker run --rm -p 8080:8080 ghcr.io/jorgetroya80/artwork-search:latest
+```
 
 ## Known limitations and next steps
 

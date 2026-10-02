@@ -179,7 +179,7 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
     steps for `linux/amd64`, so no QEMU is needed. The `metadata-action` step has a comment on
     why `latest` is explicit.
 
-- [ ] **T5: README "Docker"**
+- [x] **T5: README "Docker"**
   - Build and run locally, `PORT`, pull from GHCR, available tags, platforms. Note that images
     are published only on release.
   - Acceptance: the commands in the section are the ones in the spec's "Commands" and work as
@@ -187,6 +187,11 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
   - Verify: `pnpm exec prettier --check README.md`.
   - Files: `README.md`.
   - Size: XS.
+  - Done: new `## Docker` section after "Getting started", and a Docker line in "Tech stack".
+    A check script in the session scratchpad asserts the section has the spec's build, run,
+    `PORT` and pull commands, both platforms, `latest` and the release-only rule. It failed
+    before the section existed and passes now. The local commands are the ones the T2/T3 image
+    checks run. Prettier passes.
 
 ### Checkpoint 1: Local checks pass, open PR
 
