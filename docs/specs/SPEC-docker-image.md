@@ -1,7 +1,7 @@
 # Spec: Docker image published to GHCR
 
 - Created: 2026-10-02
-- Status: **approved** (2026-10-02)
+- Status: **in progress** (approved 2026-10-02)
 - Plan: [PLAN-docker-image.md](../plans/PLAN-docker-image.md)
 - Depends on: [SPEC-ci-release.md](SPEC-ci-release.md) (implemented)
 

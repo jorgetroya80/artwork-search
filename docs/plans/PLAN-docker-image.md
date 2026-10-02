@@ -195,10 +195,13 @@ linux/amd64,linux/arm64 .` without `--push` checks on the Mac (arm64) that the `
 
 ### Checkpoint 1: Local checks pass, open PR
 
-- [ ] Spec local checks 1–9 pass on the final files.
-- [ ] `actionlint` and Prettier pass.
-- [ ] `pnpm lint`, `pnpm test` and `pnpm build` pass (unchanged app).
-- [ ] Spec status set to **in progress** and this plan to **in progress**.
+- [x] Spec local checks 1–9 pass on the final files (12 assertions in the image check script,
+      plus the workflow structure test and the README check).
+- [x] `actionlint` and Prettier pass. Prettier on the branch's changed files; a full
+      `prettier --check .` also flags `CHANGELOG.md`, `pnpm-lock.yaml`, `vite.config.ts` and
+      `.release-please-manifest.json`, which this branch does not touch (same on `main`).
+- [x] `pnpm lint`, `pnpm test` (169 tests) and `pnpm build` pass (unchanged app).
+- [x] Spec status set to **in progress** and this plan to **in progress**.
 - [ ] Review with the user, then push `feat/docker-image` and open the PR titled
       `feat: publish Docker image to GHCR`. CI (`lint`, `test`, `build`, `pr-title`) passes.
 
