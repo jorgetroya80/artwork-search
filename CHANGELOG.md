@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/jorgetroya80/artwork-search/compare/v0.4.0...v0.5.0) (2026-10-06)
+
+
+### Features
+
+* add build-time color themes ([#19](https://github.com/jorgetroya80/artwork-search/issues/19)) ([8f01c12](https://github.com/jorgetroya80/artwork-search/commit/8f01c1267b34d18d712231e9ad0fc48091edc536))
+
 ## [0.4.0](https://github.com/jorgetroya80/artwork-search/compare/v0.3.0...v0.4.0) (2026-10-02)
 
 
