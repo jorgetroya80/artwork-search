@@ -1,0 +1,11 @@
+[data-theme='gallery'] {
+  color-scheme: light;
+  --theme-bg: var(--color-white);
+  --theme-bg-subtle: var(--color-stone-100);
+  --theme-fg: var(--color-stone-900);
+  --theme-fg-muted: var(--color-stone-600);
+  --theme-border: var(--color-stone-300);
+  --theme-accent: var(--color-stone-900);
+  --theme-accent-fg: var(--color-white);
+  --theme-radius-control: var(--radius-md);
+}
