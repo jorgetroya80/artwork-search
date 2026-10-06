@@ -1,7 +1,8 @@
 // @vitest-environment node
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { DEFAULT_THEME, listThemes, resolveTheme } from './theme';
@@ -41,5 +42,39 @@ describe('listThemes', () => {
     }
 
     expect(listThemes(dir)).toEqual(['gallery', 'theme-1']);
+  });
+});
+
+describe('theme files', () => {
+  const srcDir = fileURLToPath(new URL('../src', import.meta.url));
+  const themesDir = join(srcDir, 'themes');
+  const indexCss = readFileSync(join(srcDir, 'index.css'), 'utf8');
+  const variables = [...indexCss.matchAll(/var\((--theme-[a-z-]+)\)/g)].map(
+    ([, name]) => name
+  );
+
+  it('finds the theme variables in index.css', () => {
+    expect(variables).toHaveLength(8);
+  });
+
+  describe.each(listThemes(themesDir))('%s', (name) => {
+    const css = readFileSync(join(themesDir, `${name}.css`), 'utf8');
+
+    it('is scoped to its own data-theme', () => {
+      expect(css.trimStart()).toMatch(
+        new RegExp(String.raw`^\[data-theme='${name}'\]\s*\{`)
+      );
+    });
+
+    it('sets color-scheme and every theme variable', () => {
+      expect(css).toMatch(/color-scheme:\s*(light|dark);/);
+      for (const variable of variables) {
+        expect(css, variable).toContain(`${variable}:`);
+      }
+    });
+
+    it('is imported by index.css', () => {
+      expect(indexCss).toContain(`@import './themes/${name}.css';`);
+    });
   });
 });

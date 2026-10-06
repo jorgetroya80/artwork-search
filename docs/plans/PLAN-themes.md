@@ -1,7 +1,7 @@
 # Plan: Themes
 
 - Created: 2026-10-06
-- Status: **in progress**. T1, T2 done 2026-10-06.
+- Status: **in progress**. T1–T3 done 2026-10-06.
 - Spec: [SPEC-themes.md](../specs/SPEC-themes.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -105,7 +105,7 @@ T2 and T3 can run in parallel after T1.
     jsdom), the test file runs in the `node` environment, and `vite.config.ts` imports
     `./config/theme.ts` with its extension (Vite warns otherwise about `configLoader: 'native'`).
 
-- [ ] **T3: Theme completeness test**
+- [x] **T3: Theme completeness test**
   - In `config/theme.test.ts`: for every file in `src/themes/`, the selector is
     `[data-theme='<file name>']`, it sets `color-scheme` and all eight `--theme-*` variables, and
     `src/index.css` imports it.
@@ -114,6 +114,12 @@ T2 and T3 can run in parallel after T1.
   - Verify: `pnpm test`.
   - Files: `config/theme.test.ts`.
   - Size: XS.
+  - Done: 2026-10-06. The required variables are read from the `var(--theme-*)` calls in
+    `src/index.css` (8 found, also asserted), so a new token needs every theme to set it. Per theme:
+    selector, `color-scheme: light|dark`, every variable, `@import` in `index.css`. 11 tests in
+    `config/`, 180 in total, `tsc -b` passes. Mutation checks on `gallery`: dropping
+    `--theme-border`, dropping `color-scheme`, a wrong selector and dropping the `@import` each
+    fail one test; files restored.
 
 ### Phase 2: Theme 1
 
