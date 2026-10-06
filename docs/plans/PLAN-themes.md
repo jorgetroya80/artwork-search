@@ -1,7 +1,7 @@
 # Plan: Themes
 
 - Created: 2026-10-06
-- Status: **in progress**. T1–T4 done 2026-10-06.
+- Status: **in progress**. T1–T5 done 2026-10-06.
 - Spec: [SPEC-themes.md](../specs/SPEC-themes.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -161,7 +161,7 @@ T2 and T3 can run in parallel after T1.
 
 ### Phase 3: Deploy and docs
 
-- [ ] **T5: Docker and Render configuration**
+- [x] **T5: Docker and Render configuration**
   - `Dockerfile` build stage: `ARG VITE_THEME=gallery` before `RUN pnpm build`.
   - `render.yaml`: `envVars` gets `VITE_THEME: gallery`, with a comment that changing it changes
     the live theme.
@@ -171,6 +171,12 @@ T2 and T3 can run in parallel after T1.
     `pnpm exec prettier --check render.yaml`.
   - Files: `Dockerfile`, `render.yaml`.
   - Size: XS.
+  - Done: 2026-10-06. `ARG VITE_THEME=gallery` sits right before `RUN pnpm build`, so a theme
+    change does not invalidate the dependency install layer. Docker 29: the default image serves
+    `<html lang="en" data-theme="gallery">`, `--build-arg VITE_THEME=theme-1` serves
+    `data-theme="theme-1"`, and `VITE_THEME=nope` fails the build (exit 1) with the valid list.
+    `.dockerignore` already excludes `.env*`, so local env files never reach the image.
+    `render.yaml` passes Prettier; the live check happens after the merge.
 
 - [ ] **T6: README "Themes"**
   - The three themes, how to pick one (local, Docker, Render), how to add one (file, `@import`,
