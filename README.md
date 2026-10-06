@@ -11,8 +11,6 @@ A React + TypeScript search interface for the Rijksmuseum collection, built on t
 
 ![Screenshot of the artwork search UI](docs/images/screenshot-app.png)
 
-**Live demo:** <https://artwork-search-0lvp.onrender.com>
-
 ## Overview
 
 - Search the collection by artist name. Results load 10 at a time with a "Load more" button.
