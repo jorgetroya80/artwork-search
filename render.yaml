@@ -10,6 +10,7 @@ services:
     buildFilter:
       paths:
         - src/**
+        - config/**
         - public/**
         - index.html
         - package.json
@@ -23,6 +24,9 @@ services:
       # Render has no documented pnpm version selection, so the build command installs instead
       - key: SKIP_INSTALL_DEPS
         value: 'true'
+      # Theme name from src/themes. Changing it changes the live site's theme on the next deploy
+      - key: VITE_THEME
+        value: gallery
     # Same headers as nginx.conf
     headers:
       - path: /*

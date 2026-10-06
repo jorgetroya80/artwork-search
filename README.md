@@ -11,8 +11,6 @@ A React + TypeScript search interface for the Rijksmuseum collection, built on t
 
 ![Screenshot of the artwork search UI](docs/images/screenshot-app.png)
 
-**Live demo:** <https://artwork-search-0lvp.onrender.com>
-
 ## Overview
 
 - Search the collection by artist name. Results load 10 at a time with a "Load more" button.
@@ -205,7 +203,8 @@ work.
 - **TypeScript 6** in strict mode.
 - **Vite 8** for the dev server and build.
 - **TanStack Query 5** for server state: caching, retries, cancellation and infinite queries.
-- **Tailwind CSS 4** with semantic color and radius tokens in `src/index.css`.
+- **Tailwind CSS 4** with semantic color and radius tokens in `src/index.css`, set by build-time
+  themes in `src/themes`.
 - **Base UI** for accessible, unstyled primitives, behind local wrappers.
 - **Vitest**, **Testing Library** and **MSW** for tests.
 - **ESLint** and **Prettier**, with a pre-commit hook that runs `lint-staged`.
@@ -237,11 +236,41 @@ pnpm start        # http://localhost:3000
 
 Search with a full artist name ("Rembrandt", not "Rembr"): the API matches whole words only.
 
+## Themes
+
+The color theme is picked at build time with the `VITE_THEME` environment variable. Each build
+uses one theme, and visitors cannot change it.
+
+| Theme               | Look                                           |
+| ------------------- | ---------------------------------------------- |
+| `gallery` (default) | White and stone, near-black accent. Light.     |
+| `theme-1`           | Off-white and warm gray, orange accent. Light. |
+| `theme-1-dark`      | Near-black and warm gray, orange accent. Dark. |
+
+```sh
+VITE_THEME=theme-1-dark pnpm start                          # or set it in .env.local
+VITE_THEME=theme-1 pnpm build
+docker build --build-arg VITE_THEME=theme-1 -t artwork-search .
+```
+
+On Render, the theme is the `VITE_THEME` value in `render.yaml`. An unknown name fails the build
+and lists the valid themes.
+
+Components use only the semantic tokens (`bg`, `bg-subtle`, `fg`, `fg-muted`, `border`, `accent`,
+`accent-fg`, `rounded-control`). Each theme sets them in its own file, so a new theme needs no
+component change:
+
+1. Copy `src/themes/gallery.css` to `src/themes/<name>.css`, change the selector to
+   `[data-theme='<name>']` and set the values and `color-scheme`.
+2. Add `@import './themes/<name>.css';` to `src/index.css`.
+3. Check that text pairs reach 4.5:1 contrast (WCAG AA) and the `accent` focus outline 3:1 on
+   `bg`. `pnpm test` checks that every theme sets every variable and is imported.
+
 ## Docker
 
 The image builds the app with Node and serves `dist` with
 [nginx-unprivileged](https://hub.docker.com/r/nginxinc/nginx-unprivileged) as a non-root user.
-It needs no environment variables to build.
+The `VITE_THEME` build argument picks the theme (see [Themes](#themes)); the default is `gallery`.
 
 ```sh
 docker build -t artwork-search .
