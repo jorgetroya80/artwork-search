@@ -1,7 +1,7 @@
 # Plan: Themes
 
 - Created: 2026-10-06
-- Status: **in progress**. T1–T5 done 2026-10-06.
+- Status: **in progress**. T1–T6 done 2026-10-06.
 - Spec: [SPEC-themes.md](../specs/SPEC-themes.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -178,12 +178,16 @@ T2 and T3 can run in parallel after T1.
     `.dockerignore` already excludes `.env*`, so local env files never reach the image.
     `render.yaml` passes Prettier; the live check happens after the merge.
 
-- [ ] **T6: README "Themes"**
+- [x] **T6: README "Themes"**
   - The three themes, how to pick one (local, Docker, Render), how to add one (file, `@import`,
     contrast check).
   - Verify: `pnpm exec prettier --check README.md`.
   - Files: `README.md`.
   - Size: XS.
+  - Done: 2026-10-06. New "Themes" section after "Getting started": the three themes, local,
+    Docker and Render use, and three steps to add a theme. The Docker section now points to the
+    `VITE_THEME` build argument instead of "needs no environment variables", and the Tailwind
+    line in "Tech stack" mentions `src/themes`. Prettier passes.
 
 - [ ] **Checkpoint 2: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Spec status and success criteria
