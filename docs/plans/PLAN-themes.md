@@ -136,13 +136,28 @@ T2 and T3 can run in parallel after T1.
     `VITE_THEME=theme-1`, `theme-1-dark` and `gallery` write the matching `data-theme`; the built
     CSS has all three selectors. `VITE_THEME=nope` lists `gallery, theme-1, theme-1-dark`.
 
-- [ ] **Checkpoint 1: every theme works**
+- [x] **Checkpoint 1: every theme works**
   - `pnpm lint && pnpm test && pnpm build` for each of the three themes.
   - Headless Chrome against `pnpm preview`, each theme, with a search showing results: screenshots
     at 1280 and 390 px; computed colors measured for the spec pairs (`fg`/`bg`, `fg-muted`/`bg`,
     `fg`/`bg-subtle`, `fg-muted`/`bg-subtle`, `accent-fg`/`accent` ≥ 4.5:1; `accent`/`bg` ≥ 3:1).
   - No flash: `dist/index.html` has the attribute before any script runs.
   - Screenshots reviewed with the user before Phase 3.
+  - Measured 2026-10-06 (headless Chrome over the DevTools protocol, each theme built to its own
+    folder, search "Rembrandt" against the real API, 10 cards, Search button focused). Contrast
+    from the rendered sRGB values (canvas, so the `theme-1` orange is clipped to `rgb(187 81 0)`):
+
+    | Pair                   | `gallery` | `theme-1` | `theme-1-dark` | Minimum |
+    | ---------------------- | --------- | --------- | -------------- | ------- |
+    | `fg`/`bg`              | 17.49     | 12.21     | 17.17          | 4.5     |
+    | `fg-muted`/`bg`        | 7.64      | 5.02      | 6.37           | 4.5     |
+    | `fg`/`bg-subtle`       | 16.03     | 11.30     | 14.52          | 4.5     |
+    | `fg-muted`/`bg-subtle` | 7.00      | 4.64      | 5.39           | 4.5     |
+    | `accent-fg`/`accent`   | 17.49     | 4.85      | 6.88           | 4.5     |
+    | `accent`/`bg` (focus)  | 17.49     | 4.85      | 6.88           | 3       |
+
+    All pass. Screenshots at 1280 and 390 px: no layout change between themes, focus ring visible
+    in all three. Approved by the user 2026-10-06.
 
 ### Phase 3: Deploy and docs
 
