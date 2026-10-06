@@ -1,7 +1,7 @@
 # Spec: Themes
 
 - Created: 2026-10-06
-- Status: **approved** 2026-10-06.
+- Status: **implemented** 2026-10-06 (branch `feat/themes`). Approved 2026-10-06.
 - Plan: [PLAN-themes.md](../plans/PLAN-themes.md)
 - Related: [SPEC-artwork-search-ui.md](SPEC-artwork-search-ui.md) (semantic tokens in
   `src/index.css`), [SPEC-render-deploy.md](SPEC-render-deploy.md),
@@ -136,7 +136,8 @@ The theme is in the HTML before any CSS or JS loads, so there is no flash.
 
 ### Deploy
 
-- **Render:** `render.yaml` gets `envVars: - key: VITE_THEME, value: gallery`. Changing the theme is
+- **Render:** `render.yaml` gets `envVars: - key: VITE_THEME, value: gallery`, and `config/**` joins
+  `buildFilter.paths` because the build reads `config/theme.ts`. Changing the theme is
   a one-line change to that file (already in `buildFilter`, so it deploys).
 - **Docker:** `Dockerfile` gets `ARG VITE_THEME=gallery` in the build stage.
   `docker build --build-arg VITE_THEME=theme-1 .` builds a Theme 1 image.
@@ -151,7 +152,7 @@ src/themes/theme-1.css       → Theme 1, light
 src/themes/theme-1-dark.css  → Theme 1, dark
 vite.config.ts            → theme plugin: validate VITE_THEME, set data-theme on <html>
 Dockerfile                → ARG VITE_THEME
-render.yaml               → envVars VITE_THEME
+render.yaml               → envVars VITE_THEME; buildFilter config/**
 README.md                 → "Themes" section: list, how to pick one, how to add one
 ```
 
@@ -199,14 +200,15 @@ pnpm lint && pnpm test && pnpm build
 
 ## Success Criteria
 
-- [ ] With no `VITE_THEME`, the app looks exactly as today.
-- [ ] `VITE_THEME=theme-1` and `VITE_THEME=theme-1-dark` builds show those themes from the first
+- [x] With no `VITE_THEME`, the app looks exactly as today.
+- [x] `VITE_THEME=theme-1` and `VITE_THEME=theme-1-dark` builds show those themes from the first
       paint.
-- [ ] An unknown theme name fails the build with the list of valid names.
-- [ ] A new theme needs only a new file in `src/themes/` and its `@import`.
-- [ ] Render and Docker builds take the theme from configuration.
-- [ ] All themes pass the contrast check.
-- [ ] README explains how to pick and add a theme.
+- [x] An unknown theme name fails the build with the list of valid names.
+- [x] A new theme needs only a new file in `src/themes/` and its `@import`.
+- [x] Render and Docker builds take the theme from configuration. (Docker checked locally; the live
+      Render `data-theme` is checked after the merge.)
+- [x] All themes pass the contrast check.
+- [x] README explains how to pick and add a theme.
 
 ## Decisions
 

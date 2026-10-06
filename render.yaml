@@ -10,6 +10,7 @@ services:
     buildFilter:
       paths:
         - src/**
+        - config/**
         - public/**
         - index.html
         - package.json

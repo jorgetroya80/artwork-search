@@ -1,7 +1,7 @@
 # Plan: Themes
 
 - Created: 2026-10-06
-- Status: **in progress**. T1–T6 done 2026-10-06.
+- Status: **implemented** 2026-10-06, PR pending. Live Render check after the merge.
 - Spec: [SPEC-themes.md](../specs/SPEC-themes.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -189,10 +189,17 @@ T2 and T3 can run in parallel after T1.
     `VITE_THEME` build argument instead of "needs no environment variables", and the Tailwind
     line in "Tech stack" mentions `src/themes`. Prettier passes.
 
-- [ ] **Checkpoint 2: review and PR**
+- [x] **Checkpoint 2: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Spec status and success criteria
     updated. Diff review.
   - PR `feat: add build-time color themes` with `## What` / `## Why`.
+  - Done: 2026-10-06. `pnpm lint` clean, `pnpm test` 186 tests, `pnpm test:coverage` above 90%,
+    `tsc -b` and `pnpm build` pass. Prettier flags the same 4 files as on `main`
+    (`.release-please-manifest.json`, `CHANGELOG.md`, `pnpm-lock.yaml`, `vite.config.ts`), none
+    from this branch's content. Review found one gap: the build now reads `config/theme.ts`, so
+    `config/**` was added to `buildFilter.paths` in `render.yaml` (SPEC-render-deploy "Always"
+    rule); without it a change only in `config/` would not deploy.
+  - After the merge: the live site serves `<html lang="en" data-theme="gallery">`.
 
 ## Risks and mitigations
 
