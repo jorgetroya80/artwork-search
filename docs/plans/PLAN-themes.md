@@ -1,7 +1,7 @@
 # Plan: Themes
 
 - Created: 2026-10-06
-- Status: **in progress**. T1 done 2026-10-06.
+- Status: **in progress**. T1, T2 done 2026-10-06.
 - Spec: [SPEC-themes.md](../specs/SPEC-themes.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -82,7 +82,7 @@ T2 and T3 can run in parallel after T1.
     `data-theme="x"` in `dist/index.html`, the colors, border radius and button background
     disappear, so the theme variables drive the tokens (plan risk 1 does not apply).
 
-- [ ] **T2: Theme plugin (test first)**
+- [x] **T2: Theme plugin (test first)**
   - Tests in `config/theme.test.ts`: `resolveTheme` returns `gallery` when unset or empty,
     returns each available name, throws on an unknown name with the sorted valid list.
     `listThemes` returns the `.css` file names in `src/themes/` without extension.
@@ -96,6 +96,14 @@ T2 and T3 can run in parallel after T1.
   - Files: `config/theme.ts`, `config/theme.test.ts`, `vite.config.ts`, `tsconfig.node.json`,
     `index.html`.
   - Size: S.
+  - Done: 2026-10-06. Tests first: the suite failed (no module), then 7 tests pass. `pnpm lint`,
+    `pnpm test` (176 tests), `tsc -b` and `pnpm build` pass; `dist/index.html` has
+    `<html lang="en" data-theme="gallery">`. `VITE_THEME=nope` fails `pnpm build` and `pnpm test`
+    (exit 1) with `Unknown theme "nope". Valid themes: gallery.` `VITE_THEME=nope` in
+    `.env.local` fails the build the same way, so env files work. Changes from the plan: the
+    plugin finds `src/themes` from Vite's `root` (`import.meta.url` is not a `file:` URL under
+    jsdom), the test file runs in the `node` environment, and `vite.config.ts` imports
+    `./config/theme.ts` with its extension (Vite warns otherwise about `configLoader: 'native'`).
 
 - [ ] **T3: Theme completeness test**
   - In `config/theme.test.ts`: for every file in `src/themes/`, the selector is

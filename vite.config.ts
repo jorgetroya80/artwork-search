@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
+import { themePlugin } from './config/theme.ts'
 
 const PORT = 3000
 
@@ -10,7 +11,8 @@ export default defineConfig({
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),
-    tailwindcss()
+    tailwindcss(),
+    themePlugin()
   ],
   server: {
     port: PORT
