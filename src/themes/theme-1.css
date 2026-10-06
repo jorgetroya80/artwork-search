@@ -1,0 +1,12 @@
+[data-theme='theme-1'] {
+  color-scheme: light;
+  --theme-bg: oklch(0.997 0 0);
+  --theme-bg-subtle: oklch(0.9702 0 0);
+  --theme-fg: oklch(0.3285 0.0046 354.9853);
+  --theme-fg-muted: oklch(0.5403 0.0029 345.2841);
+  --theme-border: oklch(0.9219 0 0);
+  /* Darker than the dark theme's orange, so white text and the focus outline pass WCAG AA */
+  --theme-accent: oklch(0.56 0.1631 52.7157);
+  --theme-accent-fg: oklch(0.997 0 0);
+  --theme-radius-control: 0.75rem;
+}

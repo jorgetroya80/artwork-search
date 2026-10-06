@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import './themes/gallery.css';
+@import './themes/theme-1.css';
+@import './themes/theme-1-dark.css';
 
 /* Semantic tokens: components use only these. Each theme in src/themes/ sets the variables. */
 @theme inline {

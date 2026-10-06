@@ -1,7 +1,7 @@
 # Plan: Themes
 
 - Created: 2026-10-06
-- Status: **in progress**. T1–T3 done 2026-10-06.
+- Status: **in progress**. T1–T4 done 2026-10-06.
 - Spec: [SPEC-themes.md](../specs/SPEC-themes.md)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -123,7 +123,7 @@ T2 and T3 can run in parallel after T1.
 
 ### Phase 2: Theme 1
 
-- [ ] **T4: `theme-1` and `theme-1-dark`**
+- [x] **T4: `theme-1` and `theme-1-dark`**
   - Two files with the values from the spec table ("Theme 1"), `color-scheme: light` and `dark`.
     Two `@import` lines in `src/index.css`.
   - Acceptance: T3 passes for both. `VITE_THEME=theme-1` and `VITE_THEME=theme-1-dark` builds
@@ -131,6 +131,10 @@ T2 and T3 can run in parallel after T1.
   - Verify: `pnpm test`, both builds, `grep data-theme dist/index.html`.
   - Files: `src/themes/theme-1.css`, `src/themes/theme-1-dark.css`, `src/index.css`.
   - Size: XS.
+  - Done: 2026-10-06. Values from the spec table, with a comment on each contrast fix. `pnpm lint`,
+    `pnpm test` (186 tests; T3 now covers three themes) and Prettier pass. Builds with
+    `VITE_THEME=theme-1`, `theme-1-dark` and `gallery` write the matching `data-theme`; the built
+    CSS has all three selectors. `VITE_THEME=nope` lists `gallery, theme-1, theme-1-dark`.
 
 - [ ] **Checkpoint 1: every theme works**
   - `pnpm lint && pnpm test && pnpm build` for each of the three themes.
