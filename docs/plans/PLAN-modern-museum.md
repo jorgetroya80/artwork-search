@@ -109,7 +109,7 @@ T7.
   - Files: `src/assets/fonts/fonts.css`, `src/index.css`.
   - Size: XS.
 
-- [ ] **T3: `modern` theme and new default (test first)**
+- [x] **T3: `modern` theme and new default (test first)**
   - Test: `resolveTheme(undefined, …)` returns `modern`. Fails first.
   - `src/themes/modern.css` with the spec's values; `@import` in `index.css`.
   - `config/theme.ts`: `DEFAULT_THEME = 'modern'`.
