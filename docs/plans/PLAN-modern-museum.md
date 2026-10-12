@@ -227,7 +227,7 @@ T7.
 
 ### Phase 3: Deploy and docs
 
-- [ ] **T12: Docker and Render defaults**
+- [x] **T12: Docker and Render defaults**
   - `Dockerfile`: `ARG VITE_THEME=modern`. `render.yaml`: `VITE_THEME: modern`.
   - Acceptance: default Docker image serves `data-theme="modern"` and the preload links; fonts
     are served from `/assets/` with the immutable cache header (existing nginx rule).
