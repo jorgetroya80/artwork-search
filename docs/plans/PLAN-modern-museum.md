@@ -97,7 +97,7 @@ T7.
     `src/themes/theme-1-dark.css`.
   - Size: XS.
 
-- [ ] **T2: Self-hosted font faces**
+- [x] **T2: Self-hosted font faces**
   - `src/assets/fonts/fonts.css`: `@font-face` for Archivo (variable, `font-weight: 400 800`,
     `font-stretch: 62% 125%`) and IBM Plex Mono 400, 500; `latin` and `latin-ext` each with the
     `unicode-range` from the Google Fonts CSS; `font-display: swap`; relative `url()`.
