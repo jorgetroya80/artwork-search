@@ -55,7 +55,13 @@ export function SearchPage() {
 
   return (
     <Layout
-      toolbar={isSearchState ? <div ref={toolbarRef}>{form}</div> : undefined}
+      toolbar={
+        isSearchState ? (
+          <div className="mx-auto w-full max-w-6xl px-4 py-2" ref={toolbarRef}>
+            {form}
+          </div>
+        ) : undefined
+      }
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
         {isSearchState ? (

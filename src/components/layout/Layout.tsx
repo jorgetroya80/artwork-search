@@ -5,7 +5,7 @@ type LayoutProps = PropsWithChildren<{ toolbar?: ReactNode }>;
 export function Layout({ toolbar, children }: LayoutProps) {
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="contents sm:sticky sm:top-0 sm:z-10 sm:bg-bg">
+      <div className="contents sm:sticky sm:top-0 sm:z-10 sm:block sm:bg-bg">
         <header className="flex items-center gap-2 border-b border-fg px-4 py-3.5 sm:gap-3 sm:px-6 sm:py-[18px]">
           <span aria-hidden className="size-3 bg-mark sm:size-3.5" />
           <span className="font-sans text-base font-extrabold tracking-wide uppercase sm:text-[18px]">
