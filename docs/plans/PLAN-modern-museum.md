@@ -150,7 +150,7 @@ T7.
   - Files: `src/api/rijksmuseum/parse.ts`, `parse.test.ts`, `index.ts`.
   - Size: XS.
 
-- [ ] **T6: `Layout` with header and footer**
+- [x] **T6: `Layout` with header and footer**
   - `src/components/layout/Layout.tsx`: header (mark square `aria-hidden`, wordmark "Artwork
     Search"), optional `toolbar` slot in the sticky wrapper, `<main>`, footer ("Collection data and
     images: Rijksmuseum" link to `https://data.rijksmuseum.nl`, "Artwork Search"). Sizes per the
