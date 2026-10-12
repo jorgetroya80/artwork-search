@@ -54,7 +54,7 @@ describe('theme files', () => {
   );
 
   it('finds the theme variables in index.css', () => {
-    expect(variables).toHaveLength(8);
+    expect(variables).toHaveLength(11);
   });
 
   describe.each(listThemes(themesDir))('%s', (name) => {

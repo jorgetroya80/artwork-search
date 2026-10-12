@@ -9,4 +9,11 @@
   --theme-accent: oklch(0.56 0.1631 52.7157);
   --theme-accent-fg: oklch(0.997 0 0);
   --theme-radius-control: 0.75rem;
+  --theme-mark: oklch(0.56 0.1631 52.7157);
+  --theme-font-sans:
+    ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --theme-font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
 }

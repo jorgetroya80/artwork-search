@@ -13,6 +13,9 @@
   --color-accent: var(--theme-accent);
   --color-accent-fg: var(--theme-accent-fg);
   --radius-control: var(--theme-radius-control);
+  --color-mark: var(--theme-mark);
+  --font-sans: var(--theme-font-sans);
+  --font-mono: var(--theme-font-mono);
 }
 
 body {
