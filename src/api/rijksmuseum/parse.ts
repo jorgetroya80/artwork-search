@@ -99,5 +99,8 @@ const isHttpsUrl = (url: string) => URL.parse(url)?.protocol === 'https:';
 export const pickImageUrl = (digitalObject: unknown): string | null =>
   readRefIds(asRecord(digitalObject).access_point).find(isHttpsUrl) ?? null;
 
+export const toImageUrl = (imageUrl: string, width: number) =>
+  imageUrl.replace(IIIF_FULL_SIZE, `/full/${width},/`);
+
 export const toThumbnailUrl = (imageUrl: string) =>
-  imageUrl.replace(IIIF_FULL_SIZE, `/full/${THUMBNAIL_WIDTH},/`);
+  toImageUrl(imageUrl, THUMBNAIL_WIDTH);
