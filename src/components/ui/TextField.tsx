@@ -42,8 +42,8 @@ export function TextField({
       onValueChange={(nextValue) => onValueChange(nextValue)}
       className={
         inputGroup
-          ? 'min-h-11 w-full flex-1 bg-transparent px-3 text-fg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent'
-          : 'min-h-11 w-full rounded-control border border-border bg-bg px-3 text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
+          ? 'min-h-11 w-full flex-1 appearance-none bg-transparent px-3 text-fg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent'
+          : 'min-h-11 w-full appearance-none rounded-control border border-border bg-bg px-3 text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
       }
     />
   );
