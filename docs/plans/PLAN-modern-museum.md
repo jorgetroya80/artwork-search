@@ -160,7 +160,7 @@ T7.
   - Files: `Layout.tsx`, `Layout.test.tsx`, `src/App.tsx`, `SearchPage.tsx`.
   - Size: S.
 
-- [ ] **T7: Button and TextField look**
+- [x] **T7: Button and TextField look**
   - `Button`: uppercase, bold, `font-stretch` 112%, 2px `fg` border on `secondary`; optional
     `icon` (rendered after the label, `aria-hidden`). Public API otherwise unchanged.
   - `TextField`: borderless input inside the parent's border (an `inputGroup`/`endSlot` prop so the
