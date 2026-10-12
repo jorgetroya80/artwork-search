@@ -142,7 +142,7 @@ T7.
 
 ### Phase 2: Layout
 
-- [ ] **T5: `toImageUrl` (test first)**
+- [x] **T5: `toImageUrl` (test first)**
   - Tests: replaces `/full/max/` with `/full/<width>,/`; `toThumbnailUrl` output unchanged.
   - `parse.ts`: `toImageUrl(imageUrl, width)`; `toThumbnailUrl` calls it with `THUMBNAIL_WIDTH`.
     Export from `index.ts`.
