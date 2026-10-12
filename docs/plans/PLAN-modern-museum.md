@@ -119,7 +119,7 @@ T7.
   - Files: `src/themes/modern.css`, `src/index.css`, `config/theme.ts`, `config/theme.test.ts`.
   - Size: S.
 
-- [ ] **T4: Font preload links (test first)**
+- [x] **T4: Font preload links (test first)**
   - `config/theme.ts`: `THEME_FONT_PRELOADS: Record<string, string[]>` (`modern`: Archivo latin,
     IBM Plex Mono 400 latin). A pure `preloadTags(files, resolveUrl)` builds the `<link>` tags; the
     plugin's `transformIndexHtml` (`order: 'post'`) resolves URLs from `ctx.bundle` in build and
