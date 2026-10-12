@@ -171,7 +171,7 @@ T7.
   - Files: `Button.tsx`, `Button.test.tsx`, `TextField.tsx`, `TextField.test.tsx`.
   - Size: S.
 
-- [ ] **T8: `SearchForm` look and `compact` prop**
+- [x] **T8: `SearchForm` look and `compact` prop**
   - Idle: label "01 — Artist name", hint, 68 px row; phone: input and button stacked in the frame.
   - `compact`: label "Artist name", no hint, 56 px (52 px on phone), button label `sr-only` below
     `sm` with the arrow icon visible.
