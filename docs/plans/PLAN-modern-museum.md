@@ -1,7 +1,7 @@
 # Plan: Modern museum layout and theme
 
 - Created: 2026-10-07
-- Status: **not started**
+- Status: **done**
 - Spec: [SPEC-modern-museum.md](../specs/SPEC-modern-museum.md) (approved 2026-10-07)
 
 The task list lives in this file. Check off tasks here as they are done.
@@ -216,7 +216,7 @@ T7.
     `SearchPage.tsx`.
   - Size: M.
 
-- [ ] **Checkpoint 2: design match**
+- [x] **Checkpoint 2: design match**
   - `pnpm lint && pnpm test && pnpm test:coverage && pnpm build` pass (≥ 90% lines).
   - Headless Chrome screenshots, `modern`: idle and search states at 1440 px and 390 px, side by
     side with the four artboards. Differences listed and fixed or accepted by the maintainer.
@@ -243,7 +243,7 @@ T7.
   - Files: `README.md`, `docs/images/screenshot-app.png`.
   - Size: XS.
 
-- [ ] **Checkpoint 3: review and PR**
+- [x] **Checkpoint 3: review and PR**
   - `pnpm lint`, `pnpm test`, `pnpm build`, Prettier pass. Spec status and success criteria
     updated. Diff review.
   - PR `feat: add modern museum layout and theme` with `## What` / `## Why`.

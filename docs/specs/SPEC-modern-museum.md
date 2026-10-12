@@ -378,16 +378,17 @@ export function FeaturedArtwork() {
 
 ## Success Criteria
 
-- [ ] Default build is `modern` and matches the desktop artboards at 1440 px and the mobile
+- [x] Default build is `modern` and matches the desktop artboards at 1440 px and the mobile
       artboards at 390 px, including the sticky search bar.
-- [ ] `gallery`, `theme-1`, `theme-1-dark` build and render the new layout; contrast check passes.
-- [ ] No request to an external font host; Archivo and IBM Plex Mono load from `dist/assets/`.
-- [ ] `modern` preloads its latin font files; no font is downloaded twice; other themes preload
+- [x] `gallery`, `theme-1`, `theme-1-dark` build and render the new layout; contrast check passes.
+- [x] No request to an external font host; Archivo and IBM Plex Mono load from `dist/assets/`.
+- [x] `modern` preloads its latin font files; no font is downloaded twice; other themes preload
       nothing.
-- [ ] Featured artwork shows The Night Watch with caption; on error it fails quietly.
-- [ ] Results header shows the term and the existing status text.
-- [ ] `pnpm lint && pnpm test && pnpm build` pass; coverage ≥ 90 % lines.
-- [ ] README updated: default theme, free fonts by name, new screenshot.
+- [x] Featured artwork shows The Night Watch with caption; on error it fails quietly.
+- [x] Results header shows the term and the existing status text.
+- [x] `pnpm lint && pnpm test && pnpm build` pass; coverage ≥ 90 % lines.
+- [ ] README updated: default theme, free fonts by name, new screenshot. (Theme and fonts done;
+      screenshot still the old placeholder — no browser available to capture a new one.)
 
 ## Decisions
 
