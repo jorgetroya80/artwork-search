@@ -12,10 +12,11 @@ import { getErrorMessage } from './getErrorMessage';
 
 type SearchResultsProps = {
   search: ArtworkSearch;
+  submittedTerm: string;
 };
 
 const GRID_CLASSES =
-  'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+  'grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:gap-x-14 sm:gap-y-6';
 
 // Retry buttons leave the page while they retry, so focus moves to an element that stays.
 const FOCUS_TARGET_CLASSES =
@@ -91,7 +92,7 @@ function LoadMore({
   );
 }
 
-export function SearchResults({ search }: SearchResultsProps) {
+export function SearchResults({ search, submittedTerm }: SearchResultsProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
   function retrySearch() {
@@ -104,11 +105,17 @@ export function SearchResults({ search }: SearchResultsProps) {
       ref={sectionRef}
       aria-label="Search results"
       tabIndex={-1}
-      className={`flex flex-col gap-4 ${FOCUS_TARGET_CLASSES}`}
+      className={`flex flex-col gap-6 ${FOCUS_TARGET_CLASSES}`}
     >
-      <p role="status" className="text-sm text-fg-muted">
-        {getStatusText(search)}
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b-2 border-fg pb-4">
+        <h2 className="min-w-70 flex-1 text-[clamp(36px,4.2vw,64px)] leading-none font-extrabold tracking-tight wrap-break-word">
+          {submittedTerm}
+        </h2>
+        <div className="flex items-center gap-2 font-mono text-xs text-fg-muted uppercase">
+          <span aria-hidden className="size-2.5 bg-mark" />
+          <p role="status">{getStatusText(search)}</p>
+        </div>
+      </div>
       {search.status === 'pending' && <SkeletonGrid />}
       {search.error && (
         <ErrorMessage error={search.error} onRetry={retrySearch} />

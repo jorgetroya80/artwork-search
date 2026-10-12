@@ -61,7 +61,7 @@ export function SearchPage() {
         {isSearchState ? (
           <>
             <h1 className="sr-only">Search the collection.</h1>
-            <SearchResults search={search} />
+            <SearchResults search={search} submittedTerm={submittedTerm} />
           </>
         ) : (
           <div className="flex flex-wrap gap-10 sm:gap-12">

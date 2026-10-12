@@ -1,4 +1,10 @@
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -35,6 +41,9 @@ const typeTerm = (term: string) =>
   fireEvent.change(getInput(), { target: { value: term } });
 const pressEnter = () => fireEvent.submit(screen.getByRole('search'));
 const flushRequests = () => act(async () => {});
+// Scoped to the list: the results header also has an <h2> for the submitted term.
+const getCardHeadings = () =>
+  within(screen.getByRole('list')).getAllByRole('heading', { level: 2 });
 
 function renderPage(total = 23) {
   server.use(...generatedSearchHandlers(total));
@@ -178,6 +187,17 @@ describe('SearchPage states', () => {
     ).toBeDefined();
     expect(screen.queryByText(/The Night Watch/)).toBeNull();
   });
+
+  it('shows the submitted term in the results header', async () => {
+    renderPage();
+    typeTerm('Rembrandt');
+    pressEnter();
+    await screen.findByText('Showing 10 of 23 results');
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Rembrandt' })
+    ).toBeDefined();
+  });
 });
 
 describe('SearchPage new search', () => {
@@ -242,9 +262,7 @@ describe('SearchPage results grid', () => {
 
     await screen.findByText('Showing 10 of 23 results');
     expect(screen.queryByRole('list', { busy: true })).toBeNull();
-    await waitFor(() =>
-      expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(10)
-    );
+    await waitFor(() => expect(getCardHeadings()).toHaveLength(10));
     expect(screen.getAllByRole('listitem')).toHaveLength(10);
     expect(screen.getAllByText('Test Artist')).toHaveLength(10);
   });
@@ -265,9 +283,7 @@ describe('SearchPage results grid', () => {
     pressEnter();
 
     await screen.findByText('This artwork could not be loaded.');
-    await waitFor(() =>
-      expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(9)
-    );
+    await waitFor(() => expect(getCardHeadings()).toHaveLength(9));
 
     const failedItem = screen
       .getByText('This artwork could not be loaded.')
@@ -276,9 +292,7 @@ describe('SearchPage results grid', () => {
 
     // The Retry button leaves the card during the retry, so focus stays on the card's item.
     expect(document.activeElement).toBe(failedItem);
-    await waitFor(() =>
-      expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(10)
-    );
+    await waitFor(() => expect(getCardHeadings()).toHaveLength(10));
     expect(document.activeElement).toBe(failedItem);
     expect(screen.queryByText('This artwork could not be loaded.')).toBeNull();
   });
@@ -385,8 +399,12 @@ describe('SearchPage empty and error states', () => {
 });
 
 describe('SearchPage load more', () => {
-  const headingCount = () =>
-    screen.queryAllByRole('heading', { level: 2 }).length;
+  const headingCount = () => {
+    const list = screen.queryByRole('list');
+    return list
+      ? within(list).queryAllByRole('heading', { level: 2 }).length
+      : 0;
+  };
   const getLoadMore = () =>
     screen.getByRole('button', { name: /^(Load more|Loading…)$/ });
 
@@ -409,14 +427,11 @@ describe('SearchPage load more', () => {
 
   it('adds 10 artworks per click and hides the button after the last batch', async () => {
     await searchAndWait(23);
-    const firstTitle = screen.getAllByRole('heading', { level: 2 })[0]
-      .textContent;
+    const firstTitle = getCardHeadings()[0].textContent;
 
     fireEvent.click(getLoadMore());
     await waitFor(() => expect(headingCount()).toBe(20));
-    expect(screen.getAllByRole('heading', { level: 2 })[0].textContent).toBe(
-      firstTitle
-    );
+    expect(getCardHeadings()[0].textContent).toBe(firstTitle);
     expect(screen.getByText('Showing 20 of 23 results')).toBeDefined();
 
     fireEvent.click(getLoadMore());
