@@ -22,7 +22,7 @@ export function SearchPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
       <h1 className="text-3xl font-semibold">Artwork search</h1>
       <SearchForm
         value={draft}
@@ -32,6 +32,6 @@ export function SearchPage() {
         isSearching={isSearching}
       />
       <SearchResults search={search} />
-    </main>
+    </div>
   );
 }

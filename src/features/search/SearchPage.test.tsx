@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { PAGE_SIZE } from '../../api/rijksmuseum';
 import { SEARCH_URL } from '../../api/rijksmuseum/constants';
+import { Layout } from '../../components/layout/Layout';
 import {
   generatedObjectId,
   makeGeneratedObject,
@@ -38,7 +39,11 @@ const flushRequests = () => act(async () => {});
 
 function renderPage(total = 23) {
   server.use(...generatedSearchHandlers(total));
-  return renderWithClient(<SearchPage />);
+  return renderWithClient(
+    <Layout>
+      <SearchPage />
+    </Layout>
+  );
 }
 
 describe('SearchPage form', () => {
