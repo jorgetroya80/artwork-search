@@ -2,7 +2,7 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEnv, type Plugin } from 'vite';
 
-export const DEFAULT_THEME = 'gallery';
+export const DEFAULT_THEME = 'modern';
 
 export function listThemes(dir: string): string[] {
   return readdirSync(dir)

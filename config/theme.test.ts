@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { DEFAULT_THEME, listThemes, resolveTheme } from './theme';
 
 describe('resolveTheme', () => {
-  const available = ['gallery', 'theme-1', 'theme-1-dark'];
+  const available = ['gallery', 'modern', 'theme-1', 'theme-1-dark'];
 
   it.each([undefined, ''])(
     'falls back to the default theme for %j',
@@ -16,6 +16,10 @@ describe('resolveTheme', () => {
       expect(resolveTheme(requested, available)).toBe(DEFAULT_THEME);
     }
   );
+
+  it('defaults to modern', () => {
+    expect(DEFAULT_THEME).toBe('modern');
+  });
 
   it.each(available)('accepts %s', (name) => {
     expect(resolveTheme(name, available)).toBe(name);

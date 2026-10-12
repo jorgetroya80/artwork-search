@@ -1,0 +1,14 @@
+[data-theme='modern'] {
+  color-scheme: light;
+  --theme-bg: oklch(1 0 0);
+  --theme-bg-subtle: oklch(0.9246 0.0055 95.1);
+  --theme-fg: oklch(0.1776 0 0);
+  --theme-fg-muted: oklch(0.4495 0 0);
+  --theme-border: oklch(0.1776 0 0);
+  --theme-accent: oklch(0.1776 0 0);
+  --theme-accent-fg: oklch(1 0 0);
+  --theme-radius-control: 0;
+  --theme-mark: oklch(0.5904 0.2135 30.25);
+  --theme-font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --theme-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
