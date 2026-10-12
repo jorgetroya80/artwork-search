@@ -152,7 +152,7 @@ describe('SearchPage form', () => {
 describe('SearchPage states', () => {
   const getHeading = () => screen.getByRole('heading', { level: 1 });
 
-  it('shows the idle hero with a visible heading and no results region', () => {
+  it('shows the idle hero with a visible heading, the form and the featured artwork', async () => {
     renderPage();
 
     expect(getHeading().className).not.toContain('sr-only');
@@ -160,9 +160,10 @@ describe('SearchPage states', () => {
     expect(
       screen.getByRole('searchbox', { name: '01 — Artist name' })
     ).toBeDefined();
+    expect(await screen.findByText(/The Night Watch/)).toBeDefined();
   });
 
-  it('hides the heading and switches to the compact form after a search', async () => {
+  it('hides the heading, the featured artwork, and switches to the compact form after a search', async () => {
     renderPage();
     typeTerm('Rembrandt');
     pressEnter();
@@ -175,6 +176,7 @@ describe('SearchPage states', () => {
     expect(
       screen.getByRole('region', { name: 'Search results' })
     ).toBeDefined();
+    expect(screen.queryByText(/The Night Watch/)).toBeNull();
   });
 });
 

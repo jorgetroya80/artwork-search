@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { normalizeSearchInput, useArtworkSearch } from '../../api/rijksmuseum';
 import { Layout } from '../../components/layout/Layout';
+import { FeaturedArtwork } from './FeaturedArtwork';
 import { SearchForm } from './SearchForm';
 import { SearchResults } from './SearchResults';
 
@@ -57,10 +58,22 @@ export function SearchPage() {
       toolbar={isSearchState ? <div ref={toolbarRef}>{form}</div> : undefined}
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
-        <h1 className={isSearchState ? 'sr-only' : 'text-3xl font-semibold'}>
-          Search the collection.
-        </h1>
-        {isSearchState ? <SearchResults search={search} /> : form}
+        {isSearchState ? (
+          <>
+            <h1 className="sr-only">Search the collection.</h1>
+            <SearchResults search={search} />
+          </>
+        ) : (
+          <div className="flex flex-wrap gap-10 sm:gap-12">
+            <div className="flex min-w-70 flex-[999_1_560px] flex-col gap-6">
+              <h1 className="text-3xl font-semibold">Search the collection.</h1>
+              {form}
+            </div>
+            <div className="flex flex-[1_1_380px] flex-col">
+              <FeaturedArtwork />
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );
