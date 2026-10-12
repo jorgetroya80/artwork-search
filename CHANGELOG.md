@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/jorgetroya80/artwork-search/compare/v0.5.0...v0.6.0) (2026-10-12)
+
+
+### Features
+
+* add modern museum layout and theme ([#21](https://github.com/jorgetroya80/artwork-search/issues/21)) ([e6ed511](https://github.com/jorgetroya80/artwork-search/commit/e6ed511090eeb969ea24819d5c1c2fee6178a828))
+
 ## [0.5.0](https://github.com/jorgetroya80/artwork-search/compare/v0.4.0...v0.5.0) (2026-10-06)
 
 
