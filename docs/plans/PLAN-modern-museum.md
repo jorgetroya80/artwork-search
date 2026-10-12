@@ -236,7 +236,7 @@ T7.
   - Files: `Dockerfile`, `render.yaml`.
   - Size: XS.
 
-- [ ] **T13: README**
+- [x] **T13: README**
   - Themes table with `modern` (default); one line saying the app uses free fonts, with their
     names (Archivo and IBM Plex Mono, SIL Open Font License); new screenshot in `docs/images/`.
   - Verify: `pnpm exec prettier --check README.md`.
