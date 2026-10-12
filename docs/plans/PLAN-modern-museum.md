@@ -81,7 +81,7 @@ T7.
 
 ### Phase 1: Theme mechanism
 
-- [ ] **T1: New tokens in every theme**
+- [x] **T1: New tokens in every theme**
   - `src/index.css` `@theme inline`: `--color-mark`, `--font-sans`, `--font-mono` pointing to
     `--theme-mark`, `--theme-font-sans`, `--theme-font-mono`.
   - `gallery.css`, `theme-1.css`, `theme-1-dark.css`: `--theme-mark` = their accent value;
