@@ -8,7 +8,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 # Theme name from src/themes; the build fails on an unknown one
-ARG VITE_THEME=gallery
+ARG VITE_THEME=modern
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.30.5-alpine
