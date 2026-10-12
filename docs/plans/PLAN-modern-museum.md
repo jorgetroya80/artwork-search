@@ -181,7 +181,7 @@ T7.
   - Files: `SearchForm.tsx`, `SearchPage.test.tsx`.
   - Size: S.
 
-- [ ] **T9: Page states and sticky bar**
+- [x] **T9: Page states and sticky bar**
   - `SearchPage`: idle state (hero with `<h1>`, idle form) vs search state (`<h1>` `sr-only`,
     compact form passed to `Layout` as `toolbar`). Focus behavior unchanged.
   - Tests: idle shows the visible heading and no results section content; after submit, heading
