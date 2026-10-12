@@ -7,9 +7,7 @@
 A React + TypeScript search interface for the Rijksmuseum collection, built on the public
 [Rijksmuseum Linked Art API](https://data.rijksmuseum.nl/).
 
-<!-- TODO: replace with a screenshot or GIF of the search UI -->
-
-![Screenshot of the artwork search UI](docs/images/screenshot-app.png)
+![Screenshot of the artwork search UI](docs/images/screenshot-app-modern-theme.jpg)
 
 ## Overview
 
