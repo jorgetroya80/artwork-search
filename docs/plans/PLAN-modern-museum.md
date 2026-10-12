@@ -204,7 +204,7 @@ T7.
     `SearchPage.tsx`.
   - Size: S.
 
-- [ ] **T11: Results header, grid and cards**
+- [x] **T11: Results header, grid and cards**
   - `SearchResults`: header row with `<h2>` (submitted term, passed from `SearchPage`) and the
     existing `role="status"` text after a `mark` square; grid 2 columns on phone,
     `repeat(auto-fill, minmax(240px, 1fr))` from `sm`; Load more centered with the spec widths.
