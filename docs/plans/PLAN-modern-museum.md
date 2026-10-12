@@ -191,7 +191,7 @@ T7.
   - Files: `SearchPage.tsx`, `SearchPage.test.tsx`, `Layout.tsx`.
   - Size: M.
 
-- [ ] **T10: `FeaturedArtwork` (test first)**
+- [x] **T10: `FeaturedArtwork` (test first)**
   - `featuredArtwork.ts`: `FEATURED_ARTWORK_ID = '200107928'`, `FEATURED_IMAGE_WIDTH = 1200`.
   - `FeaturedArtwork.tsx`: figure, image `object-cover`, caption "Title, Artists" / date (mono);
     pulse box while loading; empty box on error or no image, no alert. Mounted in the idle hero
