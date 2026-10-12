@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { PAGE_SIZE } from '../../api/rijksmuseum';
 import { SEARCH_URL } from '../../api/rijksmuseum/constants';
-import { Layout } from '../../components/layout/Layout';
 import {
   generatedObjectId,
   makeGeneratedObject,
@@ -29,8 +28,7 @@ afterEach(() => {
   server.events.removeListener('request:start', recordSearch);
 });
 
-const getInput = () =>
-  screen.getByRole('searchbox', { name: '01 — Artist name' });
+const getInput = () => screen.getByRole('searchbox', { name: /Artist name$/ });
 const getSearchButton = () =>
   screen.getByRole('button', { name: /^(Search|Searching…)$/ });
 const typeTerm = (term: string) =>
@@ -40,11 +38,7 @@ const flushRequests = () => act(async () => {});
 
 function renderPage(total = 23) {
   server.use(...generatedSearchHandlers(total));
-  return renderWithClient(
-    <Layout>
-      <SearchPage />
-    </Layout>
-  );
+  return renderWithClient(<SearchPage />);
 }
 
 describe('SearchPage form', () => {
@@ -155,6 +149,35 @@ describe('SearchPage form', () => {
   });
 });
 
+describe('SearchPage states', () => {
+  const getHeading = () => screen.getByRole('heading', { level: 1 });
+
+  it('shows the idle hero with a visible heading and no results region', () => {
+    renderPage();
+
+    expect(getHeading().className).not.toContain('sr-only');
+    expect(screen.queryByRole('region', { name: 'Search results' })).toBeNull();
+    expect(
+      screen.getByRole('searchbox', { name: '01 — Artist name' })
+    ).toBeDefined();
+  });
+
+  it('hides the heading and switches to the compact form after a search', async () => {
+    renderPage();
+    typeTerm('Rembrandt');
+    pressEnter();
+    await screen.findByText('Showing 10 of 23 results');
+
+    expect(getHeading().className).toContain('sr-only');
+    expect(
+      screen.getByRole('searchbox', { name: 'Artist name' })
+    ).toBeDefined();
+    expect(
+      screen.getByRole('region', { name: 'Search results' })
+    ).toBeDefined();
+  });
+});
+
 describe('SearchPage new search', () => {
   it('replaces the results and starts again from 10 for a new term', async () => {
     renderPage(23);
@@ -197,10 +220,10 @@ describe('SearchPage status line', () => {
     ).toBeDefined();
   });
 
-  it('keeps the live region in the page before any search', () => {
+  it('has no live region before any search', () => {
     renderPage();
 
-    expect(screen.getByRole('status').textContent).toBe('');
+    expect(screen.queryByRole('status')).toBeNull();
   });
 });
 
