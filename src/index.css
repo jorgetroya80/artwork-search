@@ -1,7 +1,9 @@
 @import 'tailwindcss';
+@import './assets/fonts/fonts.css';
 @import './themes/gallery.css';
 @import './themes/theme-1.css';
 @import './themes/theme-1-dark.css';
+@import './themes/modern.css';
 
 /* Semantic tokens: components use only these. Each theme in src/themes/ sets the variables. */
 @theme inline {
@@ -13,6 +15,9 @@
   --color-accent: var(--theme-accent);
   --color-accent-fg: var(--theme-accent-fg);
   --radius-control: var(--theme-radius-control);
+  --color-mark: var(--theme-mark);
+  --font-sans: var(--theme-font-sans);
+  --font-mono: var(--theme-font-mono);
 }
 
 body {

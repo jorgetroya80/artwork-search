@@ -5,10 +5,17 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { DEFAULT_THEME, listThemes, resolveTheme } from './theme';
+import {
+  DEFAULT_THEME,
+  listThemes,
+  preloadTags,
+  resolveBundledFontUrl,
+  resolveTheme,
+  THEME_FONT_PRELOADS
+} from './theme';
 
 describe('resolveTheme', () => {
-  const available = ['gallery', 'theme-1', 'theme-1-dark'];
+  const available = ['gallery', 'modern', 'theme-1', 'theme-1-dark'];
 
   it.each([undefined, ''])(
     'falls back to the default theme for %j',
@@ -16,6 +23,10 @@ describe('resolveTheme', () => {
       expect(resolveTheme(requested, available)).toBe(DEFAULT_THEME);
     }
   );
+
+  it('defaults to modern', () => {
+    expect(DEFAULT_THEME).toBe('modern');
+  });
 
   it.each(available)('accepts %s', (name) => {
     expect(resolveTheme(name, available)).toBe(name);
@@ -45,6 +56,61 @@ describe('listThemes', () => {
   });
 });
 
+describe('THEME_FONT_PRELOADS', () => {
+  it('lists modern latin files only, not latin-ext or weight 500', () => {
+    expect(THEME_FONT_PRELOADS.modern).toEqual([
+      'src/assets/fonts/archivo/archivo-normal-400-800-latin.woff2',
+      'src/assets/fonts/ibm-plex-mono/ibm-plex-mono-normal-400-latin.woff2'
+    ]);
+  });
+
+  it('has no entry for gallery', () => {
+    expect(THEME_FONT_PRELOADS.gallery).toBeUndefined();
+  });
+});
+
+describe('preloadTags', () => {
+  it('builds one preload link per file with the resolved URL', () => {
+    const html = preloadTags(
+      ['a/one.woff2', 'b/two.woff2'],
+      (file) => `/assets/${file.split('/').pop()}`
+    );
+
+    expect(html).toBe(
+      '<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/one.woff2">' +
+        '<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/two.woff2">'
+    );
+  });
+
+  it('returns an empty string for no files', () => {
+    expect(preloadTags([], () => '/unused')).toBe('');
+  });
+});
+
+describe('resolveBundledFontUrl', () => {
+  const bundle = {
+    'assets/one-abc123.woff2': {
+      type: 'asset',
+      fileName: 'assets/one-abc123.woff2',
+      originalFileNames: ['src/assets/fonts/one.woff2']
+    },
+    'index-xyz.js': { type: 'chunk', fileName: 'index-xyz.js' }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
+
+  it('finds the hashed URL for a bundled font file', () => {
+    expect(resolveBundledFontUrl('src/assets/fonts/one.woff2', bundle)).toBe(
+      '/assets/one-abc123.woff2'
+    );
+  });
+
+  it('throws, naming the missing path, when the file is not in the bundle', () => {
+    expect(() =>
+      resolveBundledFontUrl('src/assets/fonts/missing.woff2', bundle)
+    ).toThrow('src/assets/fonts/missing.woff2');
+  });
+});
+
 describe('theme files', () => {
   const srcDir = fileURLToPath(new URL('../src', import.meta.url));
   const themesDir = join(srcDir, 'themes');
@@ -54,7 +120,7 @@ describe('theme files', () => {
   );
 
   it('finds the theme variables in index.css', () => {
-    expect(variables).toHaveLength(8);
+    expect(variables).toHaveLength(11);
   });
 
   describe.each(listThemes(themesDir))('%s', (name) => {

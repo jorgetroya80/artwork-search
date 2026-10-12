@@ -8,4 +8,11 @@
   --theme-accent: var(--color-stone-900);
   --theme-accent-fg: var(--color-white);
   --theme-radius-control: var(--radius-md);
+  --theme-mark: var(--color-stone-900);
+  --theme-font-sans:
+    ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --theme-font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
 }

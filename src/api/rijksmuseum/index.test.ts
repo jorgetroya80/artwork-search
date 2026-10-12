@@ -13,6 +13,7 @@ describe('public API', () => {
       'needsNextApiPage',
       'normalizeSearchInput',
       'searchCollection',
+      'toImageUrl',
       'useArtwork',
       'useArtworkSearch',
     ]);

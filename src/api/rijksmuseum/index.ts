@@ -2,6 +2,7 @@ export { fetchArtwork } from './artwork';
 export { PAGE_SIZE } from './constants';
 export { RijksApiError, type RijksApiErrorKind } from './errors';
 export { normalizeSearchInput } from './normalize';
+export { toImageUrl } from './parse';
 export { getVisibleIds, needsNextApiPage } from './pagination';
 export { useArtwork, useArtworkSearch } from './queries';
 export { createQueryClient } from './queryClient';

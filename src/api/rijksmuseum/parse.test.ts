@@ -13,6 +13,7 @@ import {
   pickObjectNumber,
   pickPreferredName,
   pickVisualItemIds,
+  toImageUrl,
   toThumbnailUrl,
 } from './parse';
 
@@ -175,6 +176,20 @@ describe('pickImageUrl', () => {
         )
       )
     ).toBe('https://iiif.micr.io/PJEZO/full/max/0/default.jpg');
+  });
+});
+
+describe('toImageUrl', () => {
+  it('asks IIIF for the given width', () => {
+    expect(
+      toImageUrl('https://iiif.micr.io/PJEZO/full/max/0/default.jpg', 1200)
+    ).toBe('https://iiif.micr.io/PJEZO/full/1200,/0/default.jpg');
+  });
+
+  it('keeps a URL that is not a full-size IIIF URL', () => {
+    expect(toImageUrl('https://example.com/image.jpg', 1200)).toBe(
+      'https://example.com/image.jpg'
+    );
   });
 });
 

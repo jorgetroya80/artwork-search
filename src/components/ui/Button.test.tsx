@@ -77,4 +77,11 @@ describe('Button', () => {
 
     expect(document.activeElement).toBe(getButton());
   });
+
+  it('keeps the icon out of the accessible name', () => {
+    render(<Button icon={<svg data-testid="icon" />}>Search</Button>);
+
+    expect(screen.getByRole('button', { name: 'Search' })).toBeDefined();
+    expect(screen.getByTestId('icon').closest('[aria-hidden]')).not.toBeNull();
+  });
 });

@@ -26,7 +26,7 @@ services:
         value: 'true'
       # Theme name from src/themes. Changing it changes the live site's theme on the next deploy
       - key: VITE_THEME
-        value: gallery
+        value: modern
     # Same headers as nginx.conf
     headers:
       - path: /*

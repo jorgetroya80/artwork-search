@@ -3,8 +3,8 @@ import { Button } from '../../components/ui';
 import { ArtworkImage } from './ArtworkImage';
 import { formatDateRange } from './formatDateRange';
 
-const CARD_CLASSES =
-  'flex h-full flex-col overflow-hidden rounded-control border border-border bg-bg';
+const CARD_CLASSES = 'flex h-full flex-col';
+const BODY_CLASSES = 'flex flex-col gap-1 border-t border-fg p-3';
 
 type ArtworkCardProps = {
   result: ArtworkResult;
@@ -34,9 +34,9 @@ export function ArtworkCardSkeleton() {
   return (
     <article aria-label="Loading artwork" aria-busy className={CARD_CLASSES}>
       <div className="aspect-4/3 w-full bg-bg-subtle motion-safe:animate-pulse" />
-      <div className="flex flex-col gap-2 p-3">
-        <div className="h-4 w-3/4 rounded-control bg-bg-subtle motion-safe:animate-pulse" />
-        <div className="h-4 w-1/2 rounded-control bg-bg-subtle motion-safe:animate-pulse" />
+      <div className={`${BODY_CLASSES} gap-2`}>
+        <div className="h-4 w-3/4 bg-bg-subtle motion-safe:animate-pulse" />
+        <div className="h-4 w-1/2 bg-bg-subtle motion-safe:animate-pulse" />
       </div>
     </article>
   );
@@ -59,14 +59,14 @@ function ArtworkCardContent({ artwork }: { artwork: Artwork }) {
   return (
     <article className={CARD_CLASSES}>
       <ArtworkImage src={artwork.thumbnailUrl} alt={artwork.title} />
-      <div className="flex flex-col gap-1 p-3 wrap-break-word">
+      <div className={`${BODY_CLASSES} wrap-break-word`}>
         <h2 title={artwork.title} className="line-clamp-2 font-semibold">
           {artwork.title}
         </h2>
         {artwork.artists.length > 0 && (
           <p className="text-sm text-fg-muted">{artwork.artists.join(', ')}</p>
         )}
-        {date && <p className="text-sm text-fg-muted">{date}</p>}
+        {date && <p className="font-mono text-sm text-fg-muted">{date}</p>}
       </div>
     </article>
   );

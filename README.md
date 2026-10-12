@@ -7,9 +7,7 @@
 A React + TypeScript search interface for the Rijksmuseum collection, built on the public
 [Rijksmuseum Linked Art API](https://data.rijksmuseum.nl/).
 
-<!-- TODO: replace with a screenshot or GIF of the search UI -->
-
-![Screenshot of the artwork search UI](docs/images/screenshot-app.png)
+![Screenshot of the artwork search UI](docs/images/screenshot-app-modern-theme.jpg)
 
 ## Overview
 
@@ -241,11 +239,16 @@ Search with a full artist name ("Rembrandt", not "Rembr"): the API matches whole
 The color theme is picked at build time with the `VITE_THEME` environment variable. Each build
 uses one theme, and visitors cannot change it.
 
-| Theme               | Look                                           |
-| ------------------- | ---------------------------------------------- |
-| `gallery` (default) | White and stone, near-black accent. Light.     |
-| `theme-1`           | Off-white and warm gray, orange accent. Light. |
-| `theme-1-dark`      | Near-black and warm gray, orange accent. Dark. |
+| Theme              | Look                                           |
+| ------------------ | ---------------------------------------------- |
+| `modern` (default) | White and black, vermilion mark. Light.        |
+| `gallery`          | White and stone, near-black accent. Light.     |
+| `theme-1`          | Off-white and warm gray, orange accent. Light. |
+| `theme-1-dark`     | Near-black and warm gray, orange accent. Dark. |
+
+The app uses two free, self-hosted fonts: [Archivo](https://fonts.google.com/specimen/Archivo) and
+[IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono), both licensed under the
+[SIL Open Font License](https://openfontlicense.org/).
 
 ```sh
 VITE_THEME=theme-1-dark pnpm start                          # or set it in .env.local
@@ -270,7 +273,7 @@ component change:
 
 The image builds the app with Node and serves `dist` with
 [nginx-unprivileged](https://hub.docker.com/r/nginxinc/nginx-unprivileged) as a non-root user.
-The `VITE_THEME` build argument picks the theme (see [Themes](#themes)); the default is `gallery`.
+The `VITE_THEME` build argument picks the theme (see [Themes](#themes)); the default is `modern`.
 
 ```sh
 docker build -t artwork-search .

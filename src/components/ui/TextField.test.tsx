@@ -79,4 +79,19 @@ describe('TextField', () => {
     expect(input.getAttribute('name')).toBe('artist');
     expect(input.getAttribute('autocomplete')).toBe('off');
   });
+
+  it('renders the endSlot next to the input in an inputGroup', () => {
+    render(
+      <TextField
+        label="Artist name"
+        value=""
+        onValueChange={vi.fn()}
+        inputGroup
+        endSlot={<button type="submit">Search</button>}
+      />
+    );
+
+    expect(screen.getByRole('textbox', { name: 'Artist name' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Search' })).toBeDefined();
+  });
 });
