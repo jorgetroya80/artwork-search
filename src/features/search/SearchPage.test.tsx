@@ -29,7 +29,8 @@ afterEach(() => {
   server.events.removeListener('request:start', recordSearch);
 });
 
-const getInput = () => screen.getByRole('searchbox', { name: 'Artist name' });
+const getInput = () =>
+  screen.getByRole('searchbox', { name: '01 — Artist name' });
 const getSearchButton = () =>
   screen.getByRole('button', { name: /^(Search|Searching…)$/ });
 const typeTerm = (term: string) =>
@@ -60,7 +61,7 @@ describe('SearchPage form', () => {
 
     expect(
       screen.getByRole('searchbox', {
-        name: 'Artist name',
+        name: '01 — Artist name',
         description: 'Use the full name, e.g. "Rembrandt"',
       })
     ).toBeDefined();
